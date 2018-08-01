@@ -1,5 +1,4 @@
 <?php include('include/usertypecheck.php'); ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,6 +33,7 @@
   
     <!-- Topbar -->
         <?php include "include/topbar.php" ?>
+        
         <?php
           function getVoucherNoByCash(){
             global $conn;
@@ -62,7 +62,7 @@
             }
             return $voucher_no;
           }
-      ?>
+        ?>
     
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
@@ -167,12 +167,8 @@
                   </div> 
                   
                   
-                   <div class="form-group row">
-                   
-                       
-                       
-                       
-                       <div class="col-12 col-md-2">
+                    <div class="form-group row">
+                        <div class="col-12 col-md-2">
                         <label for="exampleInputName1">Invoice Date</label>
                             <div class="input-group date datepicker">
                             <input type="text" class="form-control border" value="<?php echo date('d/m/Y'); ?>">
@@ -180,11 +176,11 @@
                               <span class="mdi mdi-calendar input-group-text"></span>
                             </span>
                           </div>
-                      </div>
+                        </div>
                       
                       <div class="col-12 col-md-2">
                         <label for="exampleInputName1">Invoice No.</label>
-                        <input type="text" class="form-control" id="invoice_no" placeholder="Invoice No"">
+                        <input type="text" class="form-control" id="exampleInputName1" placeholder="Invoice No">
                       </div>
                       
                        <div class="col-12 col-md-2">
@@ -194,12 +190,12 @@
                       
                        <div class="col-12 col-md-2">
                         <label for="exampleInputName1">LR Date</label>
-                            <div class="input-group date datepicker">
-                            <input type="text" class="form-control border" value="<?php echo date('d/m/Y'); ?>">
-                            <span class="input-group-addon input-group-append border-left">
-                              <span class="mdi mdi-calendar input-group-text"></span>
-                            </span>
-                          </div>
+                        <div class="input-group date datepicker">
+                        <input type="text" class="form-control border" value="<?php echo date('d/m/Y'); ?>">
+                        <span class="input-group-addon input-group-append border-left">
+                          <span class="mdi mdi-calendar input-group-text"></span>
+                        </span>
+                      </div>
                       </div>
                         <div class="col-12 col-md-2">
                         <label for="exampleInputName1">Transporter Name</label>
@@ -208,9 +204,9 @@
                       
                      
                    
-                   </div>
+                    </div>
                    
-                   <div class="form-group row">
+                    <div class="form-group row">
                       <div class="col-12 col-md-2">
                         <label for="exampleInputName1">Purchase Type  </label>
                         <div class="row no-gutters">
@@ -233,7 +229,7 @@
                           </div>
                         </div>
                       </div>            
-                   </div>
+                    </div>
                   
                    
                   </form>
@@ -342,7 +338,7 @@
                                 
                                 <table class="table table-striped">
                    
-                    <tbody>
+                     <tbody>
                     
                       <tr>
                         <td align="right" style="width:100px;">
@@ -353,6 +349,63 @@
                         </td>
                       </tr>
                       
+                      
+                      
+                      
+                       <tr>
+                        <td align="right">
+                          <select class="form-control" name="courier" id="courier_charge" style="width:250px;">
+                                <option value="">Freight/Courier Charge </option>
+                                <option value="5">5</option>
+                                <option value="12">12</option>
+                                <option value="18">18</option>
+                            </select>
+                        </td>
+                        <td align="right"> <input type="text" name="total_courier" class="form-control" id="total_courier"></td>
+                      </tr>
+                      
+                      
+                       <tr>
+                        <td align="right">
+                          Total Tax (GST)
+                        </td>
+                        <td align="right">
+                          <input type="text" class="form-control" readonly="" name="total_tax" id="total_tax">
+                          <input type="hidden" id="hidden-total_tax">
+                        </td>
+                      </tr>
+                      
+                      
+                       <tr>
+                        <td align="right">
+                          IGST
+                        </td>
+                        <td align="right">
+                          <input type="text" class="form-control" readonly="" name="total_igst" id="total_igst">
+                          <input type="hidden" id="hidden_total_igst">
+                        </td>
+                      </tr>
+                      
+                      <tr>
+                        <td align="right">
+                          CGST
+                        </td>
+                        <td align="right">
+                          <input type="text" class="form-control" readonly="" name="total_cgst" id="total_cgst">
+                          <input type="hidden" id="hidden_total_cgst">
+                        </td>
+                      </tr>
+                      
+                      <tr>
+                        <td align="right">
+                          SGST
+                        </td>
+                        <td align="right">
+                          <input type="text" class="form-control" readonly="" name="total_sgst" id="total_sgst">
+                          <input type="hidden" id="hidden_total_sgst">
+                        </td>
+                      </tr>
+                      <input type="hidden" id="hidden_total">
                       <tr >
                         <td align="right">
                           Discount
@@ -364,10 +417,10 @@
                                     <label for="minimal-radio-1" class="mt-0" >%</label>
                                   </div>
                                   <input type="text"  class="form-control f_discount" id="exampleInputName1" placeholder="%" style="display:inline-block;width:80px;">
-                            </div>
+                          </div>
                             
                                         
-                            <div class="radio-inline ml-2">            
+                          <div class="radio-inline ml-2">            
                                 <div class="icheck" style="display:inline-block">
                                     <input tabindex="8" type="radio" id="minimal-radio-2" value="rs" name="minimal-radio" >
                                     <label for="minimal-radio-2" class="mt-0">Rs.</label>
@@ -375,88 +428,38 @@
                                 <input type="text" class="form-control f_discount" id="exampleInputName1" placeholder="Rs." style="display:inline-block;width:80px;">
                             </div>
                               
-            
                                     
                         </td>
                       </tr>
                       
                       
-                       <tr>
+                      <tr>
                         <td align="right">
                          Overall Dis. Value
                         </td>
                         <td align="right"><input type="text" readonly="" name="overall_value" class="form-control" id="overall_value"></td>
                       </tr>
                       
-                      
                        <tr>
                         <td align="right">
-                          <select class="form-control" name="courier" id="exampleFormControlSelect2" style="width:250px;">
-                                <option value="">Freight/Courier Charge </option>
-                                <option value="5">5</option>
-                                <option value="12">12</option>
-                                <option value="18">18</option>
-                            </select>
-                        </td>
-                        <td align="right"> <input type="text" readonly="" name="total_courier" class="form-control" id="total_courier"></td>
-                      </tr>
-                      
-                      
-                       <tr>
-                        <td align="right">
-                          Total Tax (GST)
-                        </td>
-                        <td align="right">
-                          0.00
-                        </td>
-                      </tr>
-                      
-                      
-                       <tr>
-                        <td align="right">
-                          IGST
-                        </td>
-                        <td align="right">
-                          0.00
-                        </td>
-                      </tr>
-                      
-                      <tr>
-                        <td align="right">
-                          CGST
-                        </td>
-                        <td align="right">
-                          0.00
-                        </td>
-                      </tr>
-                      
-                      <tr>
-                        <td align="right">
-                          SGST
-                        </td>
-                        <td align="right">
-                          0.00
-                        </td>
-                      </tr>
-                      
-                       <tr>
-                        <td align="right">
-                          <select class="form-control" id="exampleFormControlSelect2" style="width:250px;">
-                                <option value="">Credit Note</option>
-                                <option value="">Debit Note</option>
+                          <select class="form-control" id="note_details" style="width:250px;">
+                                <option value="credit_note">Credit Note</option>
+                                <option value="debit_note">Debit Note</option>
                             </select>
                         </td>
                         <td align="right">
                           <i class="fa fa-rupee"></i>&nbsp;0.00
                         </td>
                       </tr>
+
+                      
                       
                       <tr style="background:#ececec;">
                         <td align="right">
                           Purchase Ammount
                         </td>
                         <td align="right">
-                          0.00
+                          <input type="text" class="form-control" readonly="" name="purchase_amount" id="purchase_amount">
                         </td>
                       </tr>
                       
@@ -465,7 +468,7 @@
                           Round off
                         </td>
                         <td align="right">
-                          0.00
+                          <input type="text" class="form-control" readonly="" name="round_off" id="round_off">
                         </td>
                       </tr>
                       
@@ -474,7 +477,7 @@
                           <strong>NET VALUE</strong>
                         </td>
                         <td align="right">
-                         <i class="fa fa-rupee"></i>&nbsp;0.00
+                         <i class="fa fa-rupee"></i>&nbsp;<input type="text" class="form-control" readonly="" name="total_total" id="total_total">
                         </td>
                       </tr>
                       
