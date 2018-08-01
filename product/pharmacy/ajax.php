@@ -357,4 +357,44 @@
       exit;
     }
 
+    if($_REQUEST['action'] == "getProductMrpGeneric"){
+      $searchquery = (isset($_REQUEST['query']['term'])) ? $_REQUEST['query']['term'] : '';
+      $type = (isset($_REQUEST['type'])) ? $_REQUEST['type'] : '';
+
+      if($searchquery != '' && $type != ''){
+        $query = "SELECT id,product_name, generic_name, give_mrp FROM product_master ";
+        if($type == 'product'){
+          $query .="WHERE product_name like '%".$searchquery."%' AND product_name IS NOT NULL";
+        }elseif($type == 'mrp'){
+          $query .="WHERE give_mrp like '%".$searchquery."%' AND give_mrp IS NOT NULL";
+        }else{
+          $query .="WHERE generic_name like '%".$searchquery."%' AND generic_name IS NOT NULL";
+        }
+        $res = mysqli_query($conn, $query);
+
+        if($res && mysqli_num_rows($res) > 0){
+          $finalres = [];
+            while ($row = mysqli_fetch_array($res)) {
+              $arr['id'] = $row['id'];
+              if($type == 'product'){
+                $arr['name'] = $row['product_name'];
+              }elseif ($type == 'mrp') {
+                $arr['name'] = $row['give_mrp'];
+              }else{
+                $arr['name'] = $row['generic_name'];
+              }
+              array_push($finalres, $arr);
+            }
+          $result = array('status' => true, 'message' => 'Success!', 'result' => $finalres);
+        }else{
+          $result = array('status' => false, 'message' => 'Fail!', 'result' => '');
+        }
+      }else{
+        $result = array('status' => false, 'message' => 'Fail!', 'result' => '');
+      }
+
+      echo json_encode($result);
+      exit;
+    }
+
 ?>

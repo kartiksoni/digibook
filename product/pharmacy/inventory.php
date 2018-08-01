@@ -1,4 +1,12 @@
 <?php include('include/usertypecheck.php'); ?>
+<?php 
+
+  if($_GET['alphabet'] && $_GET['alphabet'] != ''){
+    $_SESSION['inventory_alphabet'] = $_GET['alphabet'];
+  }else{
+    unset($_SESSION['inventory_alphabet']);
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,6 +33,7 @@
   <link rel="stylesheet" href="css/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="images/favicon.png" />
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 </head>
 <body>
   <div class="container-scroller">
@@ -75,12 +84,12 @@
                     <form class="forms-sample">
                       <div class="row">
                       
-                        <div class="col-md-5">
+                        <div class="col-md-6">
                             <div class="form-group row">
                             
                               <div class="col-12 col-md-5">
                                 <label>Select anyone</label>
-                                  <select class="js-example-basic-single" style="width:100%"> 
+                                  <select class="js-example-basic-single" style="width:100%" id="selectsearch"> 
                                       <option value="product">Product Name </option>
                                       <option value="mrp">MRP</option>
                                       <option value="generic">Generic Name</option>
@@ -88,10 +97,12 @@
                               </div>
                               
                               <div class="col-12 col-md-4">
-                                  <label >Enter Generic</label>
+                                  <label id="search-lable">Enter Product</label>
                                   <div id="bloodhound">
-                                  <input class="form-control" type="text" placeholder="1235" disabled>
+                                    <input class="form-control" id="search" type="text" placeholder="Start typing..">
+                                    <input type="hidden" name="searchid" id="searchid">
                                   </div>
+                                  <small class="empty-message text-danger"></small>
                               </div>
                               
                               <div class="col-12 col-md-2">
@@ -101,38 +112,38 @@
                             </div> 
                         </div>
                         
-                        <div class="col-md-7">
+                        <div class="col-md-6">
                           <div class="row">
                             <div class="col-12">  
                               <label class="">Search by alphabet</label>
                             </div>
                             <div class="col-12">  
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">A</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">B</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">C</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">D</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">E</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">F</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">G</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">H</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">I</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">J</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">K</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">L</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">M</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">N</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">O</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">P</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">Q</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">R</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">S</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">T</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">U</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">V</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">W</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">X</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">Y</a>
-                              <a href="#" class="btn btn-primary filter-alphabet btn-xs">Z</a>
+                              <a href="?alphabet=a" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'a') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">A</a>
+                              <a href="?alphabet=b" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'b') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">B</a>
+                              <a href="?alphabet=c" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'c') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">C</a>
+                              <a href="?alphabet=d" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'd') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">D</a>
+                              <a href="?alphabet=e" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'e') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">E</a>
+                              <a href="?alphabet=f" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'f') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">F</a>
+                              <a href="?alphabet=g" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'g') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">G</a>
+                              <a href="?alphabet=h" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'h') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">H</a>
+                              <a href="?alphabet=i" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'i') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">I</a>
+                              <a href="?alphabet=j" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'j') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">J</a>
+                              <a href="?alphabet=k" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'k') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">K</a>
+                              <a href="?alphabet=l" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'l') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">L</a>
+                              <a href="?alphabet=m" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'm') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">M</a>
+                              <a href="?alphabet=n" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'n') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">N</a>
+                              <a href="?alphabet=o" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'o') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">O</a>
+                              <a href="?alphabet=p" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'p') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">P</a>
+                              <a href="?alphabet=q" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'q') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">Q</a>
+                              <a href="?alphabet=r" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'r') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">R</a>
+                              <a href="?alphabet=s" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 's') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">S</a>
+                              <a href="?alphabet=t" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 't') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">T</a>
+                              <a href="?alphabet=u" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'u') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">U</a>
+                              <a href="?alphabet=v" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'v') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">V</a>
+                              <a href="?alphabet=w" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'w') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">W</a>
+                              <a href="?alphabet=x" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'x') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">X</a>
+                              <a href="?alphabet=y" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'y') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">Y</a>
+                              <a href="?alphabet=z" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'z') ? 'btn-dark' : 'btn-primary'; ?> filter-alphabet btn-xs">Z</a>
                             </div>
                           </div>
                         </div>
@@ -441,7 +452,8 @@
   <script>
      $('.datatable').DataTable();
   </script>
-  
+  <script src="js/custom/inventory.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <!-- End custom js for this page-->
 </body>
 
