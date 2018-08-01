@@ -1,5 +1,4 @@
 <?php
-    include('include/config.php');
     if(!isset($_SESSION['auth']) && empty($_SESSION['auth'])){
         header('Location:/product/index.php');
         exit;

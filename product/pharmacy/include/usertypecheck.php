@@ -1,8 +1,8 @@
 <?php include('include/config.php'); ?>
 
 <?php if($_SESSION['auth']['type'] == ''){ 
-	echo'<script>window.location="index-dashboard.php";</script>';
-   } ?>
+echo'<script>window.location="index-dashboard.php";</script>';
+} ?>
 
   <!-- <script type="text/javascript">
             $('#usertype-model').modal({
