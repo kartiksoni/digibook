@@ -1,6 +1,6 @@
 <?php include('include/config.php');?>
 <?php 
-
+    /// kartik ///
     if($_REQUEST['action'] == "ownergetStateDetails"){
       $id = $_REQUEST['id'];
       $query = 'SELECT * FROM own_states WHERE country_id = '.$id.' AND status=1 order by name ';
@@ -22,6 +22,70 @@
             exit;
       }
     }
+    
+    
+    if($_REQUEST['action'] == "getproduct"){
+  $getproduct = array();
+  $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']['term']."%'";
+  
+  $result = mysqli_query($conn,$query);
+  $num = mysqli_num_rows($result);
+
+  while($row = mysqli_fetch_array($result)){
+    if(empty($row['igst'])){
+      $igst = "0";
+    }else{
+      $igst = $row['igst'];
+    }
+
+    if(empty($row['cgst'])){
+      $cgst = "0";
+    }else{
+      $cgst = $row['cgst'];
+    }
+
+    if(empty($row['sgst'])){
+      $sgst = "0";
+    }else{
+      $sgst = $row['sgst'];
+    }
+    $getproduct[] = array(
+      'id' => $row['id'],
+      'name' => $row['product_name'],
+      'ratio' => $row['ratio'],
+      'igst'=> $igst,
+      'cgst' => $cgst,
+      'sgst' => $sgst
+    );
+  }
+  echo json_encode($getproduct);
+  exit;
+}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //Add By : Gautam Makwana///
 
     if($_REQUEST['action'] == "getCountryByState"){
       $country_id = (isset($_REQUEST['country_id'])) ? $_REQUEST['country_id'] : '';
@@ -51,10 +115,11 @@
       exit;
     }
 
-    if($_REQUEST['action'] == "getCityByVendor"){
-      $city_id = (isset($_REQUEST['city_id'])) ? $_REQUEST['city_id'] : '';
-      if($city_id != ''){
-        $query = 'SELECT id, name FROM ledger_master WHERE city = '.$city_id.' AND status=1 AND group_id=14 order by name';
+    if($_REQUEST['action'] == "getStateByCity"){
+      $state_id = (isset($_REQUEST['state_id'])) ? $_REQUEST['state_id'] : '';
+    
+      if($state_id != ''){
+        $query = 'SELECT id, name FROM own_cities WHERE state_id = '.$state_id.' AND status=1 order by name';
         $result = mysqli_query($conn,$query);
         if($result && mysqli_num_rows($result) > 0){
           $res = [];
@@ -77,6 +142,7 @@
       echo json_encode($result);
       exit;
     }
+    
     // get all cities for vendor
     if($_REQUEST['action'] == "getAllVendorCity"){
       $query = "SELECT lgr.city,ct.id as cityid,ct.name as cityname FROM  `ledger_master` lgr INNER JOIN `own_cities` ct ON lgr.city = ct.id where lgr.group_id = '14' order by ct.name ASC";
@@ -95,12 +161,11 @@
       echo json_encode($result);
       exit;
     }
-
-    if($_REQUEST['action'] == "getStateByCity"){
-      $state_id = (isset($_REQUEST['state_id'])) ? $_REQUEST['state_id'] : '';
     
-      if($state_id != ''){
-        $query = 'SELECT id, name FROM own_cities WHERE state_id = '.$state_id.' AND status=1 order by name';
+    if($_REQUEST['action'] == "getCityByVendor"){
+      $city_id = (isset($_REQUEST['city_id'])) ? $_REQUEST['city_id'] : '';
+      if($city_id != ''){
+        $query = 'SELECT id, name FROM ledger_master WHERE city = '.$city_id.' AND status=1 AND group_id=14 order by name';
         $result = mysqli_query($conn,$query);
         if($result && mysqli_num_rows($result) > 0){
           $res = [];
@@ -148,7 +213,7 @@
       echo json_encode($result);
       exit;
     }
-
+    
     if($_REQUEST['action'] == "addvendor"){
       
       if(isset($_REQUEST['data']) && !empty($_REQUEST['data'])){
@@ -170,7 +235,7 @@
       echo json_encode($result);
       exit;
     }
-
+    
     if($_REQUEST['action'] == "addproduct"){
       if(isset($_REQUEST['data']) && !empty($_REQUEST['data'])){
         $data = [];
@@ -231,7 +296,7 @@
       echo json_encode($result);
       exit;
     }
-
+    
     if($_REQUEST['action'] == "getStatecodeByVendor"){
       $vendorid = (isset($_REQUEST['vendor_id']) && $_REQUEST['vendor_id'] != '') ? $_REQUEST['vendor_id'] : '';
 
@@ -252,7 +317,7 @@
       echo json_encode($result);
       exit;
     }
-
+    
     if($_REQUEST['action'] == "getVoucherNoByType"){
       $purchase_type = (isset($_REQUEST['purchase_type'])) ? $_REQUEST['purchase_type'] : '';
       if($purchase_type != ''){
