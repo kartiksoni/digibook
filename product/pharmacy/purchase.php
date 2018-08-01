@@ -425,7 +425,7 @@
                                     <input tabindex="8" type="radio" id="minimal-radio-2" value="rs" name="minimal-radio" >
                                     <label for="minimal-radio-2" class="mt-0">Rs.</label>
                                 </div>
-                                <input type="text" class="form-control f_discount" id="exampleInputName1" placeholder="Rs." style="display:inline-block;width:80px;">
+                                <input type="text" class="form-control f_discount" id="rs_dis" placeholder="Rs." style="display:inline-block;width:80px;">
                             </div>
                               
                                     
@@ -442,13 +442,14 @@
                       
                        <tr>
                         <td align="right">
-                          <select class="form-control" id="note_details" style="width:250px;">
+                          <select class="form-control note_details " id="note_details" style="width:250px;">
                                 <option value="credit_note">Credit Note</option>
                                 <option value="debit_note">Debit Note</option>
                             </select>
                         </td>
                         <td align="right">
-                          <i class="fa fa-rupee"></i>&nbsp;0.00
+                          <i class="fa fa-rupee"></i>&nbsp;
+                          <input type="text" name="note_value" class="form-control note_details" id="note_value">
                         </td>
                       </tr>
 

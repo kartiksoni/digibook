@@ -313,33 +313,7 @@ $(document).ready(function(){
 
     /// Discount Count js /// 
     $('body').on('change keyup', '.f_discount', function() {
-        
-        var type = $('input[name=minimal-radio]:checked').val();
-        if(type == "per"){
-          var g1_total = 0;
-          var total_amount = $("#total_amount").val();
-          if(total_amount !='' && total_amount != 0){
-            var f_discount = $('.f_discount').val();
-            if(f_discount != '' && f_discount != 0){
-              var total = (parseInt(total_amount)*parseInt(f_discount)) / 100;
-              g1_total += (parseInt(total_amount)-parseInt(total));
-              
-            }
-          }
-         $('#overall_value').val(g1_total.toFixed(2));
-        }
-
-        if(type == "rs"){
-          var g_total = 0;
-          var total_amount = $("#total_amount").val();
-          if(total_amount !=='' && total_amount !== '0'){
-            var f_discount = $('.f_discount').val();
-            if(f_discount !== '' && f_discount !== '0'){
-               g_total = (parseInt(total_amount)-parseInt(f_discount));
-            }
-          }
-         $('#overall_value').val(parseFloat(g_total).toFixed(2));
-        }
+      $('#overall_value').trigger("change");
     });
     /// End Discount Count js ///
 
@@ -444,7 +418,7 @@ $(document).ready(function(){
           /// End Total Count Code ///
 
         }
-        $('#purchase_amount').trigger("change");
+        $('#overall_value').trigger("change");
     });
 
     /// Freight/Courier Charge  js ///
@@ -453,21 +427,76 @@ $(document).ready(function(){
 
 
     /// Discount Count js ///
-    $('body').on('ropertychange change keyup focusout past update', '#purchase_amount', function() {
+    $('body').on('ropertychange change keyup focusout past update', '#overall_value', function() {
         var Total = $("#total_amount").val();
         Total = (typeof Total !== 'undefined' && Total !== '') ? Total : 0;
         var total_tax = $("#total_tax").val();
         total_tax = (typeof total_tax !== 'undefined' && total_tax !== '') ? total_tax : 0;
         var k_total = parseFloat(Total) + parseFloat(total_tax);
 
-        $("#hidden_total").val(parseFloat(k_total).toFixed(2));
-         //var math_round = Math.round(k_total);
-         //var round_value = math_round - k_total;
-         //$("#round_off").val(round_value);
-         //$("#total_total").val(parseFloat(math_round).toFixed(2));
+        var type = $('input[name=minimal-radio]:checked').val();
+        if(type == "per"){
+          //var g1_total = 0;
+          console.log(k_total);
+          if(k_total !='' && k_total != 0){
+            var f_discount = $('.f_discount').val();
+            if(f_discount != '' && f_discount != 0){
+              var total_bkp = (parseFloat(k_total)*parseFloat(f_discount)) / 100;
+              k_total = (parseFloat(k_total)-parseFloat(total_bkp));
+              
+            }
+          }
+         //$('#overall_value').val(g1_total.toFixed(2));
+        }
+
+        if(type == "rs"){
+          //var k_total = 0;
+          if(k_total !=='' && k_total !== '0'){
+            var f_discount = $('#rs_dis').val();
+            console.log("f_discount"+f_discount);
+            if(f_discount !== '' && f_discount !== '0'){
+               k_total = (parseFloat(k_total)-parseFloat(f_discount));
+            }
+          }
+         //$('#overall_value').val(parseFloat(g_total).toFixed(2));
+        }
+$("#hidden_total").val(parseFloat(k_total).toFixed(2));
+        $("#overall_value").val(parseFloat(k_total).toFixed(2));
+
+        var note_details = $('#note_details').val();
+        var note_value = $('#note_value').val();
+        note_value = (typeof note_value !== 'undefined' && note_value !== '') ? note_value : 0;
+        if(note_details == "credit_note"){
+          k_total = (parseFloat(k_total)+parseFloat(note_value));
+        }
+        if(note_details == "debit_note"){
+          k_total = (parseFloat(k_total)-parseFloat(note_value));
+        }
+
+
+
+
+         
+        $("#purchase_amount").val(parseFloat(k_total).toFixed(2)); 
+
+        var math_round = Math.round(k_total);
+         var round_value = math_round - k_total;
+         $("#round_off").val(round_value);
+         $("#total_total").val(parseFloat(math_round).toFixed(2));
+
+        // $('#purchase_amount').val(k_total);
 
 
     });
+
+    /// Creadit Note Js /// 
+
+    $('body').on('ropertychange change keyup focusout past update', '.note_details', function() {
+        $('#overall_value').trigger("change");
+    });
+
+    /// Creadit Note Js /// 
+
     /// End Discount Count js ///
 
     
