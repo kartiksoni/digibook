@@ -1,4 +1,11 @@
 <?php include('include/usertypecheck.php'); ?>
+<?php 
+if(isset($_POST['submit'])){
+  echo"<pre>";
+  print_r($_POST);exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -82,6 +89,7 @@
         <div class="content-wrapper">
         <?php include('include/flash.php'); ?>
         <span id="errormsg"></span>
+        <form action="" method="POST">
           <div class="row">
           
           
@@ -108,7 +116,7 @@
                 
                 
                  <br>
-                  <form class="forms-sample">
+                  
                   
                   <div class="form-group row">
                   
@@ -232,7 +240,7 @@
                     </div>
                   
                    
-                  </form>
+                 
                 </div>
               </div>
             </div>
@@ -276,7 +284,7 @@
                                       <td>1</td>
                                       <td>
                                         <input type="text" placeholder="Product" class="tags form-control" name="product[]">
-                                        <input type="hidden" class="product-id" name="product[]">
+                                        <input type="hidden" class="product-id" name="product_id[]">
 
                                         <small class="text-danger empty-message0"></small>
                                       </td>
@@ -294,7 +302,7 @@
                                       </td>
                                       <td>
                                         <input type="text" name="qty[]" class="form-control qty priceOnly" id="qty" placeholder="Qty.">
-                                        <input type="hidden" class="qty-value" name="qty_value[]" autocomplete="off">
+                                        <input type="hidden" class="qty-value" name="qty_ratio[]" autocomplete="off">
                                       </td>
                                       <td>
                                         <input type="text" name="free_qty[]" class="form-control free_qty priceOnly" id="free_qty" placeholder="Free Qty" autocomplete="off">
@@ -346,7 +354,7 @@
                         <td align="right" style="width:100px;">
                           Total
                         </td>
-                        <td align="right"><input class="form-control" type="text" name="total_amount[]" id="total_amount" readonly="">
+                        <td align="right"><input class="form-control" type="text" name="total_amount" id="total_amount" readonly="">
                          
                         </td>
                       </tr>
@@ -503,6 +511,8 @@
       
             
           </div>
+          <button type="submit" name="submit">Submit</button>
+        </form>
         </div>
 
         <!-- copy html kartik champaneriya 
@@ -515,7 +525,7 @@
               <td>##SRNO##</td>
               <td>
                 <input type="text" name="product[]" placeholder="Product" class="tags form-control">
-                <input type="hidden" class="product-id" name="product[]">
+                <input type="hidden" class="product-id" name="product_id[]">
                 <small class="text-danger empty-message##PRODUCTCOUNT##"></small>
               </td>
               <td>
@@ -532,7 +542,7 @@
               </td>
               <td>
                 <input type="text" name="qty[]" class="form-control qty priceOnly" id="qty" placeholder="Qty." autocomplete="off">
-                <input type="hidden" class="qty-value" name="qty_value[]">
+                <input type="hidden" class="qty-value" name="qty_ratio[]">
               </td>
               <td>
                 <input type="text" name="free_qty[]" class="form-control free_qty priceOnly" id="free_qty" placeholder="Free Qty" autocomplete="off">
@@ -576,7 +586,7 @@
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                <form id="add-vendor">
+               
                   <div class="modal-body">
                     <span id="addvendor-errormsg"></span>
                     <div class="form-group row">
@@ -730,7 +740,7 @@
                       <button type="submit" class="btn btn-success pull-right" id="btn-addvendor">Save</button>
                     </div>
                   </div>
-                </form>
+                
               </div>
             </div>
         </div>
@@ -746,7 +756,7 @@
                   <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                <form id="add-product">
+               
                   <div class="modal-body">
                       <span id="addproduct-errormsg"></span>
                       <div class="form-group row">
@@ -951,7 +961,7 @@
                       <button type="submit" class="btn btn-success pull-right" id="btn-addproduct">Save</button>
                     </div>
                   </div>
-                </form>
+              
               </div>
           </div>
         </div>
@@ -1009,15 +1019,23 @@
     $('.datepicker').datepicker({
       enableOnReadonly: true,
       todayHighlight: true,
-      format: 'dd/mm/yyyy'
+      format: 'dd/mm/yyyy',
+      autoclose : true
     });
-    $('.datepicker-ex').datepicker({
+    
+ </script>
+ <script type="text/javascript">
+  $(document).on('focus',".datepicker-ex", function(){ //bind to all instances of class "date". 
+    $(this).datepicker({
       enableOnReadonly: true,
       todayHighlight: true,
-      format: 'dd/mm/yy'
+      format: 'dd/mm/yy',
+      autoclose : true
     });
- </script>
- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    $(this).datepicker("refresh");
+});
+</script>
+ <script src="js/jquery-ui.js"></script>
   <!-- Custom js for this page Datatables-->
   <script src="js/data-table.js"></script>
   <script src="js/custom/purchase.js"></script>
@@ -1027,6 +1045,7 @@
 <script type="text/javascript">
   $('form').parsley();
 </script>
+
   
   
   <!-- End custom js for this page-->
