@@ -9,7 +9,7 @@
 	
 	define('SERVER', 'localhost');
 	define('USER', 'root');
-	define('PASSWORD', '123456');
+	define('PASSWORD', '');
 	define('DB', 'digibook_pharmacy');
 
 	$conn = mysqli_connect(SERVER, USER, PASSWORD, DB);// CONNECT DATABASE
