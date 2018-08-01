@@ -6,6 +6,9 @@ $(document).ready(function(){
 
     $('body').on('click', '.btn-addmore-product', function() {
         var totalproduct = $('.product-tr').length;//for product length
+        if(totalproduct <= 2){
+          $('.remove_last').show();
+        }
         var html = $('#html-copy').html();
         
         html = html.replace('##SRNO##',totalproduct);
@@ -437,7 +440,7 @@ $(document).ready(function(){
         var type = $('input[name=minimal-radio]:checked').val();
         if(type == "per"){
           //var g1_total = 0;
-          console.log(k_total);
+          
           if(k_total !='' && k_total != 0){
             var f_discount = $('.f_discount').val();
             if(f_discount != '' && f_discount != 0){
@@ -453,7 +456,6 @@ $(document).ready(function(){
           //var k_total = 0;
           if(k_total !=='' && k_total !== '0'){
             var f_discount = $('#rs_dis').val();
-            console.log("f_discount"+f_discount);
             if(f_discount !== '' && f_discount !== '0'){
                k_total = (parseFloat(k_total)-parseFloat(f_discount));
             }

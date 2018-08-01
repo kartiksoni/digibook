@@ -314,7 +314,9 @@
                                         <input type="hidden" name="f_cgst[]" class="f_cgst">
                                         <input type="hidden" name="f_sgst[]" class="f_sgst">
                                       </td>
-                                      <td><a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a></td>
+                                      <td><a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
+                                      <a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product remove_last" style="display: none;"><i class="fa fa-close mr-0 ml-0"></i></a>
+                                      </td>
                                   </tr><!-- End Row --> 
                                   
                                  
