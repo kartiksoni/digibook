@@ -281,7 +281,7 @@
                                         <small class="text-danger empty-message0"></small>
                                       </td>
                                       <td>
-                                        <input type="text" name="mrp[]" class="form-control mrp" id="mrp" placeholder="MRP" autocomplete="off">
+                                        <input type="text" name="mrp[]" class="form-control mrp priceOnly" id="mrp" placeholder="MRP" autocomplete="off">
                                       </td>
                                       <td>
                                         <input type="text" name="mfg_co[]" class="form-control mfg_co" id="mfg_co" placeholder="MFG. Co." autocomplete="off">
@@ -293,23 +293,23 @@
                                         <input type="text" name="expiry[]" class="form-control datepicker-ex expiry" style="width: 80px;" id="expiry" placeholder="Expiry" autocomplete="off">
                                       </td>
                                       <td>
-                                        <input type="text" name="qty[]" class="form-control qty" id="qty" placeholder="Qty.">
+                                        <input type="text" name="qty[]" class="form-control qty priceOnly" id="qty" placeholder="Qty.">
                                         <input type="hidden" class="qty-value" name="qty_value[]" autocomplete="off">
                                       </td>
                                       <td>
-                                        <input type="text" name="free_qty[]" class="form-control free_qty" id="free_qty" placeholder="Free Qty" autocomplete="off">
+                                        <input type="text" name="free_qty[]" class="form-control free_qty priceOnly" id="free_qty" placeholder="Free Qty" autocomplete="off">
                                       </td>
                                       <td>
-                                        <input type="text" name="rate[]" class="form-control rate" id="rate" placeholder="Rate" autocomplete="off">
+                                        <input type="text" name="rate[]" class="form-control rate priceOnly" id="rate" placeholder="Rate" autocomplete="off">
                                       </td>
                                       <td>
-                                        <input type="text" name="discount[]" class="form-control discount" id="discount" placeholder="Discount" autocomplete="off">
+                                        <input type="text" name="discount[]" class="form-control discount priceOnly" id="discount" placeholder="Discount" autocomplete="off">
                                       </td>
                                       <td>
-                                        <input type="text" name=f_rate[] class="form-control f_rate" id="f_rate" placeholder="Rate" autocomplete="off">
+                                        <input type="text" name=f_rate[] class="form-control f_rate priceOnly" id="f_rate" placeholder="Rate" autocomplete="off">
                                       </td>
                                       <td>
-                                        <input type="text" name=ammout[] class="form-control ammout" id="ammout" placeholder="Ammount" autocomplete="off">
+                                        <input type="text" name=ammout[] class="form-control ammout priceOnly" id="ammout" placeholder="Ammount" autocomplete="off">
                                         <input type="hidden" name="f_igst[]" class="f_igst">
                                         <input type="hidden" name="f_cgst[]" class="f_cgst">
                                         <input type="hidden" name="f_sgst[]" class="f_sgst">
@@ -418,7 +418,7 @@
                                     <input tabindex="7"  type="radio" id="minimal-radio-1" value="per" name="minimal-radio" checked>
                                     <label for="minimal-radio-1" class="mt-0" >%</label>
                                   </div>
-                                  <input type="text"  class="form-control f_discount" id="exampleInputName1" placeholder="%" style="display:inline-block;width:80px;">
+                                  <input type="text"  class="form-control f_discount priceOnly" id="exampleInputName1" placeholder="%" style="display:inline-block;width:80px;">
                           </div>
                             
                                         
@@ -427,7 +427,7 @@
                                     <input tabindex="8" type="radio" id="minimal-radio-2" value="rs" name="minimal-radio" >
                                     <label for="minimal-radio-2" class="mt-0">Rs.</label>
                                 </div>
-                                <input type="text" class="form-control f_discount" id="rs_dis" placeholder="Rs." style="display:inline-block;width:80px;">
+                                <input type="text" class="form-control f_discount priceOnly" id="rs_dis" placeholder="Rs." style="display:inline-block;width:80px;">
                             </div>
                               
                                     
@@ -451,7 +451,7 @@
                         </td>
                         <td align="right">
                           <i class="fa fa-rupee"></i>&nbsp;
-                          <input type="text" name="note_value" class="form-control note_details" id="note_value">
+                          <input type="text" name="note_value" class="form-control note_details priceOnly" id="note_value">
                         </td>
                       </tr>
 
@@ -519,7 +519,7 @@
                 <small class="text-danger empty-message##PRODUCTCOUNT##"></small>
               </td>
               <td>
-                <input type="text" name="mrp[]" class="form-control mrp" id="mrp" placeholder="MRP" autocomplete="off">
+                <input type="text" name="mrp[]" class="form-control mrp priceOnly" id="mrp" placeholder="MRP" autocomplete="off">
               </td>
               <td>
                 <input type="text" name="mfg_co[]" class="form-control mfg_co" id="mfg_co" placeholder="MFG. Co." autocomplete="off">
@@ -531,23 +531,23 @@
                 <input type="text" name="expiry[]" class="form-control datepicker-ex expiry" style="width: 80px;" id="expiry" placeholder="Expiry" autocomplete="off">
               </td>
               <td>
-                <input type="text" name="qty[]" class="form-control qty" id="qty" placeholder="Qty." autocomplete="off">
+                <input type="text" name="qty[]" class="form-control qty priceOnly" id="qty" placeholder="Qty." autocomplete="off">
                 <input type="hidden" class="qty-value" name="qty_value[]">
               </td>
               <td>
-                <input type="text" name="free_qty[]" class="form-control free_qty" id="free_qty" placeholder="Free Qty" autocomplete="off">
+                <input type="text" name="free_qty[]" class="form-control free_qty priceOnly" id="free_qty" placeholder="Free Qty" autocomplete="off">
               </td>
               <td>
-                <input type="text" name="rate[]" class="form-control rate" id="rate" placeholder="Rate" autocomplete="off">
+                <input type="text" name="rate[]" class="form-control rate priceOnly" id="rate" placeholder="Rate" autocomplete="off">
               </td>
               <td>
-                <input type="text" name="discount[]" class="form-control discount" id="discount" placeholder="Discount" autocomplete="off">
+                <input type="text" name="discount[]" class="form-control discount priceOnly" id="discount" placeholder="Discount" autocomplete="off">
               </td>
               <td>
-                <input type="text" name=f_rate[] class="form-control f_rate" id="f_rate" placeholder="Rate" autocomplete="off">
+                <input type="text" name=f_rate[] class="form-control f_rate priceOnly" id="f_rate" placeholder="Rate" autocomplete="off">
               </td>
               <td>
-                <input type="text" name=ammout[] class="form-control ammout" id="ammout" placeholder="Ammount" autocomplete="off">
+                <input type="text" name=ammout[] class="form-control ammout priceOnly" id="ammout" placeholder="Ammount" autocomplete="off">
                 <input type="hidden" name="f_igst[]" class="f_igst">
                 <input type="hidden" name="f_cgst[]" class="f_cgst">
                 <input type="hidden" name="f_sgst[]" class="f_sgst">
@@ -1006,10 +1006,10 @@
   </script>
   <!-- Datepicker Initialise-->
  <script>
-    $('.datepicker').datepicker({
+    $('.datepicker-ex').datepicker({
       enableOnReadonly: true,
       todayHighlight: true,
-      format: 'dd/mm/yyyy'
+      format: 'dd/mm/yy'
     });
  </script>
  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>

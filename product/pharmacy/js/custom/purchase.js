@@ -19,6 +19,11 @@ $(document).ready(function(){
         html = html.replace('<tbody>','');
         html = html.replace('</tbody>','');
         $('#product-tbody').append(html);
+       /* $('.datepicker-ex').datepicker({
+          enableOnReadonly: true,
+          todayHighlight: true,
+          format: 'dd/mm/yy'
+        });*/
         $(".product-select"+totalproduct).select2();
           $( ".tags" ).autocomplete({
              source: function (query, result) {
@@ -500,7 +505,14 @@ $("#hidden_total").val(parseFloat(k_total).toFixed(2));
     /// Creadit Note Js /// 
 
     /// End Discount Count js ///
-
+    $(document).on("keypress keyup keydown",".priceOnly",function (e) {
+       //if the letter is not digit then display error and don't type anything
+        //alert(e.which )
+       if (e.which != 110 &&e.which != 46 && e.which != 9 && e.which != 13 && e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && (e.which < 96 || e.which > 105)) {
+        //$("#errmsg").html("Digits Only").show().fadeOut("slow");
+        return false;
+      }
+        }); 
     
 
 
