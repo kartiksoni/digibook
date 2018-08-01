@@ -1,4 +1,5 @@
 <?php
+
 	include('include/config.php');
 
 	if($_REQUEST['action'] == "getCountryByState"){
