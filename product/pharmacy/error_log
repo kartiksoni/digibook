@@ -1,0 +1,5 @@
+[24-Jul-2018 12:34:53 Asia/Kolkata] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home2/yamunxym/digibooks.cloud/product/pharmacy/include/usertypecheck.php:3) in /home2/yamunxym/digibooks.cloud/product/pharmacy/product-master.php on line 106
+[24-Jul-2018 13:20:03 Asia/Kolkata] PHP Notice:  Constant SERVER already defined in /home2/yamunxym/digibooks.cloud/product/pharmacy/include/config.php on line 10
+[24-Jul-2018 13:20:03 Asia/Kolkata] PHP Notice:  Constant USER already defined in /home2/yamunxym/digibooks.cloud/product/pharmacy/include/config.php on line 11
+[24-Jul-2018 13:20:03 Asia/Kolkata] PHP Notice:  Constant PASSWORD already defined in /home2/yamunxym/digibooks.cloud/product/pharmacy/include/config.php on line 12
+[24-Jul-2018 13:20:03 Asia/Kolkata] PHP Notice:  Constant DB already defined in /home2/yamunxym/digibooks.cloud/product/pharmacy/include/config.php on line 13
