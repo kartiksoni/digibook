@@ -77,6 +77,50 @@ function smtpmail($to, $from='', $replyto='', $subject, $data = '', $username=''
 
 }
 
+function sendsms($message, $mobileNos){
+
+    $curl = curl_init();
+
+    $encodeMessage = json_encode(
+        array(
+            "smsContent" => "$message",
+            "groupId" => "0",
+            "routeId" => "1",
+            "mobileNumbers" => "$mobileNos",
+            "senderId" => "DEMOOS",
+            "signature" => "Yamuna Meditech",
+            "smsContentType" => "english"
+        )
+    );
+
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => "http://167.114.117.218/rest/services/sendSMS/sendGroupSms?AUTH_KEY=595aae1c19e7a4ac17a1a7a94f57b250",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => "$encodeMessage",
+        CURLOPT_HTTPHEADER => array(
+            "Cache-Control: no-cache",
+            "Content-Type: application/json"
+        ),
+    ));
+
+    $response = curl_exec($curl);
+    $err = curl_error($curl);
+
+    curl_close($curl);
+
+    if ($err) {
+        echo "cURL Error #:" . $err;
+    } else {
+        print_r(json_decode($response));
+    }
+}
+
 
 
 
