@@ -1,28 +1,479 @@
 // author : Kartik Champaneriya
 // date   : 28-07-2018
 $(document).ready(function(){
+
+    // Add Product button js // 
+
     $('body').on('click', '.btn-addmore-product', function() {
         var totalproduct = $('.product-tr').length;//for product length
         var html = $('#html-copy').html();
-        console.log(html);
+        
         html = html.replace('##SRNO##',totalproduct);
         html = html.replace('##SRPRODUCT##',totalproduct);
+        html = html.replace('##PRODUCTCOUNT##',totalproduct);
         html = html.replace('<table>','');
         html = html.replace('</table>','');
         html = html.replace('<tbody>','');
         html = html.replace('</tbody>','');
         $('#product-tbody').append(html);
         $(".product-select"+totalproduct).select2();
+          $( ".tags" ).autocomplete({
+             source: function (query, result) {
+          $.ajax({
+              url: "ajax.php",
+              data: {'query': query, 'action': 'getproduct'},            
+              dataType: "json",
+              type: "POST",
+              success: function (data) {
+                if(data.length === 0){
+                  $(".empty-message"+totalproduct).text("No results found");
+                }else{
+                  $(".empty-message"+totalproduct).empty();
+                  result($.map(data, function (item) {
+                    return {
+                        label: item.name,
+                        value: item.id,
+                        ratio: item.ratio,
+                        igst: item.igst,
+                        cgst: item.cgst,
+                        sgst: item.sgst    // EDIT
+                    }
+                  }));
+                }
+              }
+          });
+      },
+      focus: function( query, result ) {
+        $(this).closest('tr').find('.tags').val(result.item.label);
+        //$( ".tags" ).val( result.item.label );
+          return false;
+        },
+      select: function( query, result ) {
+          $(this).closest('tr').find('.product-id').val(result.item.value);
+          $(this).closest('tr').find('.qty-value').val(result.item.ratio);
+          $(this).closest('tr').find('.f_igst').val(result.item.igst);
+          $(this).closest('tr').find('.f_cgst').val(result.item.cgst);
+          $(this).closest('tr').find('.f_sgst').val(result.item.sgst);
+            //$( ".product-id" ).val( result.item.value );
+            return false;
+        }
+          });
     });
+
+    
+
+    // End  Add Product button js //
+
+    // Remove product button js //
 
     $('body').on('click', '.btn-remove-product', function(e) {
         e.preventDefault();
         $(this).closest ('tr').remove ();
-        $('.f_amount').trigger("change");
+        //$('.f_amount').trigger("change");
+        $('.f_rate').trigger("change");
     });
 
-});
+    // End Remove product button js // 
 
+    // Auto Compalete For getproduct //
+
+    $( ".tags" ).autocomplete({
+     source: function (query, result) {
+          $.ajax({
+              url: "ajax.php",
+              data: {'query': query, 'action': 'getproduct'},            
+              dataType: "json",
+              type: "POST",
+              success: function (data) {
+                if(data.length === 0){
+                  $(".empty-message0").text("No results found");
+                }else{
+                  $(".empty-message0").empty();
+                  result($.map(data, function (item) {
+                    return {
+                        label: item.name,
+                        value: item.id,
+                        ratio: item.ratio,
+                        igst: item.igst,
+                        cgst: item.cgst,
+                        sgst: item.sgst    // EDIT
+                    }
+                  }));
+                }
+              }
+          });
+      },
+      focus: function( query, result ) {
+        $(this).closest('tr').find('.tags').val(result.item.label);
+        //$( ".tags" ).val( result.item.label );
+          return false;
+        },
+      select: function( query, result ) {
+
+          $(this).closest('tr').find('.product-id').val(result.item.value);
+          $(this).closest('tr').find('.qty-value').val(result.item.ratio);
+          $(this).closest('tr').find('.f_igst').val(result.item.igst);
+          $(this).closest('tr').find('.f_cgst').val(result.item.cgst);
+          $(this).closest('tr').find('.f_sgst').val(result.item.sgst);
+          return false;
+        }
+    });
+    // End Auto Compalete For getproduct //
+
+    // Rate,Discount,rate js //
+    // created by kartik champaneriya//
+
+    $('body').on('propertychange change keyup focusout past', '.rate', function() {
+      var totalamount = 0;
+      var rate = $(this).val();
+      var discount = $(this).closest('tr').find('.discount').val();
+      rate = (typeof rate !== "undifined" && rate !== '' && rate !== NaN) ? rate : 0;
+      discount = (typeof discount !== "undifined" && discount !== '' && discount !== NaN) ? discount : 0;
+      var total = (parseInt(rate)-parseInt(discount));
+      $(this).closest('tr').find('.f_rate').val(total);
+      $(this).closest('tr').find('.f_rate').trigger("change");
+      //$('.ammout').trigger("change");
+    });
+
+    $('body').on('propertychange change keyup focusout past', '.discount', function() {
+      var totalamount = 0;
+      var discount = $(this).val();
+      var rate = $(this).closest('tr').find('.rate').val();
+      if(rate !== ''&& rate !== NaN && rate !== "undifined"){
+        rate = (typeof rate !== "undifined" && rate !== '' && rate !== NaN) ? rate : 0;
+        discount = (typeof discount !== "undifined" && discount !== '' && discount !== NaN) ? discount : 0;
+        var total = (parseInt(rate)-parseInt(discount));
+      }else{
+        var total = "0";
+      }
+      $(this).closest('tr').find('.f_rate').val(total);
+      $(this).closest('tr').find('.f_rate').trigger("change");
+      //$('.ammout').trigger("change");
+    });
+
+    $('body').on('propertychange change keyup focusout past', '.qty', function() {
+      var f_rate = $(this).closest('tr').find('.f_rate').val();
+      var qty = $(this).val();
+       if(f_rate !== ''&& f_rate !== NaN && f_rate !== "undifined"){
+          f_rate = (typeof f_rate !== "undifined" && f_rate !== '' && f_rate !== NaN) ? f_rate : 0;
+          qty = (typeof qty !== "undifined" && qty !== '' && qty !== NaN) ? qty : 0;
+          var total = (parseInt(qty)*parseInt(f_rate));
+       }else{
+        var total ="0";
+       }
+      $(this).closest('tr').find('.ammout').val(total);
+      $(this).closest('tr').find('.f_rate').trigger("change");
+      //$('.ammout').trigger("change");
+    });
+
+    $('body').on('propertychange change keyup focusout past', '.f_rate', function() {
+      var qty = $(this).closest('tr').find('.qty').val();
+      var f_rate = $(this).val();
+       if(qty !== ''&& qty !== NaN && qty !== "undifined"){
+          f_rate = (typeof f_rate !== "undifined" && f_rate !== '' && f_rate !== NaN) ? f_rate : 0;
+          qty = (typeof qty !== "undifined" && qty !== '' && qty !== NaN) ? qty : 0;
+          var total = (parseInt(qty)*parseInt(f_rate));
+       }else{
+        var total ="0";
+       }
+      $(this).closest('tr').find('.ammout').val(parseFloat(total).toFixed(2));
+      $('.ammout').trigger("change");
+    });
+
+    $('body').on('propertychange change keyup focusout past update', '.ammout', function() {
+        var totalamount = 0;
+        var cgst = 0;
+        var sgst = 0;
+        var igst = 0;
+        var totalcgst = 0;
+        var totaligst = 0;
+        var totalsgst = 0;
+        var statecode = $("#statecode").val();
+        var cgst;
+        $('.ammout').each(function() {
+          var val = $.trim( $(this).val() );
+          if(val){
+              val = parseFloat( val.replace( /^\$/, "" ) );
+              totalamount += !isNaN( val ) ? val : 0;
+          }
+        });
+        if(statecode == "24"){
+        /// Code For same State Code  Code ///  
+          /// CGST Count Code  ///
+          var f_cgst_count = $(".f_cgst").length - 1;
+          $('.f_cgst').each(function() {
+            var f_cgst = $.trim( $(this).val() );
+            if(f_cgst){
+                f_cgst = parseFloat( f_cgst.replace( /^\$/, "" ) );
+                totalcgst += !isNaN( f_cgst ) ? f_cgst : 0;
+            }
+          });
+          totalcgst = parseFloat(totalcgst);
+          f_cgst_count = parseFloat(f_cgst_count);
+          var cgst_total_avg = totalcgst/f_cgst_count;
+          totalamount = parseFloat(totalamount);
+          cgst_total_avg = parseFloat(cgst_total_avg);
+          var cgst_total = ((totalamount * cgst_total_avg) / 100);
+          $("#total_cgst").val(parseFloat(cgst_total).toFixed(2));
+          $("#hidden_total_cgst").val(parseFloat(cgst_total).toFixed(2));
+
+          /// End CGST Count Code ///
+
+          /// SGST Count Code ///
+          var f_sgst_count = $(".f_sgst").length - 1;
+          $('.f_sgst').each(function() {
+            var f_sgst = $.trim( $(this).val() );
+            if(f_sgst){
+                f_sgst = parseFloat( f_sgst.replace( /^\$/, "" ) );
+                totalsgst += !isNaN( f_sgst ) ? f_sgst : 0;
+            }
+          });
+
+          totalsgst = parseFloat(totalsgst);
+          f_sgst_count = parseFloat(f_sgst_count);
+          var sgst_total_avg = totalsgst/f_sgst_count;
+          totalamount = parseFloat(totalamount);
+          sgst_total_avg = parseFloat(sgst_total_avg);
+          var sgst_total = ((totalamount * sgst_total_avg) / 100);
+          $("#total_sgst").val(parseFloat(sgst_total).toFixed(2));
+          $("#hidden_total_sgst").val(parseFloat(sgst_total).toFixed(2));
+
+          /// End SGST Count Code ///
+
+
+          /// IGST Count Code ///
+          $("#total_igst").val(parseFloat(0).toFixed(2));
+          $("#hidden_total_igst").val(parseFloat(0).toFixed(2));
+          /// End IGST Count Code ///
+
+
+          /// Total GST Count Code ///
+          var final_sgst = parseFloat($("#total_sgst").val());
+          var final_cgst = parseFloat($("#total_cgst").val());
+          var final_igst = parseFloat($("#total_igst").val());
+          var total_gst = final_sgst + final_cgst + final_igst;
+          $("#total_tax").val(parseFloat(total_gst).toFixed(2));
+          $("#hidden-total_tax").val(parseFloat(total_gst).toFixed(2));
+          /// End Total Gst Count Code ///
+        /// End Same State Code ///
+
+        }else{
+          /// Out State Code  ///
+
+          /// IGST Count Code ///
+          var f_igst_count = $(".f_igst").length - 1;
+          $('.f_igst').each(function() {
+            var f_igst = $.trim( $(this).val() );
+            if(f_igst){
+                f_igst = parseFloat( f_igst.replace( /^\$/, "" ) );
+                totaligst += !isNaN( f_igst ) ? f_igst : 0;
+            }
+          });
+
+          totaligst = parseFloat(totaligst);
+          f_igst_count = parseFloat(f_igst_count);
+          var igst_total_avg = totaligst/f_igst_count;
+          totalamount = parseFloat(totalamount);
+          igst_total_avg = parseFloat(igst_total_avg);
+          var igst_total = ((totalamount * igst_total_avg) / 100);
+          $("#total_igst").val(parseFloat(igst_total).toFixed(2));
+          $("#hidden_total_igst").val(parseFloat(igst_total).toFixed(2));
+          /// End IGST Count Code ///
+
+          /// SGST Count Code ///
+          $("#total_sgst").val(parseFloat(0).toFixed(2));
+          $("#hidden_total_sgst").val(parseFloat(0).toFixed(2));
+          /// End SGST Count Code ///
+
+          /// CGST Count Code ///
+          $("#total_cgst").val(parseFloat(0).toFixed(2));
+          $("#hidden_total_cgst").val(parseFloat(0).toFixed(2));
+          /// End CGST Count Code ///
+
+          /// Total GST Count Code ///
+          var final_sgst = parseFloat($("#total_sgst").val());
+          var final_cgst = parseFloat($("#total_cgst").val());
+          var final_igst = parseFloat($("#total_igst").val());
+          var total_gst = final_sgst + final_cgst + final_igst;
+          $("#total_tax").val(parseFloat(total_gst).toFixed(2));
+          $("#hidden-total_tax").val(parseFloat(total_gst).toFixed(2));
+          /// End Total Gst Count Code ///
+
+
+
+          /// End Out State Code ///
+
+        }
+        $('#total_amount').val(parseFloat(totalamount).toFixed(2)); 
+        $('.f_discount').trigger("change");
+        $('#exampleFormControlSelect2').trigger("change");
+        $('#total_courier').trigger("change");
+        $('#purchase_amount').trigger("change");
+    });
+
+    /// Discount Count js /// 
+    $('body').on('change keyup', '.f_discount', function() {
+        
+        var type = $('input[name=minimal-radio]:checked').val();
+        if(type == "per"){
+          var g1_total = 0;
+          var total_amount = $("#total_amount").val();
+          if(total_amount !='' && total_amount != 0){
+            var f_discount = $('.f_discount').val();
+            if(f_discount != '' && f_discount != 0){
+              var total = (parseInt(total_amount)*parseInt(f_discount)) / 100;
+              g1_total += (parseInt(total_amount)-parseInt(total));
+              
+            }
+          }
+         $('#overall_value').val(g1_total.toFixed(2));
+        }
+
+        if(type == "rs"){
+          var g_total = 0;
+          var total_amount = $("#total_amount").val();
+          if(total_amount !=='' && total_amount !== '0'){
+            var f_discount = $('.f_discount').val();
+            if(f_discount !== '' && f_discount !== '0'){
+               g_total = (parseInt(total_amount)-parseInt(f_discount));
+            }
+          }
+         $('#overall_value').val(parseFloat(g_total).toFixed(2));
+        }
+    });
+    /// End Discount Count js ///
+
+
+    /// Freight/Courier Charge  js ///
+    /*$('body').on('change', '#exampleFormControlSelect2', function() {
+        var val = $(this).val();
+        if(val !== ''){
+          var overall_value = $("#overall_value").val();
+          if(overall_value !== '' && overall_value !== '0'){
+            var o_total = (parseInt(overall_value)*parseInt(val)) / 100;
+            var data_overall = (parseInt(overall_value)+parseInt(o_total));
+          }else{
+            var o_total = "0";
+          }
+          $('#total_courier').val(parseFloat(data_overall).toFixed(2));
+        }
+    });*/
+    /// Freight/Courier Charge  js ///
+    $("#total_courier").prop('disabled', true);
+    $('body').on('change', '#courier_charge', function() {
+          var courier_value = $(this).val();
+          if(courier_value !== ''){
+            $("#total_courier").prop('disabled', false);
+          }
+    });
+
+    $('body').on('ropertychange change keyup focusout past update', '#total_courier', function() {
+
+        var courier_charge = $("#courier_charge").val();
+        courier_charge = (typeof courier_charge !== 'undefined' && courier_charge !== '') ? courier_charge : 0;
+        var statecode = $("#statecode").val();
+        if(statecode == "24"){
+          /// SGST Count Code ///
+            var total_value = $(this).val();
+            total_value = (typeof total_value !== 'undefined' && total_value !== '') ? total_value : 0;
+            var courier_charge_s = parseFloat(courier_charge) / 2;
+
+            var stored_sgst = $("#hidden_total_sgst").val();
+            var stored_total = $("#hidden-total_tax").val();
+
+            if(stored_sgst !== 0 && stored_sgst !== ''){
+
+              var count_sgst = parseFloat(total_value)*parseFloat(courier_charge_s) / 100;
+              var f_count_sgst = parseFloat(count_sgst) + parseFloat(stored_sgst);
+              $("#total_sgst").val(parseFloat(f_count_sgst).toFixed(2));
+            }else{
+              $("#total_sgst").val(parseFloat(0).toFixed(2));
+            }
+
+          /// End SGST Count Code ///
+
+          /// CGST Count Code ///
+
+            var stored_cgst = $("#hidden_total_cgst").val();
+
+            if(stored_cgst !== 0 && stored_cgst !== ''){
+
+              var count_cgst = parseFloat(total_value)*parseFloat(courier_charge_s) / 100;
+              var f_count_cgst = parseFloat(count_cgst) + parseFloat(stored_cgst);
+              $("#total_cgst").val(parseFloat(f_count_cgst).toFixed(2));
+
+            }else{
+              $("#total_cgst").val(parseFloat(0).toFixed(2));
+            }
+
+          /// End CGST Count Code ///
+
+          /// Total Count Code ///
+
+            var total_count = parseFloat(f_count_sgst) + parseFloat(f_count_cgst);
+            $("#total_tax").val(parseFloat(total_count).toFixed(2));
+
+          /// End Total Count Code ///
+        }else{
+
+          /// IGST Count Code ///
+
+          var total_value = $(this).val();
+          total_value = (typeof total_value !== 'undefined' && total_value !== '') ? total_value : 0;
+          //var courier_charge_s = parseFloat(courier_charge) / 2;
+
+          var stored_igst = $("#hidden_total_igst").val();
+          var stored_total = $("#hidden-total_tax").val();
+
+          if(stored_igst !== 0 && stored_igst !== ''){
+
+            var count_igst = parseFloat(total_value)*parseFloat(courier_charge) / 100;
+            var f_count_igst = parseFloat(count_igst) + parseFloat(stored_igst);
+            $("#total_igst").val(parseFloat(f_count_igst).toFixed(2));
+
+          }else{
+            $("#total_igst").val(parseFloat(0).toFixed(2));
+          }
+
+          /// End IGST Count Code  ///
+
+          /// Total Count Code ///
+
+            $("#total_tax").val(parseFloat(f_count_igst).toFixed(2));
+
+          /// End Total Count Code ///
+
+        }
+        $('#purchase_amount').trigger("change");
+    });
+
+    /// Freight/Courier Charge  js ///
+
+    /// End Freight/Courier Charge  js ///
+
+
+    /// Discount Count js ///
+    $('body').on('ropertychange change keyup focusout past update', '#purchase_amount', function() {
+        var Total = $("#total_amount").val();
+        Total = (typeof Total !== 'undefined' && Total !== '') ? Total : 0;
+        var total_tax = $("#total_tax").val();
+        total_tax = (typeof total_tax !== 'undefined' && total_tax !== '') ? total_tax : 0;
+        var k_total = parseFloat(Total) + parseFloat(total_tax);
+
+        $("#hidden_total").val(parseFloat(k_total).toFixed(2));
+         //var math_round = Math.round(k_total);
+         //var round_value = math_round - k_total;
+         //$("#round_off").val(round_value);
+         //$("#total_total").val(parseFloat(math_round).toFixed(2));
+
+
+    });
+    /// End Discount Count js ///
+
+    
+
+
+});
 
 
 
@@ -150,8 +601,8 @@ $( document ).ready(function() {
                 $('#purchase-addvendormodel').modal('toggle');
                 $('#city').trigger("change");
                 $('#add-vendor')[0].reset();
-
-
+                
+                
                 $.ajax({
                   type: "POST",
                   url: 'ajax.php',
@@ -174,7 +625,9 @@ $( document ).ready(function() {
                     $('#city').children('option:not(:first)').remove();
                   }
                 });
-
+                
+                
+                
               }else{
                 htmlerror =  htmlerror.replace("##MSG##", data.message);
                 $('#addvendor-errormsg').html(htmlerror);
@@ -194,8 +647,7 @@ $( document ).ready(function() {
         });
 
     });
-
-
+    
     $("#add-product").on("submit", function(event){
         event.preventDefault();
         var data = $(this).serialize();
@@ -238,7 +690,6 @@ $( document ).ready(function() {
 
     });
     
-    
     $("#vendor").change(function(){
         var vendor_id = $(this).val();
         if(vendor_id !== ''){
@@ -262,7 +713,7 @@ $( document ).ready(function() {
           $('#statecode').val('');
         }
     });
-
+    
     $(".purchase_type").change(function(){
       var purchase_type = $(this).val();
 
@@ -283,8 +734,7 @@ $( document ).ready(function() {
             }
         });
     });
-
-
+    
 });
     
     
