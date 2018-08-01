@@ -1006,6 +1006,11 @@
   </script>
   <!-- Datepicker Initialise-->
  <script>
+    $('.datepicker').datepicker({
+      enableOnReadonly: true,
+      todayHighlight: true,
+      format: 'dd/mm/yyyy'
+    });
     $('.datepicker-ex').datepicker({
       enableOnReadonly: true,
       todayHighlight: true,
