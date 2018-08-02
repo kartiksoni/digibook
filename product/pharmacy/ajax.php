@@ -251,7 +251,7 @@
           $res['sub_cat'] = (isset($data['sub_cat'])) ? $data['sub_cat'] : '';
           $res['hsn_code'] = (isset($data['hsn_code'])) ? $data['hsn_code'] : '';
           $res['batch_no'] = (isset($data['batch_no'])) ? $data['batch_no'] : '';
-          $res['ex_date'] = (isset($data['ex_date']) && $data['ex_date'] != '') ? date('Y-m-d',(str_replace("/","-",$data['ex_date']))) : NULL;
+          $res['ex_date'] = (isset($data['ex_date']) && $data['ex_date'] != '') ? date('Y-m-d',strtotime(str_replace("/","-",$data['ex_date']))) : NULL;
           $res['opening_qty'] = (isset($data['opening_qty']) && $data['opening_qty'] != '') ? $data['opening_qty'] : 0;
           $res['opening_qty_godown'] = (isset($data['opening_qty_godown']) && $data['opening_qty_godown'] != '') ? $data['opening_qty_godown'] : 0;
           $res['give_mrp'] = (isset($data['give_mrp']) && $data['give_mrp'] != '') ? $data['give_mrp'] : 0;

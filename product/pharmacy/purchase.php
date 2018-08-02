@@ -823,7 +823,7 @@ if(isset($_POST['submit'])){
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-               
+                <form id="add-vendor">
                   <div class="modal-body">
                     <span id="addvendor-errormsg"></span>
                     <div class="form-group row">
@@ -977,7 +977,7 @@ if(isset($_POST['submit'])){
                       <button type="submit" class="btn btn-success pull-right" id="btn-addvendor">Save</button>
                     </div>
                   </div>
-                
+                </form>
               </div>
             </div>
         </div>
@@ -986,14 +986,14 @@ if(isset($_POST['submit'])){
         <div class="modal fade" id="purchase-addproductmodel" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-lg" role="document">
               <div class="modal-content">
-              
+              <form id="add-product">
                 <div class="modal-header">
                   <h5 class="modal-title" id="ModalLabel">Add new Product</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-               
+                
                   <div class="modal-body">
                       <span id="addproduct-errormsg"></span>
                       <div class="form-group row">
@@ -1198,7 +1198,7 @@ if(isset($_POST['submit'])){
                       <button type="submit" class="btn btn-success pull-right" id="btn-addproduct">Save</button>
                     </div>
                   </div>
-              
+              </form>
               </div>
           </div>
         </div>

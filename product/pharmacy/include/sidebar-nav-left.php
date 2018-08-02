@@ -67,7 +67,7 @@
 </li>
 
 <li class="nav-item">
-    <a class="nav-link" href="inventory.php">
+    <a class="nav-link" href="inventory.php?reset=all">
     <i class="icon-server menu-icon"></i>
     <span class="menu-title">Inventory </span>
     </a>
