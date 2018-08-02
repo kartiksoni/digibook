@@ -346,43 +346,36 @@ if(isset($_POST['submit'])){
                   
                     <div class="form-group row">
                         <div class="col-12 col-md-2">
-                        <label for="exampleInputName1">Invoice Date</label>
-                            <div class="input-group date datepicker">
+                          <label for="exampleInputName1">Invoice Date</label>
+                          <div class="input-group date datepicker">
                             <input type="text" name="invoice_date" class="form-control border" value="<?php echo date('d/m/Y'); ?>">
                             <span class="input-group-addon input-group-append border-left">
                               <span class="mdi mdi-calendar input-group-text"></span>
                             </span>
                           </div>
                         </div>
-                      
-                      <div class="col-12 col-md-2">
-                        <label for="exampleInputName1">Invoice No.</label>
-                        <input type="text" name="invoice_no" class="form-control" id="exampleInputName1" placeholder="Invoice No">
-                      </div>
-                      
-                       <div class="col-12 col-md-2">
-                        <label for="exampleInputName1">LR No</label>
-                        <input type="text" name="lr_no" class="form-control" id="exampleInputName1" placeholder="LR No">
-                      </div>
-                      
-                       <div class="col-12 col-md-2">
-                        <label for="exampleInputName1">LR Date</label>
-                        <div class="input-group date datepicker">
-                        <input type="text" name="lr_date" class="form-control border" value="<?php echo date('d/m/Y'); ?>">
-                        <span class="input-group-addon input-group-append border-left">
-                          <span class="mdi mdi-calendar input-group-text"></span>
-                        </span>
-                      </div>
-                      </div>
                         <div class="col-12 col-md-2">
-                        <label for="exampleInputName1">Transporter Name</label>
-                        <input type="text" name="transporter_name" class="form-control" id="exampleInputName1" placeholder="Transporter Name">
-                      </div>
-                      
-                     
-                   
+                          <label for="exampleInputName1">Invoice No.</label>
+                          <input type="text" name="invoice_no" class="form-control" id="exampleInputName1" placeholder="Invoice No">
+                        </div>
+                        <div class="col-12 col-md-2">
+                          <label for="exampleInputName1">LR No</label>
+                          <input type="text" name="lr_no" class="form-control" id="exampleInputName1" placeholder="LR No">
+                        </div>
+                        <div class="col-12 col-md-2">
+                          <label for="exampleInputName1">LR Date</label>
+                          <div class="input-group date datepicker">
+                            <input type="text" name="lr_date" class="form-control border" value="<?php echo date('d/m/Y'); ?>">
+                            <span class="input-group-addon input-group-append border-left">
+                              <span class="mdi mdi-calendar input-group-text"></span>
+                            </span>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-2">
+                          <label for="exampleInputName1">Transporter Name</label>
+                          <input type="text" name="transporter_name" class="form-control" id="exampleInputName1" placeholder="Transporter Name">
+                        </div>
                     </div>
-                   
                     <div class="form-group row">
                       <div class="col-12 col-md-2">
                         <label for="exampleInputName1">Purchase Type  </label>
@@ -395,7 +388,6 @@ if(isset($_POST['submit'])){
                               </label>
                               </div>
                           </div>
-                          
                           <div class="col">
                               <div class="form-radio">
                               <label class="form-check-label">
@@ -407,280 +399,239 @@ if(isset($_POST['submit'])){
                         </div>
                       </div>            
                     </div>
-                  
-                   
-                 
                 </div>
               </div>
             </div>
-            
-           
-            
              <!-- Table ------------------------------------------------------------------------------------------------------>
-            
             <div class="col-md-12 grid-margin stretch-card">
-                <div class="card">
+              <div class="card">
                 <div class="card-body">
-                
-                  <!-- TABLE Filters btn -->
-                   
-                    
                     <!-- TABLE STARTS -->
                     <div class="col mt-3">
                        <div class="row">
-                            <div class="col-12">
-                              <table id="order-listing1" class="table">
-                                <thead>
-                                  <tr>
-                                      <th>Sr No</th>
-                                      <th>Product</th>
-                                      <th>MRP</th>
-                                      <th>MFG. Co.</th>
-                                      <th>Batch</th>
-                                      <th>Expiry</th>
-                                      <th>Qty.</th>
-                                      <th>Free Qty</th>
-                                      <th>Rate</th>
-                                      <th>Discount</th>
-                                      <th>Rate</th>
-                                      <th>Ammount</th>
-                                      <th>&nbsp;</th>
-                                  </tr>
-                                </thead>
-                                <tbody id="product-tbody">
-                                  <!-- Row Starts -->   
-                                  <tr class="product-tr">
-                                      <td>1</td>
-                                      <td>
-                                        <input type="text" placeholder="Product" class="tags form-control" required="" name="product[]">
-                                        <input type="hidden" class="product-id" name="product_id[]">
+                          <div class="col-12">
+                            <table id="order-listing1" class="table">
+                              <thead>
+                                <tr>
+                                    <th>Sr No</th>
+                                    <th>Product</th>
+                                    <th>MRP</th>
+                                    <th>MFG. Co.</th>
+                                    <th>Batch</th>
+                                    <th>Expiry</th>
+                                    <th>Qty.</th>
+                                    <th>Free Qty</th>
+                                    <th>Rate</th>
+                                    <th>Discount</th>
+                                    <th>Rate</th>
+                                    <th>Ammount</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                              </thead>
+                              <tbody id="product-tbody">
+                                <tr class="product-tr">
+                                    <td>1</td>
+                                    <td>
+                                      <input type="text" placeholder="Product" class="tags form-control" required="" name="product[]">
+                                      <input type="hidden" class="product-id" name="product_id[]">
 
-                                        <small class="text-danger empty-message0"></small>
-                                      </td>
-                                      <td>
-                                        <input type="text" name="mrp[]" class="form-control mrp priceOnly" id="mrp" placeholder="MRP" autocomplete="off">
-                                      </td>
-                                      <td>
-                                        <input type="text" name="mfg_co[]" class="form-control mfg_co" id="mfg_co" placeholder="MFG. Co." autocomplete="off">
-                                      </td>
-                                      <td>
-                                        <input type="text" name="batch[]" class="form-control batch" id="batch" placeholder="Batch" autocomplete="off">
-                                      </td>
-                                      <td>
-                                        <input type="text" name="expiry[]" class="form-control datepicker-ex expiry" style="width: 80px;" id="expiry" placeholder="Expiry" autocomplete="off">
-                                      </td>
-                                      <td>
-                                        <input type="text" name="qty[]" class="form-control qty priceOnly" id="qty" placeholder="Qty.">
-                                        <input type="hidden" class="qty-value" name="qty_ratio[]" autocomplete="off">
-                                      </td>
-                                      <td>
-                                        <input type="text" name="free_qty[]" class="form-control free_qty priceOnly" id="free_qty" placeholder="Free Qty" autocomplete="off">
-                                      </td>
-                                      <td>
-                                        <input type="text" name="rate[]" class="form-control rate priceOnly" id="rate" placeholder="Rate" autocomplete="off">
-                                      </td>
-                                      <td>
-                                        <input type="text" name="discount[]" class="form-control discount priceOnly" id="discount" placeholder="Discount" autocomplete="off">
-                                      </td>
-                                      <td>
-                                        <input type="text" name=f_rate[] class="form-control f_rate priceOnly" id="f_rate" placeholder="Rate" autocomplete="off">
-                                      </td>
-                                      <td>
-                                        <input type="text" name=ammout[] class="form-control ammout priceOnly" id="ammout" placeholder="Ammount" autocomplete="off">
-                                        <input type="hidden" name="f_igst[]" class="f_igst">
-                                        <input type="hidden" name="f_cgst[]" class="f_cgst">
-                                        <input type="hidden" name="f_sgst[]" class="f_sgst">
-                                      </td>
-                                      <td><a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
-                                      <a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product remove_last" style="display: none;"><i class="fa fa-close mr-0 ml-0"></i></a>
-                                      </td>
-                                  </tr><!-- End Row --> 
-                                  
-                                 
-                                  
-                                 
-                                </tbody>
-                              </table>
-                            </div>
+                                      <small class="text-danger empty-message0"></small>
+                                    </td>
+                                    <td>
+                                      <input type="text" name="mrp[]" class="form-control mrp priceOnly" id="mrp" placeholder="MRP" autocomplete="off">
+                                    </td>
+                                    <td>
+                                      <input type="text" name="mfg_co[]" class="form-control mfg_co" id="mfg_co" placeholder="MFG. Co." autocomplete="off">
+                                    </td>
+                                    <td>
+                                      <input type="text" name="batch[]" class="form-control batch" id="batch" placeholder="Batch" autocomplete="off">
+                                    </td>
+                                    <td>
+                                      <input type="text" name="expiry[]" class="form-control datepicker-ex expiry" style="width: 80px;" id="expiry" placeholder="Expiry" autocomplete="off">
+                                    </td>
+                                    <td>
+                                      <input type="text" name="qty[]" class="form-control qty priceOnly" id="qty" placeholder="Qty.">
+                                      <input type="hidden" class="qty-value" name="qty_ratio[]" autocomplete="off">
+                                    </td>
+                                    <td>
+                                      <input type="text" name="free_qty[]" class="form-control free_qty priceOnly" id="free_qty" placeholder="Free Qty" autocomplete="off">
+                                    </td>
+                                    <td>
+                                      <input type="text" name="rate[]" class="form-control rate priceOnly" id="rate" placeholder="Rate" autocomplete="off">
+                                    </td>
+                                    <td>
+                                      <input type="text" name="discount[]" class="form-control discount priceOnly" id="discount" placeholder="Discount" autocomplete="off">
+                                    </td>
+                                    <td>
+                                      <input type="text" name=f_rate[] class="form-control f_rate priceOnly" id="f_rate" placeholder="Rate" autocomplete="off">
+                                    </td>
+                                    <td>
+                                      <input type="text" name=ammout[] class="form-control ammout priceOnly" id="ammout" placeholder="Ammount" autocomplete="off">
+                                      <input type="hidden" name="f_igst[]" class="f_igst">
+                                      <input type="hidden" name="f_cgst[]" class="f_cgst">
+                                      <input type="hidden" name="f_sgst[]" class="f_sgst">
+                                    </td>
+                                    <td><a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
+                                    <a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product remove_last" style="display: none;"><i class="fa fa-close mr-0 ml-0"></i></a>
+                                    </td>
+                                </tr>
+                              </tbody>
+                            </table>
                           </div>
+                        </div>
                     </div>
-                    
-                    
+
                     <hr>
+
                     <div class="col-12">
                       <div class="row">
                           <div class="col-md-6 offset-6">
                               <div class="form-group row">
-                                
-                                
-                                
-                                
                                 <table class="table table-striped">
-                   
-                     <tbody>
-                    
-                      <tr>
-                        <td align="right" style="width:100px;">
-                          Total
-                        </td>
-                        <td align="right"><input class="form-control" type="text" name="total_amount" id="total_amount" readonly="">
-                         
-                        </td>
-                      </tr>
-                      
-                      
-                      
-                      
-                       <tr>
-                        <td align="right">
-                          <select class="form-control" name="courier" id="courier_charge" style="width:250px;">
-                                <option value="">Freight/Courier Charge </option>
-                                <option value="5">5</option>
-                                <option value="12">12</option>
-                                <option value="18">18</option>
-                            </select>
-                        </td>
-                        <td align="right"> <input type="text" name="total_courier" class="form-control" id="total_courier"></td>
-                      </tr>
-                      
-                      
-                       <tr>
-                        <td align="right">
-                          Total Tax (GST)
-                        </td>
-                        <td align="right">
-                          <input type="text" class="form-control" readonly="" name="total_tax" id="total_tax">
-                          <input type="hidden" id="hidden-total_tax" name="hidden-total_tax">
-                        </td>
-                      </tr>
-                      
-                      
-                       <tr>
-                        <td align="right">
-                          IGST
-                        </td>
-                        <td align="right">
-                          <input type="text" class="form-control" readonly="" name="total_igst" id="total_igst">
-                          <input type="hidden" id="hidden_total_igst" name="hidden_total_igst">
-                        </td>
-                      </tr>
-                      
-                      <tr>
-                        <td align="right">
-                          CGST
-                        </td>
-                        <td align="right">
-                          <input type="text" class="form-control" readonly="" name="total_cgst" id="total_cgst">
-                          <input type="hidden" id="hidden_total_cgst" name="hidden_total_cgst">
-                        </td>
-                      </tr>
-                      
-                      <tr>
-                        <td align="right">
-                          SGST
-                        </td>
-                        <td align="right">
-                          <input type="text" class="form-control" readonly="" name="total_sgst" id="total_sgst">
-                          <input type="hidden" id="hidden_total_sgst" name="hidden_total_sgst">
-                        </td>
-                      </tr>
-                      <input type="hidden" id="hidden_total">
-                      <tr >
-                        <td align="right">
-                          Discount
-                        </td>
-                        <td align="right">
-                          <div class="radio-inline">
-                                 <div class="icheck" style="display:inline-block">
-                                    <input tabindex="7"  type="radio" id="minimal-radio-1" value="per" name="minimal-radio" checked>
-                                    <label for="minimal-radio-1" class="mt-0" >%</label>
-                                  </div>
-                                  <input type="text" name="per_discount"  class="form-control f_discount priceOnly" id="exampleInputName1" placeholder="%" style="display:inline-block;width:80px;">
+                                  <tbody>
+                                    <tr>
+                                      <td align="right" style="width:100px;">
+                                        Total
+                                      </td>
+                                      <td align="right"><input class="form-control" type="text" name="total_amount" id="total_amount" readonly="">
+                                       
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td align="right">
+                                        <select class="form-control" name="courier" id="courier_charge" style="width:250px;">
+                                              <option value="">Freight/Courier Charge </option>
+                                              <option value="5">5</option>
+                                              <option value="12">12</option>
+                                              <option value="18">18</option>
+                                          </select>
+                                      </td>
+                                      <td align="right"> <input type="text" name="total_courier" class="form-control" id="total_courier"></td>
+                                    </tr>
+                                    <tr>
+                                      <td align="right">
+                                        Total Tax (GST)
+                                      </td>
+                                      <td align="right">
+                                        <input type="text" class="form-control" readonly="" name="total_tax" id="total_tax">
+                                        <input type="hidden" id="hidden-total_tax" name="hidden-total_tax">
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td align="right">
+                                        IGST
+                                      </td>
+                                      <td align="right">
+                                        <input type="text" class="form-control" readonly="" name="total_igst" id="total_igst">
+                                        <input type="hidden" id="hidden_total_igst" name="hidden_total_igst">
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td align="right">
+                                        CGST
+                                      </td>
+                                      <td align="right">
+                                        <input type="text" class="form-control" readonly="" name="total_cgst" id="total_cgst">
+                                        <input type="hidden" id="hidden_total_cgst" name="hidden_total_cgst">
+                                      </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                      <td align="right">
+                                        SGST
+                                      </td>
+                                      <td align="right">
+                                        <input type="text" class="form-control" readonly="" name="total_sgst" id="total_sgst">
+                                        <input type="hidden" id="hidden_total_sgst" name="hidden_total_sgst">
+                                      </td>
+                                    </tr>
+                                    <input type="hidden" id="hidden_total">
+                                    <tr >
+                                      <td align="right">
+                                        Discount
+                                      </td>
+                                      <td align="right">
+                                        <div class="radio-inline">
+                                               <div class="icheck" style="display:inline-block">
+                                                  <input tabindex="7"  type="radio" id="minimal-radio-1" value="per" name="minimal-radio" checked>
+                                                  <label for="minimal-radio-1" class="mt-0" >%</label>
+                                                </div>
+                                                <input type="text" name="per_discount"  class="form-control f_discount priceOnly" id="exampleInputName1" placeholder="%" style="display:inline-block;width:80px;">
+                                        </div>
+                                          
+                                                      
+                                        <div class="radio-inline ml-2">            
+                                              <div class="icheck" style="display:inline-block">
+                                                  <input tabindex="8" type="radio" id="minimal-radio-2" value="rs" name="minimal-radio" >
+                                                  <label for="minimal-radio-2" class="mt-0">Rs.</label>
+                                              </div>
+                                              <input type="text" name="rs_discount" class="form-control f_discount priceOnly" id="rs_dis" placeholder="Rs." style="display:inline-block;width:80px;">
+                                          </div>
+                                            
+                                                  
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td align="right">
+                                       Overall Dis. Value
+                                      </td>
+                                      <td align="right"><input type="text" readonly="" name="overall_value" class="form-control" id="overall_value"></td>
+                                    </tr>
+                                    
+                                     <tr>
+                                      <td align="right">
+                                        <select class="form-control note_details " name="note_details" id="note_details" style="width:250px;">
+                                              <option value="credit_note">Credit Note</option>
+                                              <option value="debit_note">Debit Note</option>
+                                          </select>
+                                      </td>
+                                      <td align="right">
+                                        <i class="fa fa-rupee"></i>&nbsp;
+                                        <input type="text" name="note_value" class="form-control note_details priceOnly" id="note_value">
+                                      </td>
+                                    </tr>
+                                    <tr style="background:#ececec;">
+                                      <td align="right">
+                                        Purchase Ammount
+                                      </td>
+                                      <td align="right">
+                                        <input type="text" class="form-control" readonly="" name="purchase_amount" id="purchase_amount">
+                                      </td>
+                                    </tr>
+                                    
+                                    <tr style="background:#e0e0e0;">
+                                      <td align="right">
+                                        Round off
+                                      </td>
+                                      <td align="right">
+                                        <input type="text" class="form-control" readonly="" name="round_off" id="round_off">
+                                      </td>
+                                    </tr>
+                                    
+                                    <tr style="background:#0062ab;color:#fff;">
+                                      <td align="right">
+                                        <strong>NET VALUE</strong>
+                                      </td>
+                                      <td align="right">
+                                       <i class="fa fa-rupee"></i>&nbsp;<input type="text" class="form-control" readonly="" name="total_total" id="total_total">
+                                      </td>
+                                    </tr>
+                                    
+                                  </tbody>
+                                </table>
+                              </div>
                           </div>
-                            
-                                        
-                          <div class="radio-inline ml-2">            
-                                <div class="icheck" style="display:inline-block">
-                                    <input tabindex="8" type="radio" id="minimal-radio-2" value="rs" name="minimal-radio" >
-                                    <label for="minimal-radio-2" class="mt-0">Rs.</label>
-                                </div>
-                                <input type="text" name="rs_discount" class="form-control f_discount priceOnly" id="rs_dis" placeholder="Rs." style="display:inline-block;width:80px;">
-                            </div>
-                              
-                                    
-                        </td>
-                      </tr>
-                      
-                      
-                      <tr>
-                        <td align="right">
-                         Overall Dis. Value
-                        </td>
-                        <td align="right"><input type="text" readonly="" name="overall_value" class="form-control" id="overall_value"></td>
-                      </tr>
-                      
-                       <tr>
-                        <td align="right">
-                          <select class="form-control note_details " name="note_details" id="note_details" style="width:250px;">
-                                <option value="credit_note">Credit Note</option>
-                                <option value="debit_note">Debit Note</option>
-                            </select>
-                        </td>
-                        <td align="right">
-                          <i class="fa fa-rupee"></i>&nbsp;
-                          <input type="text" name="note_value" class="form-control note_details priceOnly" id="note_value">
-                        </td>
-                      </tr>
-
-                      
-                      
-                      <tr style="background:#ececec;">
-                        <td align="right">
-                          Purchase Ammount
-                        </td>
-                        <td align="right">
-                          <input type="text" class="form-control" readonly="" name="purchase_amount" id="purchase_amount">
-                        </td>
-                      </tr>
-                      
-                      <tr style="background:#e0e0e0;">
-                        <td align="right">
-                          Round off
-                        </td>
-                        <td align="right">
-                          <input type="text" class="form-control" readonly="" name="round_off" id="round_off">
-                        </td>
-                      </tr>
-                      
-                      <tr style="background:#0062ab;color:#fff;">
-                        <td align="right">
-                          <strong>NET VALUE</strong>
-                        </td>
-                        <td align="right">
-                         <i class="fa fa-rupee"></i>&nbsp;<input type="text" class="form-control" readonly="" name="total_total" id="total_total">
-                        </td>
-                      </tr>
-                      
-                    </tbody>
-                  </table>
-                                    
-                                </div>
-                            </div>
-                        </div>
+                      </div>
                     </div>
-                    
-                
+
+                    <div class="col-md-12">
+                      <a href="#" type="button" class="btn btn-light pull-left">Back</a>
+                      <button type="submit" class="btn btn-success pull-right">Submit</button>
+                    </div>
                 </div>
-                </div>
-                </div>  
-            
-            
-            
-            
-      
-            
+              </div>
+            </div>
           </div>
-          <button type="submit" name="submit">Submit</button>
         </form>
         </div>
 
