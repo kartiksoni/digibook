@@ -1,8 +1,176 @@
 <?php include('include/usertypecheck.php'); ?>
 <?php 
 if(isset($_POST['submit'])){
-  echo"<pre>";
-  print_r($_POST);exit;
+
+  $user_id = $_SESSION['auth']['id'];
+
+  $vouchar_date = date('Y-m-d',strtotime(str_replace('/','-',$_POST['vouchar_date'])));
+  $voucher_no = $_POST['voucher_no'];
+  $city = $_POST['city'];
+  $vendor = $_POST['vendor'];
+  $statecode = $_POST['statecode'];
+  $invoice_date = date('Y-m-d',strtotime(str_replace('/','-',$_POST['invoice_date'])));
+  $invoice_no = $_POST['invoice_no'];
+  $lr_no = $_POST['lr_no'];
+  $lr_date = date('Y-m-d',strtotime(str_replace('/','-',$_POST['lr_date'])));
+  $transporter_name = $_POST['transporter_name'];
+  $purchase_type = $_POST['purchase_type'];
+  $total_amount = $_POST['total_amount'];
+  $courier = $_POST['courier'];
+  $total_courier = $_POST['total_courier'];
+  $total_tax = $_POST['total_tax'];
+  $hidden_total_tax = $_POST['hidden-total_tax'];
+  $total_igst = $_POST['total_igst'];
+  $hidden_total_igst = $_POST['hidden_total_igst'];
+  $total_cgst = $_POST['total_cgst'];
+  $hidden_total_cgst = $_POST['hidden_total_cgst'];
+  $total_sgst = $_POST['total_sgst'];
+  $hidden_total_sgst = $_POST['hidden_total_sgst'];
+  $minimal_radio = $_POST['minimal-radio'];
+  $per_discount = $_POST['per_discount'];
+  $rs_discount = $_POST['rs_discount'];
+  $note_details = $_POST['note_details'];
+  $note_value = $_POST['note_value'];
+  $purchase_amount = $_POST['purchase_amount'];
+  $round_off = $_POST['round_off'];
+  $total_total = $_POST['total_total'];
+
+  $insert = "INSERT INTO purchase SET vouchar_date ='".$vouchar_date."',
+                     voucher_no ='".$voucher_no."',
+                     city ='".$city."',
+                     vendor ='".$vendor."',
+                     statecode ='".$statecode."',
+                     invoice_date ='".$invoice_date."',
+                     invoice_no ='".$invoice_no."',
+                     lr_no ='".$lr_no."',
+                     lr_date ='".$lr_date."',
+                     transporter_name ='".$transporter_name."',
+                     purchase_type ='".$purchase_type."',
+                     total_amount ='".$total_amount."',
+                     courier = '".$courier."',
+                     total_courier = '".$total_courier."',
+                     total_tax = '".$total_tax."',
+                     hidden_total_tax = '".$hidden_total_tax."',
+                     total_igst = '".$total_igst."',
+                     hidden_total_igst = '".$hidden_total_igst."',
+                     total_cgst = '".$total_cgst."',
+                     hidden_total_cgst = '".$hidden_total_cgst."',
+                     total_sgst = '".$total_sgst."',
+                     hidden_total_sgst = '".$hidden_total_sgst."',
+                     minimal_radio = '".$minimal_radio."',
+                     per_discount = '".$per_discount."',
+                     rs_discount = '".$rs_discount."',
+                     note_details = '".$note_details."',
+                     note_value = '".$note_value."',
+                     purchase_amount = '".$purchase_amount."',
+                     round_off = '".$round_off."',
+                     total_total = '".$total_total."',
+                     created = '".date('Y-m-d H:i:s')."',
+                     createdby = '".$user_id."'";
+    $result = mysqli_query($conn,$insert);
+    $last_id = mysqli_insert_id($conn);
+
+    if($result){
+      $count = count($_POST['product']);
+      for($i=0;$i<$count;$i++){
+
+        $product = "";
+        if(isset($_POST["product"][$i])){
+            $product = $_POST["product"][$i];
+        }
+
+        $product_id = "";
+        if(isset($_POST["product_id"][$i])){
+            $product_id = $_POST["product_id"][$i];
+        }
+
+        $mrp = "";
+        if(isset($_POST["mrp"][$i])){
+            $mrp = $_POST["mrp"][$i];
+        }
+
+        $mfg_co = "";
+        if(isset($_POST["mfg_co"][$i])){
+            $mfg_co = $_POST["mfg_co"][$i];
+        }
+
+        $batch = "";
+        if(isset($_POST["batch"][$i])){
+            $batch = $_POST["batch"][$i];
+        }
+
+        $expiry = "";
+        if(isset($_POST["expiry"][$i])){
+            $expiry = $_POST["expiry"][$i];
+        }
+
+        $qty = "";
+        if(isset($_POST["qty"][$i])){
+            $qty = $_POST["qty"][$i];
+        }
+
+        $qty_ratio = "";
+        if(isset($_POST["qty_ratio"][$i])){
+            $qty_ratio = $_POST["qty_ratio"][$i];
+        }
+
+        $free_qty = "";
+        if(isset($_POST["free_qty"][$i])){
+            $free_qty = $_POST["free_qty"][$i];
+        }
+
+        $rate = "";
+        if(isset($_POST["rate"][$i])){
+            $rate = $_POST["rate"][$i];
+        }
+
+        $discount = "";
+        if(isset($_POST["discount"][$i])){
+            $discount = $_POST["discount"][$i];
+        }
+
+        $f_rate = "";
+        if(isset($_POST["f_rate"][$i])){
+            $f_rate = $_POST["f_rate"][$i];
+        }
+
+        $ammout = "";
+        if(isset($_POST["ammout"][$i])){
+            $ammout = $_POST["ammout"][$i];
+        }
+
+        $f_igst = "";
+        if(isset($_POST["f_igst"][$i])){
+            $f_igst = $_POST["f_igst"][$i];
+        }
+
+        $f_cgst = "";
+        if(isset($_POST["f_cgst"][$i])){
+            $f_cgst = $_POST["f_cgst"][$i];
+        }
+
+        $f_sgst = "";
+        if(isset($_POST["f_sgst"][$i])){
+            $f_sgst = $_POST["f_sgst"][$i];
+        }
+
+        $ins_product = "INSERT INTO `purchase_details` (`purchase_id`, `product_id`, `mrp`, `mfg_co`, `batch`, `expiry`,`qty`, `qty_ratio`, `free_qty`, `rate`, `discount`, `f_rate`,`ammout`,`f_igst`,`f_cgst`,`f_sgst`,`created`,`createdby`) VALUES ('".$last_id."','".$product_id."',  '".$mrp."', '".$mfg_co."', '".$batch."', '".$expiry."','".$qty."', '".$qty_ratio."', '".$free_qty."', '".$rate."', '".$discount."', '".$f_rate."', '".$ammout."', '".$f_igst."', '".$f_cgst."','".$f_sgst."','".date('Y-m-d H:i:s')."','".$user_id."')";
+        //print_r($ins_product);exit;
+
+        mysqli_query($conn,$ins_product);
+      }
+      $_SESSION['msg']['success'] = 'Purchase Added Successfully.';
+      header('location:purchase.php');exit; 
+    }else{
+      $_SESSION['msg']['fail'] = 'Purchase Added Failed.';
+      header('location:purchase.php');exit; 
+    }
+
+  /*$count = count($_POST['product']);*/
+
+  /*for($i=1;$i<=$count;$i++){
+
+  }*/
 }
 ?>
 
@@ -87,6 +255,7 @@ if(isset($_POST['submit'])){
       <div class="main-panel">
       
         <div class="content-wrapper">
+         
         <?php include('include/flash.php'); ?>
         <span id="errormsg"></span>
         <form action="" method="POST">
@@ -123,7 +292,7 @@ if(isset($_POST['submit'])){
                       <div class="col-12 col-md-2">
                         <label for="exampleInputName1">Voucher Date</label>
                             <div class="input-group date datepicker">
-                            <input type="text" class="form-control border" value="<?php echo date('d/m/Y'); ?>">
+                            <input type="text" name="vouchar_date" class="form-control border" value="<?php echo date('d/m/Y'); ?>">
                             <span class="input-group-addon input-group-append border-left">
                               <span class="mdi mdi-calendar input-group-text"></span>
                             </span>
@@ -135,7 +304,7 @@ if(isset($_POST['submit'])){
                         <?php 
                           $voucherVal = getVoucherNoByCash();
                         ?>
-                        <input type="text" class="form-control" id="voucher_no" value="<?php echo $voucherVal; ?>" placeholder="Voucher No">
+                        <input type="text" class="form-control" name="voucher_no" id="voucher_no" value="<?php echo $voucherVal; ?>" placeholder="Voucher No">
                       </div>
                       
                       <div class="col-12 col-md-2">
@@ -179,7 +348,7 @@ if(isset($_POST['submit'])){
                         <div class="col-12 col-md-2">
                         <label for="exampleInputName1">Invoice Date</label>
                             <div class="input-group date datepicker">
-                            <input type="text" class="form-control border" value="<?php echo date('d/m/Y'); ?>">
+                            <input type="text" name="invoice_date" class="form-control border" value="<?php echo date('d/m/Y'); ?>">
                             <span class="input-group-addon input-group-append border-left">
                               <span class="mdi mdi-calendar input-group-text"></span>
                             </span>
@@ -188,18 +357,18 @@ if(isset($_POST['submit'])){
                       
                       <div class="col-12 col-md-2">
                         <label for="exampleInputName1">Invoice No.</label>
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="Invoice No">
+                        <input type="text" name="invoice_no" class="form-control" id="exampleInputName1" placeholder="Invoice No">
                       </div>
                       
                        <div class="col-12 col-md-2">
                         <label for="exampleInputName1">LR No</label>
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="LR No">
+                        <input type="text" name="lr_no" class="form-control" id="exampleInputName1" placeholder="LR No">
                       </div>
                       
                        <div class="col-12 col-md-2">
                         <label for="exampleInputName1">LR Date</label>
                         <div class="input-group date datepicker">
-                        <input type="text" class="form-control border" value="<?php echo date('d/m/Y'); ?>">
+                        <input type="text" name="lr_date" class="form-control border" value="<?php echo date('d/m/Y'); ?>">
                         <span class="input-group-addon input-group-append border-left">
                           <span class="mdi mdi-calendar input-group-text"></span>
                         </span>
@@ -207,7 +376,7 @@ if(isset($_POST['submit'])){
                       </div>
                         <div class="col-12 col-md-2">
                         <label for="exampleInputName1">Transporter Name</label>
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="Transporter Name">
+                        <input type="text" name="transporter_name" class="form-control" id="exampleInputName1" placeholder="Transporter Name">
                       </div>
                       
                      
@@ -283,7 +452,7 @@ if(isset($_POST['submit'])){
                                   <tr class="product-tr">
                                       <td>1</td>
                                       <td>
-                                        <input type="text" placeholder="Product" class="tags form-control" name="product[]">
+                                        <input type="text" placeholder="Product" class="tags form-control" required="" name="product[]">
                                         <input type="hidden" class="product-id" name="product_id[]">
 
                                         <small class="text-danger empty-message0"></small>
@@ -381,7 +550,7 @@ if(isset($_POST['submit'])){
                         </td>
                         <td align="right">
                           <input type="text" class="form-control" readonly="" name="total_tax" id="total_tax">
-                          <input type="hidden" id="hidden-total_tax">
+                          <input type="hidden" id="hidden-total_tax" name="hidden-total_tax">
                         </td>
                       </tr>
                       
@@ -392,7 +561,7 @@ if(isset($_POST['submit'])){
                         </td>
                         <td align="right">
                           <input type="text" class="form-control" readonly="" name="total_igst" id="total_igst">
-                          <input type="hidden" id="hidden_total_igst">
+                          <input type="hidden" id="hidden_total_igst" name="hidden_total_igst">
                         </td>
                       </tr>
                       
@@ -402,7 +571,7 @@ if(isset($_POST['submit'])){
                         </td>
                         <td align="right">
                           <input type="text" class="form-control" readonly="" name="total_cgst" id="total_cgst">
-                          <input type="hidden" id="hidden_total_cgst">
+                          <input type="hidden" id="hidden_total_cgst" name="hidden_total_cgst">
                         </td>
                       </tr>
                       
@@ -412,7 +581,7 @@ if(isset($_POST['submit'])){
                         </td>
                         <td align="right">
                           <input type="text" class="form-control" readonly="" name="total_sgst" id="total_sgst">
-                          <input type="hidden" id="hidden_total_sgst">
+                          <input type="hidden" id="hidden_total_sgst" name="hidden_total_sgst">
                         </td>
                       </tr>
                       <input type="hidden" id="hidden_total">
@@ -426,7 +595,7 @@ if(isset($_POST['submit'])){
                                     <input tabindex="7"  type="radio" id="minimal-radio-1" value="per" name="minimal-radio" checked>
                                     <label for="minimal-radio-1" class="mt-0" >%</label>
                                   </div>
-                                  <input type="text"  class="form-control f_discount priceOnly" id="exampleInputName1" placeholder="%" style="display:inline-block;width:80px;">
+                                  <input type="text" name="per_discount"  class="form-control f_discount priceOnly" id="exampleInputName1" placeholder="%" style="display:inline-block;width:80px;">
                           </div>
                             
                                         
@@ -435,7 +604,7 @@ if(isset($_POST['submit'])){
                                     <input tabindex="8" type="radio" id="minimal-radio-2" value="rs" name="minimal-radio" >
                                     <label for="minimal-radio-2" class="mt-0">Rs.</label>
                                 </div>
-                                <input type="text" class="form-control f_discount priceOnly" id="rs_dis" placeholder="Rs." style="display:inline-block;width:80px;">
+                                <input type="text" name="rs_discount" class="form-control f_discount priceOnly" id="rs_dis" placeholder="Rs." style="display:inline-block;width:80px;">
                             </div>
                               
                                     
@@ -452,7 +621,7 @@ if(isset($_POST['submit'])){
                       
                        <tr>
                         <td align="right">
-                          <select class="form-control note_details " id="note_details" style="width:250px;">
+                          <select class="form-control note_details " name="note_details" id="note_details" style="width:250px;">
                                 <option value="credit_note">Credit Note</option>
                                 <option value="debit_note">Debit Note</option>
                             </select>

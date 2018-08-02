@@ -26,8 +26,8 @@
 	} else { /*printf("Current character set: %s\n", mysqli_character_set_name($conn));exit;*/}
 
 	error_reporting(0);
-    ob_start();
 	session_start();
+    ob_start();
 
 
 ?>
