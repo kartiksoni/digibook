@@ -133,7 +133,7 @@ if(isset($_POST['submit'])){
 
         $expiry = "";
         if(isset($_POST["expiry"][$i])){
-            $expiry = $_POST["expiry"][$i];
+            $expiry = date('Y-m-d',strtotime(str_replace('/','-',$_POST["expiry"][$i])));
         }
 
         $qty = "";
@@ -1266,7 +1266,7 @@ if(isset($_POST['submit'])){
     $(this).datepicker({
       enableOnReadonly: true,
       todayHighlight: true,
-      format: 'dd/mm/yy',
+      format: 'dd/mm/yyyy',
       autoclose : true
     });
     $(this).datepicker("refresh");
