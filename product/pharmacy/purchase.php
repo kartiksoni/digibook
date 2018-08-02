@@ -196,14 +196,14 @@ if(isset($_POST['submit'])){
       }else{
         $_SESSION['msg']['success'] = 'Purchase Added Successfully.';
       }
-      header('location:purchase.php');exit; 
+      header('location:view-purchase.php');exit; 
     }else{
       if(isset($_GET['id']) && $_GET['id'] != ''){
         $_SESSION['msg']['fail'] = 'Purchase Updated Failed.';
       }else{
         $_SESSION['msg']['fail'] = 'Purchase Added Failed.';
       }
-      header('location:purchase.php');exit; 
+      //header('location:purchase.php');exit; 
     }
 
   /*$count = count($_POST['product']);*/
