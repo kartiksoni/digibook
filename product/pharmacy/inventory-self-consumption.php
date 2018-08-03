@@ -98,7 +98,7 @@
 			                        <label for="consumption">Note</label>
 			                        <textarea class="form-control note" name="note" id="note"></textarea>  
 		                      	</div>
-		                      	<div class="col-12 col-md-4 text-right" style="margin-top: 35px;">
+		                      	<div class="col-12 col-md-6 text-right" style="margin-top: 35px;">
 		                      		<a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
 		                      	</div>
 		                    </div>
@@ -154,7 +154,7 @@
 	                <label for="consumption">Note</label>
 	                <textarea class="form-control note" name="note" id="note"></textarea>  
 	          	</div>
-	          	<div class="col-12 col-md-4 text-right" style="margin-top: 35px;">
+	          	<div class="col-12 col-md-6 text-right" style="margin-top: 35px;">
 	          		<a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product"><i class="fa fa-close mr-0 ml-0"></i></a>
 	          		<a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
 	        		
