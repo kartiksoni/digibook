@@ -58,6 +58,7 @@ $( document ).ready(function() {
               dataType: "json",
               type: "POST",
               success: function (data) {
+                console.log(data);
                 if(data.length === 0){
                   $(".empty-message0").text("No results found");
                 }else{

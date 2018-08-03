@@ -62,23 +62,7 @@
       exit;
     }
 
-    if($_REQUEST['action'] == "getproduct_self"){
-      $getproduct_self = array();
-      $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']['term']."%'";
-      
-      $result = mysqli_query($conn,$query);
-      $num = mysqli_num_rows($result);
-
-      while($row = mysqli_fetch_array($result)){
-        $getproduct_self[] =array(
-          'id' => $row['id'],
-          'name' => $row['product_name'].'-'.$row['batch_no'],
-          'batch' => $row['batch_no']
-        );
-      }
-      echo json_encode($getproduct_self);
-      exit;
-    }
+  
     
     
     
