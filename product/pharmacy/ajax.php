@@ -25,42 +25,59 @@
     
     
     if($_REQUEST['action'] == "getproduct"){
-  $getproduct = array();
-  $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']['term']."%'";
-  
-  $result = mysqli_query($conn,$query);
-  $num = mysqli_num_rows($result);
+      $getproduct = array();
+      $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']['term']."%'";
+      
+      $result = mysqli_query($conn,$query);
+      $num = mysqli_num_rows($result);
 
-  while($row = mysqli_fetch_array($result)){
-    if(empty($row['igst'])){
-      $igst = "0";
-    }else{
-      $igst = $row['igst'];
+      while($row = mysqli_fetch_array($result)){
+        if(empty($row['igst'])){
+          $igst = "0";
+        }else{
+          $igst = $row['igst'];
+        }
+
+        if(empty($row['cgst'])){
+          $cgst = "0";
+        }else{
+          $cgst = $row['cgst'];
+        }
+
+        if(empty($row['sgst'])){
+          $sgst = "0";
+        }else{
+          $sgst = $row['sgst'];
+        }
+        $getproduct[] = array(
+          'id' => $row['id'],
+          'name' => $row['product_name'],
+          'ratio' => $row['ratio'],
+          'igst'=> $igst,
+          'cgst' => $cgst,
+          'sgst' => $sgst
+        );
+      }
+      echo json_encode($getproduct);
+      exit;
     }
 
-    if(empty($row['cgst'])){
-      $cgst = "0";
-    }else{
-      $cgst = $row['cgst'];
-    }
+    if($_REQUEST['action'] == "getproduct_self"){
+      $getproduct_self = array();
+      $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']['term']."%'";
+      
+      $result = mysqli_query($conn,$query);
+      $num = mysqli_num_rows($result);
 
-    if(empty($row['sgst'])){
-      $sgst = "0";
-    }else{
-      $sgst = $row['sgst'];
+      while($row = mysqli_fetch_array($result)){
+        $getproduct_self[] =array(
+          'id' => $row['id'],
+          'name' => $row['product_name'].'-'.$row['batch_no'],
+        );
+      }
+      echo json_encode($getproduct_self);
+      exit;
     }
-    $getproduct[] = array(
-      'id' => $row['id'],
-      'name' => $row['product_name'],
-      'ratio' => $row['ratio'],
-      'igst'=> $igst,
-      'cgst' => $cgst,
-      'sgst' => $sgst
-    );
-  }
-  echo json_encode($getproduct);
-  exit;
-}
     
     
     

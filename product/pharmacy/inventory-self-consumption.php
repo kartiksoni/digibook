@@ -1,5 +1,5 @@
-<!-- Author : Gautam Makwana -->
-<!-- Date   : 08-02-2018 -->
+<!-- Author : Kartik Champaneriya -->
+<!-- Date   : 03-08-2018 -->
 <?php include('include/usertypecheck.php'); ?>
 
 <!DOCTYPE html>
@@ -61,7 +61,8 @@
 		                  
 		                      <div class="col-12 col-md-2">
 		                        <label for="product_name">Product Name</label>
-		                        <input type="text" class="form-control" name="product_name" id="product_name" placeholder="Product Name"> 
+		                        <input type="text" class="form-control tags" name="product_name" id="product_name" placeholder="Product Name"> 
+		                        <small class="text-danger empty-message0"></small>
 		                      </div>
 		                      <div class="col-12 col-md-2">
 		                        <label for="batch">Batch</label>
@@ -163,7 +164,6 @@
 	          	</div>
 	          	<div class="col-12 col-md-4 text-right" style="margin-top: 35px;">
 	          		<a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product"><i class="fa fa-close mr-0 ml-0"></i></a>
-	          		
 	          		<a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
 	        		
 	          	</div>
@@ -226,7 +226,7 @@
      $('.datatable').DataTable();
   </script>
   <script src="js/custom/inventory-self-consumption.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="js/jquery-ui.js"></script>
   <!-- End custom js for this page-->
 </body>
 
