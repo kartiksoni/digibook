@@ -73,6 +73,7 @@
         $getproduct_self[] =array(
           'id' => $row['id'],
           'name' => $row['product_name'].'-'.$row['batch_no'],
+          'batch' => $row['batch_no']
         );
       }
       echo json_encode($getproduct_self);

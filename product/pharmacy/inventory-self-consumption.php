@@ -66,41 +66,37 @@
 		                      </div>
 		                      <div class="col-12 col-md-2">
 		                        <label for="batch">Batch</label>
-		                        <input type="text" class="form-control" name="batch"  id="batch" placeholder="Batch"> 
+		                        <input type="text" class="form-control batch" name="batch"  id="batch" placeholder="Batch"> 
 		                      </div>
 		                      <div class="col-12 col-md-2">
 		                        <label for="qty">Qty</label>
-		                        <input type="text" class="form-control" name="qty" id="qty" placeholder="Qty"> 
+		                        <input type="text" class="form-control qty" name="qty" id="qty" placeholder="Qty"> 
 		                      </div>
 		                      <div class="col-12 col-md-2">
 		                        <label for="expiry">Expiry</label>
-		                        <input type="text" class="form-control" name="expiry" id="expiry" placeholder="Expiry"> 
+		                        <input type="text" class="form-control expiry" name="expiry" id="expiry" placeholder="Expiry"> 
 		                      </div>
 		                      <div class="col-12 col-md-2">
 		                        <label for="gst">GST %</label>
-		                        <input type="text" class="form-control" name="gst" id="gst" placeholder="GST %"> 
+		                        <input type="text" class="form-control gst" name="gst" id="gst" placeholder="GST %"> 
 		                      </div>
 		                      <div class="col-12 col-md-2">
 		                        <label for="units_strip">Units/Strip</label>
-		                        <input type="text" class="form-control" name="units_strip"  id="units_strip" placeholder="Units/Strip"> 
+		                        <input type="text" class="form-control units_strip" name="units_strip"  id="units_strip" placeholder="Units/Strip"> 
 		                      </div>
 		                    </div>
 		                    <div class="form-group row">
 		                    	<div class="col-12 col-md-2">
 			                        <label for="units_strip">Price/Strip</label>
-			                        <input type="text" class="form-control" name="price_strip"  id="price_strip" placeholder="Price/Strip"> 
-		                      	</div>
-		                      	<div class="col-12 col-md-2">
-			                        <label for="units_strip">Selling/Strip</label>
-			                        <input type="text" class="form-control" name="selling_strip"  id="selling_strip" placeholder="Selling/Strip"> 
+			                        <input type="text" class="form-control price_strip" name="price_strip"  id="price_strip" placeholder="Price/Strip"> 
 		                      	</div>
 		                      	<div class="col-12 col-md-2">
 			                        <label for="consumption">Consumption</label>
-			                        <input type="text" class="form-control" name="consumption"  id="consumption" placeholder="Qty"> 
+			                        <input type="text" class="form-control consumption" name="consumption"  id="consumption" placeholder="Qty"> 
 		                      	</div>
 		                      	<div class="col-12 col-md-2">
 			                        <label for="consumption">Note</label>
-			                        <textarea class="form-control" name="note" id="note"></textarea>  
+			                        <textarea class="form-control note" name="note" id="note"></textarea>  
 		                      	</div>
 		                      	<div class="col-12 col-md-4 text-right" style="margin-top: 35px;">
 		                      		<a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
@@ -122,45 +118,41 @@
         	 <div class="form-group row">       
 	          <div class="col-12 col-md-2">
 	            <label for="product_name">Product Name</label>
-	            <input type="text" class="form-control" name="product_name" id="product_name" placeholder="Product Name"> 
+	            <input type="text" class="form-control tags" name="product_name" id="product_name" placeholder="Product Name"> 
 	          </div>
 	          <div class="col-12 col-md-2">
 	            <label for="batch">Batch</label>
-	            <input type="text" class="form-control" name="batch"  id="batch" placeholder="Batch"> 
+	            <input type="text" class="form-control batch" name="batch"  id="batch" placeholder="Batch"> 
 	          </div>
 	          <div class="col-12 col-md-2">
 	            <label for="qty">Qty</label>
-	            <input type="text" class="form-control" name="qty" id="qty" placeholder="Qty"> 
+	            <input type="text" class="form-control qty" name="qty" id="qty" placeholder="Qty"> 
 	          </div>
 	          <div class="col-12 col-md-2">
 	            <label for="expiry">Expiry</label>
-	            <input type="text" class="form-control" name="expiry" id="expiry" placeholder="Expiry"> 
+	            <input type="text" class="form-control expiry" name="expiry" id="expiry" placeholder="Expiry"> 
 	          </div>
 	          <div class="col-12 col-md-2">
 	            <label for="gst">GST %</label>
-	            <input type="text" class="form-control" name="gst" id="gst" placeholder="GST %"> 
+	            <input type="text" class="form-control gst" name="gst" id="gst" placeholder="GST %"> 
 	          </div>
 	          <div class="col-12 col-md-2">
 	            <label for="units_strip">Units/Strip</label>
-	            <input type="text" class="form-control" name="units_strip"  id="units_strip" placeholder="Units/Strip"> 
+	            <input type="text" class="form-control units_strip" name="units_strip"  id="units_strip" placeholder="Units/Strip"> 
 	          </div>
 	        </div>
 	        <div class="form-group row">
 	        	<div class="col-12 col-md-2">
 	                <label for="units_strip">Price/Strip</label>
-	                <input type="text" class="form-control" name="price_strip"  id="price_strip" placeholder="Price/Strip"> 
-	          	</div>
-	          	<div class="col-12 col-md-2">
-	                <label for="units_strip">Selling/Strip</label>
-	                <input type="text" class="form-control" name="selling_strip"  id="selling_strip" placeholder="Selling/Strip"> 
+	                <input type="text" class="form-control price_strip" name="price_strip"  id="price_strip" placeholder="Price/Strip"> 
 	          	</div>
 	          	<div class="col-12 col-md-2">
 	                <label for="consumption">Consumption</label>
-	                <input type="text" class="form-control" name="consumption"  id="consumption" placeholder="Qty"> 
+	                <input type="text" class="form-control consumption" name="consumption"  id="consumption" placeholder="Qty"> 
 	          	</div>
 	          	<div class="col-12 col-md-2">
 	                <label for="consumption">Note</label>
-	                <textarea class="form-control" name="note" id="note"></textarea>  
+	                <textarea class="form-control note" name="note" id="note"></textarea>  
 	          	</div>
 	          	<div class="col-12 col-md-4 text-right" style="margin-top: 35px;">
 	          		<a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product"><i class="fa fa-close mr-0 ml-0"></i></a>
