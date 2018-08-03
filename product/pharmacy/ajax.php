@@ -24,45 +24,62 @@
     }
     
     
-    if($_REQUEST['action'] == "getproduct"){
-      $getproduct = array();
+if($_REQUEST['action'] == "getproduct"){
+  $getproduct = array();
+  $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']['term']."%'";
+  
+  $result = mysqli_query($conn,$query);
+  $num = mysqli_num_rows($result);
+
+  while($row = mysqli_fetch_array($result)){
+    if(empty($row['igst'])){
+      $igst = "0";
+    }else{
+      $igst = $row['igst'];
+    }
+
+    if(empty($row['cgst'])){
+      $cgst = "0";
+    }else{
+      $cgst = $row['cgst'];
+    }
+
+    if(empty($row['sgst'])){
+      $sgst = "0";
+    }else{
+      $sgst = $row['sgst'];
+    }
+    $getproduct[] = array(
+      'id' => $row['id'],
+      'name' => $row['product_name'],
+      'ratio' => $row['ratio'],
+      'igst'=> $igst,
+      'cgst' => $cgst,
+      'sgst' => $sgst
+    );
+  }
+  echo json_encode($getproduct);
+  exit;
+}
+
+  if($_REQUEST['action'] == "getproduct_self"){
+      $getproduct_self = array();
       $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']['term']."%'";
+      print_r($query);exit;
       
       $result = mysqli_query($conn,$query);
       $num = mysqli_num_rows($result);
 
       while($row = mysqli_fetch_array($result)){
-        if(empty($row['igst'])){
-          $igst = "0";
-        }else{
-          $igst = $row['igst'];
-        }
-
-        if(empty($row['cgst'])){
-          $cgst = "0";
-        }else{
-          $cgst = $row['cgst'];
-        }
-
-        if(empty($row['sgst'])){
-          $sgst = "0";
-        }else{
-          $sgst = $row['sgst'];
-        }
-        $getproduct[] = array(
+        $getproduct_self[] =array(
           'id' => $row['id'],
-          'name' => $row['product_name'],
-          'ratio' => $row['ratio'],
-          'igst'=> $igst,
-          'cgst' => $cgst,
-          'sgst' => $sgst
+          'name' => $row['product_name'].'-'.$row['batch_no'],
+          'batch' => $row['batch_no']
         );
       }
-      echo json_encode($getproduct);
+      echo json_encode($getproduct_self);
       exit;
     }
-
-  
     
     
     
@@ -303,12 +320,13 @@
       $vendorid = (isset($_REQUEST['vendor_id']) && $_REQUEST['vendor_id'] != '') ? $_REQUEST['vendor_id'] : '';
 
       if($vendorid != ''){
-        $query = "SELECT st.id, st.name,st.state_code_gst FROM ledger_master lgr INNER JOIN own_states st ON lgr.state = st.id WHERE lgr.id = '".$vendorid."'";
+        $query = "SELECT st.id, st.name,st.state_code_gst, lgr.name as vendor_name FROM ledger_master lgr INNER JOIN own_states st ON lgr.state = st.id WHERE lgr.id = '".$vendorid."'";
         $res = mysqli_query($conn, $query);
         if($res){
           $row = mysqli_fetch_array($res);
           $arr['statename'] = (isset($row['name'])) ? $row['name'] : '';
           $arr['statecode'] = (isset($row['state_code_gst'])) ? $row['state_code_gst'] : '';
+          $arr['vendor_name'] = (isset($row['vendor_name'])) ? $row['vendor_name'] : '';
           $result = array('status' => true, 'message' => 'Success!', 'result' => $arr);
         }else{
           $result = array('status' => false, 'message' => 'Fail!', 'result' => '');
@@ -358,13 +376,14 @@
       echo json_encode($result);
       exit;
     }
-
+    
+    
     if($_REQUEST['action'] == "getProductMrpGeneric"){
       $searchquery = (isset($_REQUEST['query']['term'])) ? $_REQUEST['query']['term'] : '';
       $type = (isset($_REQUEST['type'])) ? $_REQUEST['type'] : '';
 
       if($searchquery != '' && $type != ''){
-        $query = "SELECT id,product_name, generic_name, give_mrp FROM product_master ";
+        $query = "SELECT id,product_name, generic_name, mfg_company, give_mrp, igst, cgst, sgst, unit FROM product_master ";
         if($type == 'product'){
           $query .="WHERE product_name like '%".$searchquery."%' AND product_name IS NOT NULL";
         }elseif($type == 'mrp'){
@@ -378,6 +397,14 @@
           $finalres = [];
             while ($row = mysqli_fetch_array($res)) {
               $arr['id'] = $row['id'];
+              $arr['productname'] = $row['product_name'];
+              $arr['generic_name'] = $row['generic_name'];
+              $arr['menufacturer_name'] = $row['mfg_company'];
+              $arr['igst'] = ($row['igst'] != '') ? $row['igst'] : 0;
+              $arr['cgst'] = ($row['cgst'] != '') ? $row['cgst'] : 0;
+              $arr['sgst'] = ($row['sgst'] != '') ? $row['sgst'] : 0;
+              $arr['unit'] = ($row['unit'] != '') ? $row['unit'] : 0;
+              $arr['mrp'] = ($row['give_mrp'] != '') ? $row['give_mrp'] : 0;
               if($type == 'product'){
                 $arr['name'] = $row['product_name'];
               }elseif ($type == 'mrp') {

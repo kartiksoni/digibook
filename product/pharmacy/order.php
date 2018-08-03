@@ -19,288 +19,219 @@
   
   <!-- plugin css for this page -->
   <link rel="stylesheet" href="vendors/iconfonts/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="vendors/iconfonts/simple-line-icon/css/simple-line-icons.css">
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="css/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="images/favicon.png" />
+
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="css/parsley.css">
 </head>
 <body>
   <div class="container-scroller">
-  
     <!-- Topbar -->
-        <?php include "include/topbar.php" ?>
-    
-    <!-- partial -->
-    <div class="container-fluid page-body-wrapper">
-    
-        
-        
-        <!-- partial:partials/_settings-panel.html -->
-        
-        <!--<div class="theme-setting-wrapper">
-        <div id="settings-trigger"><i class="mdi mdi-settings"></i></div>
-        <div id="theme-settings" class="settings-panel">
-        <i class="settings-close mdi mdi-close"></i>
-        <p class="settings-heading">SIDEBAR SKINS</p>
-        <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
-        <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
-        <p class="settings-heading mt-2">HEADER SKINS</p>
-        <div class="color-tiles mx-0 px-4">
-          <div class="tiles primary"></div>
-          <div class="tiles success"></div>
-          <div class="tiles warning"></div>
-          <div class="tiles danger"></div>
-          <div class="tiles pink"></div>
-          <div class="tiles info"></div>
-          <div class="tiles dark"></div>
-          <div class="tiles default"></div>
-        </div>
-        </div>
-        </div>-->
-        
-        
+    <?php include "include/topbar.php" ?>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
         <!-- Right Sidebar -->
         <?php include "include/sidebar-right.php" ?>
-        
-       
-       <!-- Left Navigation -->
+        <!-- Left Navigation -->
         <?php include "include/sidebar-nav-left.php" ?>
+        <div class="main-panel">
         
-        
-      
-      
-      <div class="main-panel">
-      
-        <div class="content-wrapper">
-          <div class="row">
-          
-           <!-- Inventory Form ------------------------------------------------------------------------------------------------------>
-            <div class="col-md-12 grid-margin stretch-card">
-            
+          <div class="content-wrapper">
+            <?php include('include/flash.php'); ?>
+            <div class="row">
+             <!-- Inventory Form ------------------------------------------------------------------------------------------------------>
+              <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
-                <div class="card-body">
-                   	
+                  <div class="card-body">
                     <!-- Main Catagory -->
                     <div class="row">
-                    <div class="col-12">
-                        <div class="enventory">
-                            <a href="#" class="btn btn-warning active">Order</a>
-                            <a href="#" class="btn btn-warning">List</a>
-                            <a href="#" class="btn btn-warning">Missed Sales Order</a>
-                            <a href="#" class="btn btn-warning btn-fw">Settings</a>
-                        </div>  
-                    </div> 
+                      <div class="col-12">
+                          <div class="enventory">
+                              <a href="order.php" class="btn btn-dark btn-fw active">Order</a>
+                              <a href="order-list-tab.php" class="btn btn-dark btn-fw ">List</a>
+                              <a href="#" class="btn btn-dark btn-fw ">Missed Sales Order</a>
+                              <a href="#" class="btn btn-dark btn-fw ">Settings</a>
+                          </div>  
+                      </div> 
                     </div>
                     <hr>
-                    
                     <!-- Sub Catagory Catagory -->
                     <div class="row">
-                    <div class="col-12 bg-inverse-light" >
-                        <div class="order-sub">
-                            <a href="order.php" class="btn btn-grey-1  active">By Vendor</a>
-                            <a href="order-by-min-qty.php" class="btn btn-grey-1">By Min/Max Reorder</a>
-                        </div>  
-                    </div> 
+                      <div class="col-12 bg-inverse-light" >
+                          <div class="order-sub">
+                              <a href="order.php" class="btn btn-grey-1 btn-rounded btn-xs active">By Vendor</a>
+                              <a href="order-by-transition.php" class="btn btn-rounded btn-xs btn-grey-1">By Transition</a>
+                              <a href="order-by-min-qty.php" class="btn btn-rounded btn-xs btn-grey-1">By Max Reorder</a>
+                              <a href="#" class="btn btn-rounded btn-xs btn-grey-1">By Product</a>
+                          </div>  
+                      </div> 
                     </div>
                     <hr>
-
-                    
-                    <form class="forms-sample">
-                    
+                    <form class="forms-sample" id="add_byvendor_temp" method="POST">
                     	<div class="form-group row">
-                    
-                    <div class="col-12 col-md-2 col-sm-3">
-                    <label>Select Vendor</label>
-                        <select class="js-example-basic-single" style="width:100%"> 
-                            <option value="Regular">Please select</option>
-                            <option value="Unregistered">MRP</option>
-                            <option value="Composition">Product Name </option>
-                            <option value="Composition">Generic Name</option>
-                        </select>
-                    </div>
-                    
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <label >Product</label>
-                        <select class="js-example-basic-single" style="width:100%"> 
-                            <option value="Regular">Please select</option>
-                            <option value="Unregistered">MRP</option>
-                            <option value="Composition">Product Name </option>
-                            <option value="Composition">Generic Name</option>
-                        </select>
-                    </div>
-                    
-                    <div class="col-12 col-md-2">
-                        <label >Product</label>
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="Product">
-                    </div>
-                    
-                    <div class="col-12 col-md-2">
-                        <label >Purchase Price </label>
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="0.00">
-                    </div>
-                    
-                    <div class="col-12 col-md-1">
-                        <label >GST</label>
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="0">
-                    </div>
-                    
-                    <div class="col-12 col-md-2">
-                        <label >Unit/Strip/Packing </label>
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="0">
-                    </div>
-                    
-                    <div class="col-12 col-md-1">
-                        <label >Qty</label>
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="0">
-                    </div>
-                    
-                   
-                    
-                    <div class="col-12 col-md-1">
-                    <button type="submit" class="btn btn-success mt-30" style="margin-top:30px;">Add</button>
-                    </div>
-                    
-                    </div> 
-                    
+                        <div class="col-12 col-md-2 col-sm-3">
+                          <label>Select Vendor</label>
+                          <select class="js-example-basic-single" style="width:100%" name="vendor_id" id="vendor_id" data-parsley-errors-container="#error-vendor" required> 
+                              <option value="">Please select</option>
+                              <?php 
+                                $getAllVendorQuery = "SELECT id, name FROM ledger_master WHERE status=1 AND group_id=14 order by name";
+                                $getAllVendorRes = mysqli_query($conn, $getAllVendorQuery);
+                              ?>
+                              <?php if($getAllVendorRes && mysqli_num_rows($getAllVendorRes) > 0){ ?>
+                                <?php while ($getAllVendorRow = mysqli_fetch_array($getAllVendorRes)) { ?>
+                                  <option value="<?php echo $getAllVendorRow['id']; ?>"><?php echo $getAllVendorRow['name']; ?></option>
+                                <?php } ?>
+                              <?php } ?>
+                          </select>
+                          <div id="error-vendor"></div>
+                          <input type="hidden" id="statecode" name="statecode">
+                          <input type="hidden" id="vendor_name" name="vendor_name">
+                        </div>
+                        <div class="col-12 col-md-2 col-lg-2">
+                            <label >Select anyone</label>
+                            <select class="js-example-basic-single" style="width:100%" id="selectsearch"> 
+                                <option value="product">Product Name </option>
+                                <option value="mrp">MRP</option>
+                                <option value="generic">Generic Name</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <label id="search-lable">Product Name</label>
+                            <input class="form-control" name="search" id="search" type="text" placeholder="Start typing.." required>
+                            <input type="hidden" name="product_id" id="product_id">
+                            <input type="hidden" name="product_name" id="product_name">
+                            <small class="empty-message text-danger"></small>
+                        </div>
+                      </div>
                     	<div class="form-group row">
-                    
-                    <div class="col-6 col-md-3">
-                    <label>Generic Name</label>
-                    <p>Aloe vera gel and glycerin</p>
-                      
-                    </div>
-                    
-                     <div class="col-6 col-md-3">
-                    <label>Manufacturer Name</label>
-                    <p>ABBOTT LABO-R- (I) LTD.</p>
-                      
-                    </div>
-                    
-                   
-                    
-                    </div> 
-                    
+                        <div class="col-12 col-md-2">
+                            <label >Purchase Price </label>
+                            <input type="text" class="form-control" name="purchase_price" id="purchase_price" placeholder="0.00" value="0" data-parsley-type="number">
+                        </div>
+                        <div class="col-12 col-md-1">
+                            <label >GST</label>
+                            <input type="text" class="form-control" name="gst" id="gst" placeholder="0" value="0" data-parsley-type="number">
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <label >Unit/Strip/Packing </label>
+                            <input type="text" class="form-control" name="unit" id="unit" placeholder="0" value="0" data-parsley-type="number">
+                        </div>
+                        <div class="col-12 col-md-1">
+                            <label >Qty</label>
+                            <input type="text" class="form-control" id="qty" name="qty" placeholder="0" value="0" data-parsley-type="number">
+                        </div>
+                        <div class="col-12 col-md-1">
+                          <button type="submit" class="btn btn-success mt-30" style="margin-top:30px;">Add</button>
+                        </div>
+                      </div> 
+                    	<div class="form-group row">
+                        <div class="col-6 col-md-3">
+                          <label>Generic Name</label>
+                          <p id="generic-name"></p>
+                          <input type="hidden" name="generic_name" id="generic-name-input">
+                        </div>
+                        <div class="col-6 col-md-3">
+                          <label>Manufacturer Name</label>
+                          <p id="menufacturer-name"></p>
+                          <input type="hidden" name="menufacturer_name" id="menufacturer-name-input">
+                          <input type="hidden" name="editid" id="editid">
+                        </div>
+                      </div>
                     </form>
-                
+                  </div>
                 </div>
-                </div>
-              
-                  
-            </div>
-          
-      
-            
-           
-            
-             <!-- Table ------------------------------------------------------------------------------------------------------>
-            
-            <div class="col-md-12 grid-margin stretch-card">
+              </div>
+               <!-- Table ------------------------------------------------------------------------------------------------------>
+              <div class="col-md-12 grid-margin stretch-card" id="tmpdata-div" style="display: none;">
               	<div class="card">
-                <div class="card-body">
-                
-                	<!-- TABLE Filters btn -->
-                    
-                    
-                   
-                    
-                    <!-- TABLE STARTS -->
+                  <div class="card-body">
                     <div class="col mt-3">
                     	 <div class="row">
-                            <div class="col-12">
-                              <table id="order-listing1" class="table">
-                                <thead>
-                                  <tr>
-                                      <th>Vendor Name</th>
-                                      <th>Product</th>
-                                      <th>Purchase Price</th>
-                                      <th>GST</th>
-                                      <th>Unit / Strip / Packing</th>
-                                      <th>Qty</th>
-                                      <th>Action</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <!-- Row Starts --> 	
-                                  <tr>
-                                      <td>1267</td>
-                                      <td>501 SOAP 300gm</td>
-                                      <td>94.40</td>
-                                      <td>12</td>
-                                      <td>4</td>
-                                      <td>40</td>
-                                      <td>
-                                      	<a href="#" class="btn  btn-behance p-2"><i class="fa fa-trash"></i></a>
-                                        <a href="#" class="btn  btn-behance p-2"><i class="fa fa-pencil"></i></a>
-                                      </td>
-                                  </tr><!-- End Row --> 	
-                                  
-                                   <tr>
-                                      <td>1267</td>
-                                      <td>501 SOAP 300gm</td>
-                                      <td>94.40</td>
-                                      <td>12</td>
-                                      <td>4</td>
-                                      <td>40</td>
-                                      <td>
-                                      	<a href="#" class="btn  btn-danger p-2">Remove</a>
-                                        <a href="#" class="btn  btn-dark p-2">Edit</a>
-                                      </td>
-                                  </tr>
-                                  
-                                   <tr>
-                                      <td>1267</td>
-                                      <td>501 SOAP 300gm</td>
-                                      <td>94.40</td>
-                                      <td>12</td>
-                                      <td>4</td>
-                                      <td>40</td>
-                                      <td>
-                                      	<a href="#" class="btn  btn-danger p-2">Remove</a>
-                                        <a href="#" class="btn  btn-dark p-2">Edit</a>
-                                      </td>
-                                  </tr>
-                                 
-                                </tbody>
-                              </table>
-                            </div>
+                          <div class="col-12">
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                    <th>Vendor Name</th>
+                                    <th>Product</th>
+                                    <th>Purchase Price</th>
+                                    <th>GST</th>
+                                    <th>Unit / Strip / Packing</th>
+                                    <th>Qty</th>
+                                    <th>Action</th>
+                                </tr>
+                              </thead>
+                              <tbody id="tbody-tmp">
+                               
+                              </tbody>
+                            </table>
                           </div>
+                        </div>
                     </div>
-                    
-                    
                     <hr>
-                    
-                    
-                
+                  </div>
                 </div>
-                </div>
-                </div>  
-            
-            
-            
-            
-      
-            
+              </div>
+            </div>
           </div>
+          <!-- content-wrapper ends -->
+          
+          <!-- partial:partials/_footer.php -->
+          <?php include "include/footer.php" ?>
+          <!-- partial -->
         </div>
-        <!-- content-wrapper ends -->
-        
-        <!-- partial:partials/_footer.php -->
-        <?php include "include/footer.php" ?>
-        <!-- partial -->
-        
-        
-                        
+        <!-- main-panel ends -->
       </div>
-      <!-- main-panel ends -->
-    </div>
     <!-- page-body-wrapper ends -->
   </div>
   <!-- container-scroller -->
   
   
+ <!-- HIDDEN TR HTML -->
+  <div id="addproduct-tr-html" style="display: none;">
+    <table>
+      <tr id="##DATAID##">
+        <td>
+          ##VENDORNAME##
+          <input type="hidden" name="vendor_id" class="vendor_id" value="##VENDORID##">
+          <input type="hidden" name="vendor_name" class="vendor_name" value="##VENDORNAME##">
+          <input type="hidden" name="state_code" class="state_code" value="##STATECODE##">
+        </td>
+        <td>
+          ##PRODUCTNAME##
+          <input type="hidden" name="product_id" class="product_id" value="##PRODUCTID##">
+          <input type="hidden" name="product_name" class="product_name" value="##PRODUCTNAME##">
+        </td>
+        <td>
+          ##MRP##
+          <input type="hidden" name="purchase_price" class="purchase_price" value="##MRP##">
+        </td>
+        <td>
+          ##GST##
+          <input type="hidden" name="gst" class="gst" value="##GST##">
+        </td>
+        <td>
+          ##UNIT##
+          <input type="hidden" name="unit" class="unit" value="##UNIT##">
+        </td>
+        <td>
+          ##QTY##
+          <input type="hidden" name="qty" class="qty" value="##QTY##">
+        </td>
+        <td>
+          <input type="hidden" name="generic_name" class="generic_name" value="##GENERICNAME##">
+          <input type="hidden" name="menufacturer_name" class="menufacturer_name" value="##MANUFACTURERNAME##">
 
-  
+          <button class="btn  btn-danger p-2 edit-temp"><i class="icon-pencil mr-0"></i></button>
+          <button class="btn  btn-primary p-2 delete-temp"><i class="icon-trash mr-0"></i></button>
+        </td>
+      </tr>
+    </table>
+  </div>
   
   
 
@@ -337,28 +268,7 @@
   
   <!-- Datepicker Initialise-->
  <script>
-    $('#datepicker-popup1').datepicker({
-      enableOnReadonly: true,
-      todayHighlight: true,
-    });
- </script>
- 
- <script>
-    $('#datepicker-popup2').datepicker({
-      enableOnReadonly: true,
-      todayHighlight: true,
-    });
- </script>
- 
- <script>
-    $('#datepicker-popup3').datepicker({
-      enableOnReadonly: true,
-      todayHighlight: true,
-    });
- </script>
- 
- <script>
-    $('#datepicker-popup4').datepicker({
+    $('.datepicker').datepicker({
       enableOnReadonly: true,
       todayHighlight: true,
     });
@@ -368,16 +278,19 @@
   <script src="js/data-table.js"></script> 
   
   <script>
-  	 $('#order-listing2').DataTable();
+  	 $('.datatable').DataTable();
   </script>
-  
-  <script>
-  	 $('#order-listing1').DataTable();
-  </script>
+
+  <!-- script for custom validation -->
+<script src="js/parsley.min.js"></script>
+<script type="text/javascript">
+  $('form').parsley();
+</script>
+<script src="js/jquery-ui.js"></script>
+<script src="js/custom/order_by_vendor.js"></script>
   
   
   <!-- End custom js for this page-->
-  <?php include('include/usertypecheck.php'); ?>
 </body>
 
 

@@ -8497,11 +8497,11 @@ pre {
   margin-bottom: 1rem;
   background-color: transparent; }
   .table th, .jsgrid .jsgrid-table th{
-  padding: 0.9375rem !important;
+  padding: 0.9375rem 0.3500rem !important;
   }
   .table th, .jsgrid .jsgrid-table th,
   .table td, .jsgrid .jsgrid-table td {
-	padding: 0.9375rem;
+	padding: 0.9375rem 0.300rem;
     vertical-align: top;
     border-top: 1px solid #eaeaea; }
   .table thead th, .jsgrid .jsgrid-table thead th {
@@ -9412,12 +9412,12 @@ fieldset:disabled a {
 
 .btn-danger {
   color: #fff;
-  background-color: #f90000;
-  border-color: #f90000; }
+  background-color: #ff7c7c;
+  border-color: #ff7c7c; }
   .btn-danger:hover {
     color: #fff;
-    background-color: #d30000;
-    border-color: #c60000; }
+    background-color: #f76868;
+    border-color: #f76868; }
   .btn-danger:focus, .btn-danger.focus {
     box-shadow: 0 0 0 0.2rem rgba(249, 0, 0, 0.5); }
   .btn-danger.disabled, .btn-danger:disabled {
@@ -10447,7 +10447,7 @@ tbody.collapse.show {
 .input-group-text {
   display: flex;
   align-items: center;
-  padding: 0.56rem 1.100rem;
+  padding: 0.56rem 0.600rem;
   margin-bottom: 0;
   font-size: 1rem;
   font-weight: 400;
@@ -11771,9 +11771,9 @@ button.close {
   flex-direction: column;
   width: 100%;
   pointer-events: auto;
-  background-color: #f4f4f8;
+  background-color: #ffffff;
   background-clip: padding-box;
-  border: 1px solid #f3f3f3;
+  border: 1px solid #ffffff;
   border-radius: 0.3rem;
   outline: 0; }
 
@@ -15247,7 +15247,8 @@ html {
 
 .content-wrapper {
   /*background: #f4f4f8; theme color*/
-  background: #efefef;	
+  /*background: #efefef; last grey */	
+  background:#f7f8f6; /* Light Green */
   padding: 1.5rem 1.7rem;
   width: 100%;
   -webkit-flex-grow: 1;
@@ -16348,7 +16349,7 @@ pre {
     font-size: 0.875rem; }
   .btn.btn-xs, .ajax-upload-dragdrop .btn-xs.ajax-file-upload, .ajax-upload-dragdrop .editable-container.editable-inline .editableform .control-group .editable-buttons .ajax-file-upload.editable-submit, .editable-container.editable-inline .editableform .control-group .editable-buttons .ajax-upload-dragdrop .ajax-file-upload.editable-submit, .ajax-upload-dragdrop .editable-container.editable-inline .editableform .control-group .editable-buttons .ajax-file-upload.editable-cancel, .editable-container.editable-inline .editableform .control-group .editable-buttons .ajax-upload-dragdrop .ajax-file-upload.editable-cancel, .swal2-modal .swal2-buttonswrapper .btn-xs.swal2-styled, .swal2-modal .swal2-buttonswrapper .editable-container.editable-inline .editableform .control-group .editable-buttons .swal2-styled.editable-submit, .editable-container.editable-inline .editableform .control-group .editable-buttons .swal2-modal .swal2-buttonswrapper .swal2-styled.editable-submit, .swal2-modal .swal2-buttonswrapper .editable-container.editable-inline .editableform .control-group .editable-buttons .swal2-styled.editable-cancel, .editable-container.editable-inline .editableform .control-group .editable-buttons .swal2-modal .swal2-buttonswrapper .swal2-styled.editable-cancel, .editable-container.editable-inline .editableform .control-group .editable-buttons .btn.editable-submit, .editable-container.editable-inline .editableform .control-group .editable-buttons .wizard > .actions a.editable-submit, .wizard > .actions .editable-container.editable-inline .editableform .control-group .editable-buttons a.editable-submit, .editable-container.editable-inline .editableform .control-group .editable-buttons .btn.editable-cancel, .editable-container.editable-inline .editableform .control-group .editable-buttons .wizard > .actions a.editable-cancel, .wizard > .actions .editable-container.editable-inline .editableform .control-group .editable-buttons a.editable-cancel, .wizard > .actions a.btn-xs {
     padding: 0.5rem 0.75rem;
-    font-size: 0.625rem; }
+    font-size: 0.825rem; }
   .btn.btn-danger, .ajax-upload-dragdrop .btn-danger.ajax-file-upload, .swal2-modal .swal2-buttonswrapper .btn-danger.swal2-styled, .wizard > .actions a.btn-danger, .btn.btn-info, .ajax-upload-dragdrop .btn-info.ajax-file-upload, .ajax-upload-dragdrop .editable-container.editable-inline .editableform .control-group .editable-buttons .ajax-file-upload.editable-submit, .editable-container.editable-inline .editableform .control-group .editable-buttons .ajax-upload-dragdrop .ajax-file-upload.editable-submit, .swal2-modal .swal2-buttonswrapper .btn-info.swal2-styled, .swal2-modal .swal2-buttonswrapper .editable-container.editable-inline .editableform .control-group .editable-buttons .swal2-styled.editable-submit, .editable-container.editable-inline .editableform .control-group .editable-buttons .swal2-modal .swal2-buttonswrapper .swal2-styled.editable-submit, .editable-container.editable-inline .editableform .control-group .editable-buttons .btn.editable-submit, .editable-container.editable-inline .editableform .control-group .editable-buttons .wizard > .actions a.editable-submit, .wizard > .actions .editable-container.editable-inline .editableform .control-group .editable-buttons a.editable-submit, .wizard > .actions a.btn-info, .btn.btn-warning, .ajax-upload-dragdrop .btn-warning.ajax-file-upload, .swal2-modal .swal2-buttonswrapper .btn-warning.swal2-styled, .wizard > .actions a.btn-warning {
     color: #ffffff; }
   .btn.btn-light, .ajax-upload-dragdrop .btn-light.ajax-file-upload, .swal2-modal .swal2-buttonswrapper .btn-light.swal2-styled, .wizard > .actions a.btn-light {
@@ -17927,7 +17928,7 @@ select {
     padding: 0.4375rem 0.75rem; }
 
 .form-group label {
-  font-size: 0.875rem;
+  font-size: 14px;
   line-height: 1;
   vertical-align: top;
   margin-top:8px;
@@ -19242,7 +19243,7 @@ ul {
   .table td, .jsgrid .jsgrid-table td,
   .table th, .jsgrid .jsgrid-table th {
     vertical-align: middle;
-    font-size: 0.875rem;
+    font-size: 14px;
     line-height: 1; }
     .table td img, .jsgrid .jsgrid-table td img,
     .table th img, .jsgrid .jsgrid-table th img {
@@ -20699,9 +20700,10 @@ body.avgrund-active {
     margin-right: 0.25rem; }
   .dataTables_wrapper .dataTable {
     border-collapse: collapse; }
+
     .dataTables_wrapper .dataTable .btn, .dataTables_wrapper .dataTable .ajax-upload-dragdrop .ajax-file-upload, .ajax-upload-dragdrop .dataTables_wrapper .dataTable .ajax-file-upload, .dataTables_wrapper .dataTable .swal2-modal .swal2-buttonswrapper .swal2-styled, .swal2-modal .swal2-buttonswrapper .dataTables_wrapper .dataTable .swal2-styled, .dataTables_wrapper .dataTable .wizard > .actions a, .wizard > .actions .dataTables_wrapper .dataTable a {
-      padding: 0.1rem 1rem;
-      vertical-align: top; }
+      padding: 0.1rem 0.500rem;
+      vertical-align: middle; }
     .dataTables_wrapper .dataTable thead .sorting:after, .dataTables_wrapper .dataTable thead .sorting:before,
     .dataTables_wrapper .dataTable thead .sorting_asc:after,
     .dataTables_wrapper .dataTable thead .sorting_asc:before,
@@ -20738,7 +20740,7 @@ body.avgrund-active {
 .datepicker.datepicker-inline {
   padding: 0 25px;
   width: 30%;
-  max-width: 415px;
+  max-width: 348px;
   min-width: 250px; }
   .datepicker.datepicker-dropdown .datepicker-days,
   .datepicker.datepicker-inline .datepicker-days {
@@ -20793,8 +20795,8 @@ body.avgrund-active {
           text-align: center; }
           .datepicker.datepicker-dropdown .datepicker-days table.table-condensed tbody td.day,
           .datepicker.datepicker-inline .datepicker-days table.table-condensed tbody td.day {
-            font-size: 0.9375rem;
-            padding: 0.5rem 0;
+            font-size: 0.800rem;
+            padding: 0.4rem 0;
             color: #434a54; }
             .datepicker.datepicker-dropdown .datepicker-days table.table-condensed tbody td.day:hover,
             .datepicker.datepicker-inline .datepicker-days table.table-condensed tbody td.day:hover {
@@ -20835,8 +20837,8 @@ body.avgrund-active {
               .datepicker.datepicker-dropdown .datepicker-days table.table-condensed tbody td.day.today:before,
               .datepicker.datepicker-inline .datepicker-days table.table-condensed tbody td.day.today:before {
                 content: "";
-                width: 38px;
-                height: 38px;
+                width: 30px;
+                height: 30px;
                 background: #1094f7;
                 border-radius: 100%;
                 display: block;
@@ -22571,4 +22573,62 @@ div.tagsinput {
 }
 .color-green{
 	color:#2daa5c;
+}
+.btn-primary-light-green, .wizard > .actions a {
+  color: #333;
+  background-color: #f3f4f4;
+  border-color: #999999; }
+  .btn-primary-light-green:hover, .wizard > .actions a:hover {
+    color: #333;
+    background-color: #e2e2e2;
+    border-color: #d8d8d8; }
+.btn-primary-light-green.active, .wizard > .actions a.active {
+  color: #333;
+  background-color: #e2e2e2;
+  border-color: #d8d8d8;
+  box-shadow:none; }
+  
+  .btn-primary-light-green:focus, .wizard > .actions a:focus, .btn-primary.focus, .wizard > .actions a.focus {
+    box-shadow: 0 0 0 0.1rem rgba(16, 148, 247, 0.2); }
+  .btn-primary-light-green.disabled, .wizard > .actions a.disabled, .btn-primary:disabled, .wizard > .actions a:disabled {
+    color: #fff;
+    background-color: #1094f7;
+    border-color: #1094f7; }
+.out-label{
+	font-size:14px;
+}
+
+
+.btn-green-light, .wizard > .actions a {
+  color: #333;
+  background-color: #e0e6e2;
+  border-color: #e0e6e2; }
+  .btn-green-light:hover, .wizard > .actions a:hover {
+    color: #333;
+    background-color: #c8d2cb;
+    border-color: #c8d2cb; }
+.btn-green-light.active, .wizard > .actions a.active {
+  color: #333;
+  background-color: #c8d2cb;
+  border-color: #c8d2cb;
+  box-shadow:none; }
+  
+  .btn-green-light:focus, .wizard > .actions a:focus, .btn-primary.focus, .wizard > .actions a.focus {
+      box-shadow: 0 0 0 0.1rem rgba(16, 148, 247, 0.2);
+	}
+  .btn-green-light.disabled, .wizard > .actions a.disabled, .btn-primary:disabled, .wizard > .actions a:disabled {
+    color: #fff;
+    background-color: #1094f7;
+    border-color: #1094f7;
+	}
+
+
+.color-white{
+	color:#fff !important;
+}
+.filter-alphabet{
+    padding: 0.3rem 0.5rem !important;
+}
+.bg-grey{
+	background:#f5f5f5 !important;
 }
