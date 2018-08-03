@@ -125,7 +125,7 @@
                               <a href="#" class="btn btn-dark">Update Inventory </a>
                               <a href="#" class="btn btn-dark">Inventory Setting </a>
                               <a href="#" class="btn btn-dark">Product Master </a>
-                              <a href="inventory-self-consumption.php" class="btn btn-dark">Self Consumption </a>
+                              <a href="#" class="btn btn-dark">Self Consumption </a>
                           </div>          
                       </div> 
                       
