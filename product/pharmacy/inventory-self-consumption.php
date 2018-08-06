@@ -4,6 +4,7 @@ if(isset($_GET['id'])){
   	$editQry = "SELECT * FROM `self_consumption` WHERE id='".$id."' ORDER BY id DESC LIMIT 1";
   	$edit = mysqli_query($conn,$editQry);
   	$edit = mysqli_fetch_assoc($edit);
+
 }
  
 if(isset($_POST['submit'])){
@@ -169,13 +170,13 @@ if(isset($_POST['edit'])){
 			                      <div class="col-12 col-md-2">
 			                        <label for="product_name">Product Name</label>
 			                        <?php 
-			                        if(isset($_edit['product_id'])){
+			                        if(isset($edit['product_id'])){
 				                        $productQry = "SELECT * FROM `product_master` WHERE id='".$edit['product_id']."'";
           									  	$product = mysqli_query($conn,$productQry);
           									  	$product = mysqli_fetch_assoc($product);
           								  	}
 			                        ?>
-			                        <input type="text" value="<?php echo (isset($edit['product_name'])) ? $edit['product_name'] : ''; ?><?php if(isset($_GET['id'])){echo "-";} ?><?php echo (isset($edit['batch'])) ? $edit['batch'] : ''; ?>" class="form-control tags" required="" name="product_name[]" id="product_name" placeholder="Product Name"> 
+			                        <input type="text" value="<?php echo (isset($product['product_name'])) ? $product['product_name'] : ''; ?><?php if(isset($_GET['id'])){echo "-";} ?><?php echo (isset($edit['batch'])) ? $edit['batch'] : ''; ?>" class="form-control tags" required="" name="product_name[]" id="product_name" placeholder="Product Name"> 
 			                        <small class="text-danger empty-message0"></small>
 			                        <input type="hidden" name="product_id[]" value="<?php echo $edit['product_id']; ?>" class="product_id">
 			                        <input type="hidden" name="purchase_id[]" value="<?php echo $edit['purchase_id']; ?>" class="purchase_id">
@@ -250,7 +251,7 @@ if(isset($_POST['edit'])){
                                       <th>Sr No</th>
                                       <th>Product Name</th>
                                       <th>Batch</th>
-                                      <th>Qty</th>
+                                      <th>Consumption</th>
                                       <th>Expiry</th>
                                       <th>Price/Strip</th>
                                       <th>Action</th>
@@ -273,7 +274,7 @@ if(isset($_POST['edit'])){
                                       ?>
                                       <td><?php echo $row1['product_name']; ?></td>
                                       <td><?php echo $row['batch']; ?></td>
-                                      <td><?php echo $row['qty']; ?></td>
+                                      <td><?php echo $row['consumption']; ?></td>
                                       <td><?php echo date("d-m-Y",strtotime($row['expiry'])); ?></td>
                                       <td><?php echo $row['price_strip']; ?></td>
                                       <td>
