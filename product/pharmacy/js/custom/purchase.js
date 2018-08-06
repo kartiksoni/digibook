@@ -541,7 +541,7 @@ $( document ).ready(function() {
         }else{
           $('#vendor').children('option:not(:first)').remove();
         }
-        $('#vendor').trigger("change");
+        // $('#vendor').trigger("change");
     });
     
     
@@ -741,6 +741,121 @@ $( document ).ready(function() {
         }else{
           $('#statecode').val('');
         }
+    });
+
+    $("#vendor").change(function(){
+      var vendor_id = $(this).val();
+      if(vendor_id !== ''){
+          $.ajax({
+                type: "POST",
+                url: 'ajax.php',
+                data: {'vendor_id':vendor_id, 'action':'getPoiByVendor'},
+                dataType: "json",
+                success: function (data) {
+                  if(data.status == true){
+                    var html = $('#poi-tr-html').html();
+                    html = html.replace("<table>", "");
+                    html = html.replace("</table>", "");
+                    html = html.replace("<tbody>", "");
+                    html = html.replace("</tbody>", "");
+
+                    var finalhtml = '';
+                    $.each(data.result, function (i, item) {
+                      var tmphtml = html;
+                      tmphtml = tmphtml.replace("##SRNO##",i+1);
+                      tmphtml = tmphtml.replace("##DATE##",item.date);
+                      tmphtml = tmphtml.replace("##PRODUCTNAME##",item.product_name);
+                      tmphtml = tmphtml.replace("##PRODUCTID##",item.product_id);
+                      tmphtml = tmphtml.replace("##GENERIC##",item.generic_name);
+                      tmphtml = tmphtml.replace("##MFG##",item.mfg_company);
+                      tmphtml = tmphtml.replace("##PURCHASEPRICE##",item.purchase_price);
+                      tmphtml = tmphtml.replace("##GST##",item.gst);
+                      tmphtml = tmphtml.replace("##UNIT##",item.unit);
+                      tmphtml = tmphtml.replace("##QTY##",item.qty);
+                      tmphtml = tmphtml.replace("##POIID##",item.id);
+                      finalhtml += tmphtml;
+                    });
+                    
+                    $('#poi-body').empty();
+                    $('#poi-body').html(finalhtml);
+                    $('#poi-model').modal('show');
+                  }else{
+                    return false;
+                  }
+                },
+                error: function () {
+                  return false;
+                }
+            });
+      }else{
+        return false;
+      }
+    });
+
+    $("#btn-addpoi").click(function(){
+      var htmlsuccess = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+      var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+      
+      var i = 1;
+      var data = [];
+        $("input:checkbox[class=poi-checkbox]:checked").each(function (){
+            var tmparray = [];
+            tmparray['date'] = $(this).closest('tr').find('.poi-date').html();
+            tmparray['product_name'] = $(this).closest('tr').find('.poi-pname').html();
+            tmparray['product_id'] = $(this).closest('tr').find('.poi-pid').val();
+            tmparray['generic_name'] = $(this).closest('tr').find('.poi-gname').html();
+            tmparray['mfg_name'] = $(this).closest('tr').find('.poi-mfg').html();
+            tmparray['purchase_price'] = $(this).closest('tr').find('.poi-pprice').html();
+            tmparray['gst'] = $(this).closest('tr').find('.poi-gst').html();
+            tmparray['unit'] = $(this).closest('tr').find('.poi-unit').html();
+            tmparray['qty'] = $(this).closest('tr').find('.poi-qty').html();
+            tmparray['id'] = $(this).closest('tr').find('.poi-id').val();
+            data.push(tmparray);
+        });
+
+      if(data.length > 0){
+        
+        html = $('#html-copy').html();
+        html = html.replace("<table>", "");
+        html = html.replace("</table>", "");
+        html = html.replace("<tbody>", "");
+        html = html.replace("</tbody>", "");
+
+        $('#product-tbody').empty();
+          var state_code = $('#statecode').val();
+          console.log('state_code - '+state_code);
+          $.each(data, function (i, item) {
+              tmphtml = html;
+              tmphtml = tmphtml.replace("##SRNO##",i+1);
+              var append = $('#product-tbody').append(tmphtml);
+
+              //$('#product-tbody tr:last').find('.btn-remove-product').hide(); 
+              $('#product-tbody tr:last').find('.tags').val(item.product_name);
+              $('#product-tbody tr:last').find('.product-id').val(item.product_id);
+              $('#product-tbody tr:last').find('.mrp').val(item.purchase_price);
+              $('#product-tbody tr:last').find('.mfg_co').val(item.mfg_name);
+              $('#product-tbody tr:last').find('.qty').val(item.qty);
+
+              if(state_code == 24){
+                $('#product-tbody tr:last').find('.f_cgst').val(item.gst/2);
+                $('#product-tbody tr:last').find('.f_sgst').val(item.gst/2);
+                $('#product-tbody tr:last').find('.f_igst').val(0);
+              }else{
+                $('#product-tbody tr:last').find('.f_cgst').val(0);
+                $('#product-tbody tr:last').find('.f_sgst').val(0);
+                $('#product-tbody tr:last').find('.f_igst').val(item.gst);
+              }
+              $('#product-tbody tr:last').find('.f_poi_id').val(item.id);
+          });
+
+        $('#poi-model').modal('hide');
+
+      }else{
+        htmlerror =  htmlerror.replace("##MSG##", 'Please select at least one item!');
+        $('#poi-error').html(htmlerror);
+        return false;
+      }
+
     });
     
     $(".purchase_type").change(function(){

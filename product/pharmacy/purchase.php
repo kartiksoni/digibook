@@ -186,6 +186,12 @@ if(isset($_POST['submit'])){
             $f_sgst = $_POST["f_sgst"][$i];
         }
 
+        $poi_id = (isset($_POST["poi_id"][$i])) ? $_POST["poi_id"][$i] : '';
+        if($poi_id != ''){
+          $sql = "UPDATE byvendor SET status=1 WHERE id='".$poi_id."'";
+          mysqli_query($conn,$sql);
+        }
+
         $ins_product = "INSERT INTO `purchase_details` (`purchase_id`, `product_id`, `mrp`, `mfg_co`, `batch`, `expiry`,`qty`, `qty_ratio`, `free_qty`, `rate`, `discount`, `f_rate`,`ammout`,`f_igst`,`f_cgst`,`f_sgst`,`created`,`createdby`) VALUES ('".$last_id."','".$product_id."',  '".$mrp."', '".$mfg_co."', '".$batch."', '".$expiry."','".$qty."', '".$qty_ratio."', '".$free_qty."', '".$rate."', '".$discount."', '".$f_rate."', '".$ammout."', '".$f_igst."', '".$f_cgst."','".$f_sgst."','".date('Y-m-d H:i:s')."','".$user_id."')";
         //print_r($ins_product);exit;
 
@@ -801,6 +807,7 @@ if(isset($_POST['submit'])){
                 <input type="hidden" name="f_igst[]" class="f_igst">
                 <input type="hidden" name="f_cgst[]" class="f_cgst">
                 <input type="hidden" name="f_sgst[]" class="f_sgst">
+                <input type="hidden" name="poi_id[]" class="f_poi_id">
               </td>
               <td><a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a><a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product"><i class="fa fa-close mr-0 ml-0"></i></a></td>
           </tr><!-- End Row --> 
@@ -1205,6 +1212,48 @@ if(isset($_POST['submit'])){
               </div>
           </div>
         </div>
+
+        <!-- PURCHASE ORDER ITEM POPUP -->
+        <div class="modal fade" id="poi-model" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true" style="display: none;">
+          <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Select Purchase Order Item</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                  <div class="modal-body">
+                    <span id="poi-error"></span>
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Sr. No</th>
+                          <th>Date</th>
+                          <th>Product Name</th>
+                          <th>Generic Name</th>
+                          <th>Manufacturer Name</th>
+                          <th>Purchase Price</th>
+                          <th>GST(%)</th>
+                          <th>Unit/Strip/Packing</th>
+                          <th>Quentity</th>
+                        </tr>
+                      </thead>
+                      <tbody id="poi-body">
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="modal-footer row">
+                    <div class="col-md-12">
+                      <button type="button" class="btn btn-light pull-left" data-dismiss="modal">Cancel</button>
+                      <button type="button" class="btn btn-success pull-right" id="btn-addpoi">Add</button>
+                    </div>
+                  </div>
+              </div>
+          </div>
+        </div>
         
                         
                         
@@ -1218,8 +1267,26 @@ if(isset($_POST['submit'])){
   
 
   
-  
-  
+  <!-- Hidden HTML for poi items start -->
+  <div id="poi-tr-html" style="display: none;">
+      <table>
+        <tr>
+          <td><input type="checkbox" name="item" class="poi-checkbox"></td>
+          <td>##SRNO##</td>
+          <td class="poi-date">##DATE##</td>
+          <td class="poi-pname">##PRODUCTNAME##</td>
+          <td class="poi-gname">##GENERIC##</td>
+          <td class="poi-mfg">##MFG##</td>
+          <td class="poi-pprice">##PURCHASEPRICE##</td>
+          <td class="poi-gst">##GST##</td>
+          <td class="poi-unit">##UNIT##</td>
+          <td class="poi-qty">##QTY##</td>
+          <input type="hidden" class="poi-pid" value="##PRODUCTID##">
+          <input type="hidden" class="poi-id" value="##POIID##">
+        </tr>
+      </table>
+  </div>
+  <!-- Hidden HTML for poi items end -->
 
   <!-- plugins:js -->
   <script src="vendors/js/vendor.bundle.base.js"></script>

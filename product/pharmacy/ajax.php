@@ -73,10 +73,6 @@ if($_REQUEST['action'] == "getproduct"){
         $query1 = "SELECT * from (SELECT expiry,mrp,SUM(f_cgst+f_cgst)as gst,SUM(qty*qty_ratio+free_qty)as total_qty,batch,product_id,id FROM `purchase_details` GROUP BY batch) as t WHERE t.product_id='".$row['id']."'";
         $result1 = mysqli_query($conn,$query1);
           while($row1 = mysqli_fetch_array($result1)){
-            $query2 = "SELECT SUM(consumption)as com_total FROM `self_consumption` WHERE product_id='".$row['id']."' GROUP BY consumption";
-            $result2 = mysqli_query($conn,$query2);
-            $row2 = mysqli_fetch_array($result2);
-            $total_data = $row1['total_qty'] - $row2['com_total'];
             $count_per = $row1['mrp'] / $row['ratio'];
             $getproduct_self[] = array(
               'id' => $row['id'],
@@ -84,7 +80,7 @@ if($_REQUEST['action'] == "getproduct"){
               'purchase_id' => $row1['id'],
               'batch' => $row1['batch'],
               'expiry' => $row1['expiry'],
-              'total_qty' => $total_data,
+              'total_qty' => $row1['total_qty'],
               'unit' => $row['unit'],
               'gst' => $row['igst'],
               'count_per' => $count_per
@@ -470,7 +466,7 @@ if($_REQUEST['action'] == "getproduct"){
     // 08-04-2018 - GAUTAM MAKWANA
     if($_REQUEST['action'] == "getAllByVendor"){
      $data = [];
-        $query = "SELECT bv.id, bv.purchase_price, bv.gst, bv.unit, bv.qty, pm.product_name as product_name, pm.id as product_id, lgr.id as vendor_id, lgr.name as vendor_name FROM byvendor bv INNER JOIN product_master pm ON bv.product_id = pm.id INNER JOIN ledger_master lgr ON bv.vendor_id = lgr.id ORDER BY bv.id DESC";
+        $query = "SELECT bv.id, bv.purchase_price, bv.gst, bv.unit, bv.qty, pm.product_name as product_name, pm.id as product_id, lgr.id as vendor_id, lgr.name as vendor_name FROM byvendor bv INNER JOIN product_master pm ON bv.product_id = pm.id INNER JOIN ledger_master lgr ON bv.vendor_id = lgr.id WHERE bv.status = 0 ORDER BY bv.id DESC";
         $res = mysqli_query($conn, $query);
         if($res && mysqli_num_rows($res) > 0){
           $i = 1;
@@ -554,6 +550,39 @@ if($_REQUEST['action'] == "getproduct"){
         $result = array('status' => false, 'message' => 'Fail!', 'result' => '');
       }
 
+      echo json_encode($result);
+      exit;
+    }
+    
+    // This function is used to get all purchase order item by vendor
+    // 06-08-2018
+    if($_REQUEST['action'] == "getPoiByVendor"){
+      $vendor_id = (isset($_REQUEST['vendor_id'])) ? $_REQUEST['vendor_id'] : '';
+      if($vendor_id != ''){
+        $query = "SELECT poi.id, poi.purchase_price, poi.gst, poi.unit, poi.qty, poi.created, pm.id as product_id, pm.product_name as product_name, pm.generic_name as generic_name, pm.mfg_company as mfg_company  FROM byvendor poi INNER JOIN product_master pm ON poi.product_id = pm.id WHERE poi.vendor_id = '".$vendor_id."' AND poi.status = 0";
+        $res = mysqli_query($conn, $query);
+        if($res && mysqli_num_rows($res)){
+          $data = [];
+            while ($row = mysqli_fetch_array($res)) {
+              $arr['id'] = $row['id'];
+              $arr['purchase_price'] = $row['purchase_price'];
+              $arr['gst'] = $row['gst'];
+              $arr['unit'] = $row['unit'];
+              $arr['qty'] = $row['qty'];
+              $arr['date'] = (isset($row['created']) && $row['created'] != '') ? date('d/m/Y',strtotime($row['created'])) : '';
+              $arr['product_id'] = (isset($row['product_id'])) ? $row['product_id'] : '';
+              $arr['product_name'] = (isset($row['product_name'])) ? $row['product_name'] : '';
+              $arr['generic_name'] = (isset($row['generic_name'])) ? $row['generic_name'] : '';
+              $arr['mfg_company'] = (isset($row['mfg_company'])) ? $row['mfg_company'] : '';
+              array_push($data, $arr);
+            }
+          $result = array('status' => true, 'message' => 'Data Not Success.', 'result' => $data);
+        }else{
+          $result = array('status' => false, 'message' => 'Data Not Found!', 'result' => '');
+        }
+      }else{
+          $result = array('status' => false, 'message' => 'Vendor ID Not Found!', 'result' => '');
+      }
       echo json_encode($result);
       exit;
     }
