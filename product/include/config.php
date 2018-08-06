@@ -11,7 +11,7 @@
 	define('SERVER', 'localhost');
 	define('USER', 'root');
 	define('PASSWORD', '');
-	define('DB', 'digibooks_website');
+	define('DB', 'digibook_website');
 	
 	$conn = mysqli_connect(SERVER, USER, PASSWORD, DB);// CONNECT DATABASE
 

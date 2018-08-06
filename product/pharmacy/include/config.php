@@ -7,7 +7,7 @@
 	define('SERVER', 'localhost');
 	define('USER', 'root');
 	define('PASSWORD', '');
-	define('DB', 'digibooks_pharmacy');
+	define('DB', 'digibook_pharmacy');
 	$conn = new mysqli(SERVER, USER, PASSWORD, DB);// CONNECT DATABASE
 	if($conn->connect_error){
 		die('Connect Error: ' . $mysqli->connect_error);
