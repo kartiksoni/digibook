@@ -158,7 +158,7 @@ if(isset($_POST['edit'])){
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Self Consumption</h4>
+                  <h4 class="card-title">Inventory Adjustment</h4>
                       <hr class="alert-dark">
                       <br>
                   <div class="row">
@@ -166,11 +166,11 @@ if(isset($_POST['edit'])){
                       <div class="col-12 col-md-10 col-sm-12">
                           <div class="enventory">
                               <a href="inventory.php" class="btn btn-dark">Inventory</a>
-                              <a href="inventory-adjustment.php" class="btn btn-dark">Inventory Adjustment</a>
+                              <a href="inventory-adjustment.php" class="btn btn-dark active">Inventory Adjustment</a>
                               <a href="#" class="btn btn-dark">Update Inventory </a>
                               <a href="#" class="btn btn-dark">Inventory Setting </a>
                               <a href="#" class="btn btn-dark">Product Master </a>
-                              <a href="inventory-self-consumption.php" class="btn btn-dark active">Self Consumption </a>
+                              <a href="inventory-self-consumption.php" class="btn btn-dark">Self Consumption </a>
                           </div>          
                       </div> 
                       
@@ -182,7 +182,31 @@ if(isset($_POST['edit'])){
 
                 <form action="" method="POST">
                   	<div class="card-body">
-	                    
+	                    <div class="form-group row">
+                          <div class="col-12 col-md-4">
+                              <div class="row no-gutters">
+                              
+                                  <div class="col">
+                                      <div class="form-radio">
+                                      <label class="form-check-label">
+                                      <input type="radio" <?php if(isset($edit['adjust_type']) && $edit['adjust_type'] == "inward"){echo "checked";}else{echo"checked";} ?> class="form-check-input" name="action" id="optionsRadios1" value="inward">
+                                      Inward
+                                      </label>
+                                      </div>
+                                  </div>
+                                  
+                                  <div class="col">
+                                      <div class="form-radio">
+                                      <label class="form-check-label">
+                                      <input type="radio" <?php if(isset($edit['status']) && $edit['status'] == "outward"){echo "checked";} ?> class="form-check-input" name="action" id="optionsRadios2" value="outward">
+                                      Outward
+                                      </label>
+                                      </div>
+                                  </div>
+                              
+                              </div>
+                          </div>
+                      </div>
 	                	<div id="self-more">
 	                		<div class="self-sub-more">
 			                    <div class="form-group row">
@@ -202,39 +226,35 @@ if(isset($_POST['edit'])){
 			                        <input type="hidden" name="purchase_id[]" value="<?php echo $edit['purchase_id']; ?>" class="purchase_id">
 			                      </div>
 			                      <div class="col-12 col-md-2">
-			                        <label for="batch">Batch</label>
-			                        <input type="text"  value="<?php echo (isset($edit['batch'])) ? $edit['batch'] : ''; ?>" class="form-control batch" name="batch[]"  id="batch" placeholder="Batch"> 
+			                        <label for="mrp">MRP</label>
+			                        <input type="text" readonly=""  value="<?php echo (isset($edit['mrp'])) ? $edit['mrp'] : ''; ?>" class="form-control mrp" name="mrp[]"  id="mrp" placeholder="MRP"> 
 			                      </div>
 			                      <div class="col-12 col-md-2">
-			                        <label for="qty">Qty</label>
-			                        <input type="text" readonly="" value="<?php echo (isset($edit['qty'])) ? $edit['qty'] : ''; ?>" class="form-control qty" name="qty[]" id="qty" placeholder="Qty"> 
+			                        <label for="mfg_co">Mfg Co</label>
+			                        <input type="text" readonly="" value="<?php echo (isset($edit['mfg_co'])) ? $edit['mfg_co'] : ''; ?>" class="form-control mfg_co" name="mfg_co[]" id="mfg_co" placeholder="Mfg Co"> 
 			                      </div>
+                             <div class="col-12 col-md-2">
+                              <label for="batch_no">Batch No</label>
+                              <input type="text" readonly="" value="<?php echo (isset($edit['batch_no'])) ? $edit['batch_no'] : ''; ?>" class="form-control batch_no" name="batch_no[]" id="batch_no" placeholder="Batch No"> 
+                            </div>
 			                      <div class="col-12 col-md-2">
 			                        <label for="expiry">Expiry</label>
 			                        <input type="text" readonly="" value="<?php echo (isset($edit['expiry'])) ? $edit['expiry'] : ''; ?>" class="form-control expiry" name="expiry[]" id="expiry" placeholder="Expiry"> 
 			                      </div>
-			                      <div class="col-12 col-md-2">
-			                        <label for="gst">GST %</label>
-			                        <input type="text" readonly="" value="<?php echo (isset($edit['gst'])) ? $edit['gst'] : ''; ?>" class="form-control gst" name="gst[]" id="gst" placeholder="GST %"> 
-			                      </div>
-			                      <div class="col-12 col-md-2">
-			                        <label for="units_strip">Units/Strip</label>
-			                        <input type="text" readonly="" value="<?php echo (isset($edit['units_strip'])) ? $edit['units_strip'] : ''; ?>" class="form-control units_strip" name="units_strip[]"  id="units_strip" placeholder="Units/Strip"> 
-			                      </div>
+                            <div class="col-12 col-md-2">
+                                <label for="qty">Qty</label>
+                                <input type="text" value="<?php echo (isset($edit['qty'])) ? $edit['qty'] : ''; ?>" class="form-control qty" name="qty[]"  id="qty" placeholder="Qty"> 
+                              </div>
+			                      
 			                    </div>
 			                    <div class="form-group row">
-			                    	<div class="col-12 col-md-2">
-				                        <label for="units_strip">Price/Strip</label>
-				                        <input type="text" readonly="" value="<?php echo (isset($edit['price_strip'])) ? $edit['price_strip'] : ''; ?>" class="form-control price_strip" name="price_strip[]"  id="price_strip" placeholder="Price/Strip"> 
-			                      	</div>
+			                      	
 			                      	<div class="col-12 col-md-2">
-				                        <label for="consumption">Consumption</label>
-				                        <input type="text" value="<?php echo (isset($edit['consumption'])) ? $edit['consumption'] : ''; ?>" class="form-control consumption" name="consumption[]"  id="consumption" placeholder="Qty"> 
+				                        <label for="consumption">Remark</label>
+				                        <textarea class="form-control remark" name="remark[]" id="remark"><?php echo (isset($edit['remark'])) ? $edit['remark'] : ''; ?></textarea>  
 			                      	</div>
-			                      	<div class="col-12 col-md-2">
-				                        <label for="consumption">Note</label>
-				                        <textarea class="form-control note" name="note[]" id="note"><?php echo (isset($edit['note'])) ? $edit['note'] : ''; ?></textarea>  
-			                      	</div>
+                              <div class="col-12 col-md-2"></div>
+                              <div class="col-12 col-md-2"></div>
 			                      	<?php 
 			                      	if(!isset($_GET['id'])){
 			                      	?>
@@ -261,7 +281,7 @@ if(isset($_POST['edit'])){
                 	</div>
                 </form>
                 <div class="col mt-3">
-                    <h4 class="card-title">Self Consumption</h4>
+                    <h4 class="card-title">Inventory Adjustment</h4>
                     <hr class="alert-dark">
                        <div class="row">
                             <div class="col-12">
@@ -326,47 +346,41 @@ if(isset($_POST['edit'])){
 	            <input type="text" class="form-control tags" required="" name="product_name[]" id="product_name" placeholder="Product Name">
 	            <small class="text-danger empty-message0"></small>
 	            <input type="hidden" name="product_id[]" class="product_id">
-			    <input type="hidden" name="purchase_id[]" class="purchase_id">
+			        <input type="hidden" name="purchase_id[]" class="purchase_id">
 	          </div>
 	          <div class="col-12 col-md-2">
-	            <label for="batch">Batch</label>
-	            <input type="text" readonly="" class="form-control batch" name="batch[]"  id="batch" placeholder="Batch"> 
-	          </div>
+              <label for="mrp">MRP</label>
+              <input type="text" readonly="" class="form-control mrp" name="mrp[]"  id="mrp" placeholder="MRP"> 
+            </div>
 	          <div class="col-12 col-md-2">
-	            <label for="qty">Qty</label>
-	            <input type="text" readonly="" class="form-control qty" name="qty[]" id="qty" placeholder="Qty"> 
-	          </div>
+              <label for="mfg_co">Mfg Co</label>
+              <input type="text" readonly="" class="form-control mfg_co" name="mfg_co[]" id="mfg_co" placeholder="Mfg Co"> 
+            </div>
 	          <div class="col-12 col-md-2">
-	            <label for="expiry">Expiry</label>
-	            <input type="text" readonly="" class="form-control expiry" name="expiry[]" id="expiry" placeholder="Expiry"> 
-	          </div>
+              <label for="batch_no">Batch No</label>
+              <input type="text" readonly="" class="form-control batch_no" name="batch_no[]" id="batch_no" placeholder="Batch No"> 
+            </div>
 	          <div class="col-12 col-md-2">
-	            <label for="gst">GST %</label>
-	            <input type="text" readonly="" class="form-control gst" name="gst[]" id="gst" placeholder="GST %"> 
-	          </div>
+              <label for="expiry">Expiry</label>
+              <input type="text" readonly="" class="form-control expiry" name="expiry[]" id="expiry" placeholder="Expiry"> 
+            </div>
 	          <div class="col-12 col-md-2">
-	            <label for="units_strip">Units/Strip</label>
-	            <input type="text" readonly="" class="form-control units_strip" name="units_strip[]"  id="units_strip" placeholder="Units/Strip"> 
-	          </div>
+              <label for="qty">Qty</label>
+              <input type="text" value="" class="form-control qty" name="qty[]"  id="qty" placeholder="Qty"> 
+            </div>
 	        </div>
 	        <div class="form-group row">
 	        	<div class="col-12 col-md-2">
-	                <label for="units_strip">Price/Strip</label>
-	                <input type="text" readonly="" class="form-control price_strip" name="price_strip[]"  id="price_strip" placeholder="Price/Strip"> 
-	          	</div>
-	          	<div class="col-12 col-md-2">
-	                <label for="consumption">Consumption</label>
-	                <input type="text" class="form-control consumption" name="consumption[]"  id="consumption" placeholder="Qty"> 
-	          	</div>
-	          	<div class="col-12 col-md-2">
-	                <label for="consumption">Note</label>
-	                <textarea class="form-control note" name="note[]" id="note"></textarea>  
-	          	</div>
-	          	<div class="col-12 col-md-6 text-right" style="margin-top: 35px;">
-	          		<a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product"><i class="fa fa-close mr-0 ml-0"></i></a>
-	          		<a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
-	        		
-	          	</div>
+              <label for="consumption">Remark</label>
+              <textarea class="form-control remark" name="remark[]" id="remark"></textarea>  
+            </div>
+            <div class="col-12 col-md-2"></div>
+            <div class="col-12 col-md-2"></div>
+          	<div class="col-12 col-md-6 text-right" style="margin-top: 35px;">
+          		<a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product"><i class="fa fa-close mr-0 ml-0"></i></a>
+          		<a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
+        		
+          	</div>
 	        </div>
 	        
 	        </div>
@@ -426,7 +440,7 @@ if(isset($_POST['edit'])){
   <script>
      $('.datatable').DataTable();
   </script>
-  <script src="js/custom/inventory-self-consumption.js"></script>
+  <script src="js/custom/inventory-adjustment.js"></script>
   <script src="js/jquery-ui.js"></script>
   <script src="js/parsley.min.js"></script>
 <script type="text/javascript">

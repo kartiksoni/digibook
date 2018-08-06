@@ -119,6 +119,7 @@
                       <div class="col-12 col-md-10 col-sm-12">
                           <div class="enventory">
                               <a href="#" class="btn btn-dark active">Inventory</a>
+                              <a href="inventory-adjustment.php" class="btn btn-dark">Inventory Adjustment</a>
                               <a href="#" class="btn btn-dark">Update Inventory </a>
                               <a href="#" class="btn btn-dark">Inventory Setting </a>
                               <a href="#" class="btn btn-dark">Product Master </a>

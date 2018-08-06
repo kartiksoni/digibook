@@ -1,7 +1,7 @@
 <?php include('include/config.php');?>
 <?php 
     /// kartik ///
-    if($_REQUEST['action'] == "ownergetStateDetails"){
+if($_REQUEST['action'] == "ownergetStateDetails"){
       $id = $_REQUEST['id'];
       $query = 'SELECT * FROM own_states WHERE country_id = '.$id.' AND status=1 order by name ';
       $result = mysqli_query($conn,$query);
@@ -21,7 +21,7 @@
             echo json_encode(array('error'=>0,'message'=>'','html'=>"<option>No State Found</option>"));
             exit;
       }
-    }
+}
     
     
 if($_REQUEST['action'] == "getproduct"){
@@ -62,7 +62,7 @@ if($_REQUEST['action'] == "getproduct"){
   exit;
 }
 
- if($_REQUEST['action'] == "getproduct_self"){
+if($_REQUEST['action'] == "getproduct_self"){
       $getproduct_self = array();
       $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']['term']."%'";
       
@@ -94,7 +94,83 @@ if($_REQUEST['action'] == "getproduct"){
       }
       echo json_encode($getproduct_self);
       exit;
-  }
+}
+
+if($_REQUEST['action'] == "getproduct_self"){
+      $getproduct_self = array();
+      $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']['term']."%'";
+      
+      $result = mysqli_query($conn,$query);
+      $num = mysqli_num_rows($result);
+
+      while($row = mysqli_fetch_array($result)){
+        $query1 = "SELECT * from (SELECT expiry,mrp,SUM(f_cgst+f_cgst)as gst,SUM(qty*qty_ratio+free_qty)as total_qty,batch,product_id,id FROM `purchase_details` GROUP BY batch) as t WHERE t.product_id='".$row['id']."'";
+        $result1 = mysqli_query($conn,$query1);
+          while($row1 = mysqli_fetch_array($result1)){
+            $query2 = "SELECT SUM(consumption)as com_total FROM `self_consumption` WHERE product_id='".$row['id']."' GROUP BY consumption";
+            $result2 = mysqli_query($conn,$query2);
+            $row2 = mysqli_fetch_array($result2);
+            $total_data = $row1['total_qty'] - $row2['com_total'];
+            $count_per = $row1['mrp'] / $row['ratio'];
+            $getproduct_self[] = array(
+              'id' => $row['id'],
+              'name' => $row['product_name'].'-'.$row1['batch'],
+              'purchase_id' => $row1['id'],
+              'batch' => $row1['batch'],
+              'expiry' => $row1['expiry'],
+              'total_qty' => $total_data,
+              'unit' => $row['unit'],
+              'gst' => $row['igst'],
+              'count_per' => $count_per
+            );
+          }
+       /* $getproduct_self[] =array(
+          'id' => $row['id'],
+          'name' => $row['product_name'].'-'.$row['batch_no'],
+          'batch' => $row['batch_no']
+        );*/
+      }
+      echo json_encode($getproduct_self);
+      exit;
+}
+
+
+if($_REQUEST['action'] == "getproduct_adjustment"){
+      $getproduct_self = array();
+      $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']['term']."%'";
+      
+      $result = mysqli_query($conn,$query);
+      $num = mysqli_num_rows($result);
+
+      while($row = mysqli_fetch_array($result)){
+        $query1 = "SELECT * from (SELECT expiry,mrp,SUM(f_cgst+f_cgst)as gst,SUM(qty*qty_ratio+free_qty)as total_qty,batch,product_id,id FROM `purchase_details` GROUP BY batch) as t WHERE t.product_id='".$row['id']."'";
+        $result1 = mysqli_query($conn,$query1);
+          while($row1 = mysqli_fetch_array($result1)){
+            $query2 = "SELECT SUM(consumption)as com_total FROM `self_consumption` WHERE product_id='".$row['id']."' GROUP BY consumption";
+            $result2 = mysqli_query($conn,$query2);
+            $row2 = mysqli_fetch_array($result2);
+            $total_data = $row1['total_qty'] - $row2['com_total'];
+            $count_per = $row1['mrp'] / $row['ratio'];
+            $getproduct_self[] = array(
+              'id' => $row['id'],
+              'name' => $row['product_name'].'-'.$row1['batch'],
+              'purchase_id' => $row1['id'],
+              'mrp' => $row['give_mrp'],
+              'mfg_company' => $row['mfg_company'],
+              'batch' => $row1['batch'],
+              'expiry' => $row1['expiry']
+            );
+          }
+       /* $getproduct_self[] =array(
+          'id' => $row['id'],
+          'name' => $row['product_name'].'-'.$row['batch_no'],
+          'batch' => $row['batch_no']
+        );*/
+      }
+      echo json_encode($getproduct_self);
+      exit;
+}
+    
     
     
     
