@@ -171,9 +171,9 @@ if(isset($_POST['edit'])){
 			                        <?php 
 			                        if(isset($_edit['product_id'])){
 				                        $productQry = "SELECT * FROM `product_master` WHERE id='".$edit['product_id']."'";
-									  	$product = mysqli_query($conn,$productQry);
-									  	$product = mysqli_fetch_assoc($product);
-								  	}
+          									  	$product = mysqli_query($conn,$productQry);
+          									  	$product = mysqli_fetch_assoc($product);
+          								  	}
 			                        ?>
 			                        <input type="text" value="<?php echo (isset($edit['product_name'])) ? $edit['product_name'] : ''; ?><?php if(isset($_GET['id'])){echo "-";} ?><?php echo (isset($edit['batch'])) ? $edit['batch'] : ''; ?>" class="form-control tags" required="" name="product_name[]" id="product_name" placeholder="Product Name"> 
 			                        <small class="text-danger empty-message0"></small>
