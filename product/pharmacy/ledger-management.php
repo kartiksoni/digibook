@@ -605,7 +605,7 @@
 </script>
   
   <!-- End custom js for this page-->
-  <?php include('include/usertypecheck.php'); ?>
+  <?php //include('include/usertypecheck.php'); ?>
 </body>
 
 

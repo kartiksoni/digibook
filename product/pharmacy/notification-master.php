@@ -126,7 +126,7 @@ if(isset($_POST['edit'])){
                    
                       <br>
                       
-                      
+                      <a href="" class="btn btn-light">Cancel</a>
                       <?php 
                       if(isset($edit['customer_reminder'])){
                         ?>
@@ -136,7 +136,7 @@ if(isset($_POST['edit'])){
                       ?>
                       <button name="submit" type="submit" class="btn btn-success mr-2">Submit</button>
                       <?php } ?>
-                      <button class="btn btn-light">Cancel</button>
+                      
                     
                   </form>
                   

@@ -1,4 +1,4 @@
-<?php include('include/usertypecheck.php'); ?>
+<?php include('include/usertypecheck.php');?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,6 +43,7 @@
         
           <div class="content-wrapper">
             <?php include('include/flash.php'); ?>
+            <span id="errormsg"></span>
             <div class="row">
              <!-- Inventory Form ------------------------------------------------------------------------------------------------------>
               <div class="col-md-12 grid-margin stretch-card">
@@ -73,7 +74,7 @@
                     </div>
                     <hr>
                     <form class="forms-sample" id="add_byvendor_temp" method="POST">
-                    	<div class="form-group row">
+                      <div class="form-group row">
                         <div class="col-12 col-md-2 col-sm-3">
                           <label>Select Vendor</label>
                           <select class="js-example-basic-single" style="width:100%" name="vendor_id" id="vendor_id" data-parsley-errors-container="#error-vendor" required> 
@@ -108,7 +109,7 @@
                             <small class="empty-message text-danger"></small>
                         </div>
                       </div>
-                    	<div class="form-group row">
+                      <div class="form-group row">
                         <div class="col-12 col-md-2">
                             <label >Purchase Price </label>
                             <input type="text" class="form-control" name="purchase_price" id="purchase_price" placeholder="0.00" value="0" data-parsley-type="number">
@@ -123,13 +124,13 @@
                         </div>
                         <div class="col-12 col-md-1">
                             <label >Qty</label>
-                            <input type="text" class="form-control" id="qty" name="qty" placeholder="0" value="0" data-parsley-type="number">
+                            <input type="text" class="form-control" id="qty" name="qty" placeholder="0" value="1" data-parsley-type="number" data-parsley-min="1" required>
                         </div>
                         <div class="col-12 col-md-1">
-                          <button type="submit" class="btn btn-success mt-30" style="margin-top:30px;">Add</button>
+                          <button type="submit" class="btn btn-success mt-30" id="btn-addtop" style="margin-top:30px;" disabled>Add</button>
                         </div>
                       </div> 
-                    	<div class="form-group row">
+                      <div class="form-group row">
                         <div class="col-6 col-md-3">
                           <label>Generic Name</label>
                           <p id="generic-name"></p>
@@ -148,27 +149,30 @@
               </div>
                <!-- Table ------------------------------------------------------------------------------------------------------>
               <div class="col-md-12 grid-margin stretch-card" id="tmpdata-div" style="display: none;">
-              	<div class="card">
+                <div class="card">
                   <div class="card-body">
                     <div class="col mt-3">
-                    	 <div class="row">
+                       <div class="row">
                           <div class="col-12">
-                            <table class="table">
-                              <thead>
-                                <tr>
-                                    <th>Vendor Name</th>
-                                    <th>Product</th>
-                                    <th>Purchase Price</th>
-                                    <th>GST</th>
-                                    <th>Unit / Strip / Packing</th>
-                                    <th>Qty</th>
-                                    <th>Action</th>
-                                </tr>
-                              </thead>
-                              <tbody id="tbody-tmp">
-                               
-                              </tbody>
-                            </table>
+                            <form id="add-byvendor-form" method="POST">
+                              <table class="table">
+                                <thead>
+                                  <tr>
+                                      <th>Vendor Name</th>
+                                      <th>Product</th>
+                                      <th>Purchase Price</th>
+                                      <th>GST</th>
+                                      <th>Unit / Strip / Packing</th>
+                                      <th>Qty</th>
+                                      <th>Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="tbody-tmp">
+                                 
+                                </tbody>
+                              </table>
+                              <button type="submit" class="btn btn-success mt-30 pull-right btn-savebyvendor" style="margin-top:30px;">Save</button>
+                            </form>
                           </div>
                         </div>
                     </div>
@@ -176,6 +180,38 @@
                   </div>
                 </div>
               </div>
+
+              <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="col mt-3">
+                       <div class="row">
+                          <div class="col-12">
+                              <table class="table datatable">
+                                <thead>
+                                  <tr>
+                                      <th>Sr. No</th>
+                                      <th>Vendor Name</th>
+                                      <th>Product</th>
+                                      <th>Purchase Price</th>
+                                      <th>GST</th>
+                                      <th>Unit / Strip / Packing</th>
+                                      <th>Qty</th>
+                                      <th>Action</th>
+                                  </tr> 
+                                </thead>
+                                <tbody>
+                                 
+                                </tbody>
+                              </table>
+                          </div>
+                        </div>
+                    </div>
+                    <hr>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
           <!-- content-wrapper ends -->
@@ -197,34 +233,34 @@
       <tr id="##DATAID##">
         <td>
           ##VENDORNAME##
-          <input type="hidden" name="vendor_id" class="vendor_id" value="##VENDORID##">
-          <input type="hidden" name="vendor_name" class="vendor_name" value="##VENDORNAME##">
-          <input type="hidden" name="state_code" class="state_code" value="##STATECODE##">
+          <input type="hidden" name="vendor_id[]" class="vendor_id" value="##VENDORID##">
+          <input type="hidden" name="vendor_name[]" class="vendor_name" value="##VENDORNAME##">
+          <input type="hidden" name="state_code[]" class="state_code" value="##STATECODE##">
         </td>
         <td>
           ##PRODUCTNAME##
-          <input type="hidden" name="product_id" class="product_id" value="##PRODUCTID##">
-          <input type="hidden" name="product_name" class="product_name" value="##PRODUCTNAME##">
+          <input type="hidden" name="product_id[]" class="product_id" value="##PRODUCTID##">
+          <input type="hidden" name="product_name[]" class="product_name" value="##PRODUCTNAME##">
         </td>
         <td>
           ##MRP##
-          <input type="hidden" name="purchase_price" class="purchase_price" value="##MRP##">
+          <input type="hidden" name="purchase_price[]" class="purchase_price" value="##MRP##">
         </td>
         <td>
           ##GST##
-          <input type="hidden" name="gst" class="gst" value="##GST##">
+          <input type="hidden" name="gst[]" class="gst" value="##GST##">
         </td>
         <td>
           ##UNIT##
-          <input type="hidden" name="unit" class="unit" value="##UNIT##">
+          <input type="hidden" name="unit[]" class="unit" value="##UNIT##">
         </td>
         <td>
           ##QTY##
-          <input type="hidden" name="qty" class="qty" value="##QTY##">
+          <input type="hidden" name="qty[]" class="qty" value="##QTY##">
         </td>
         <td>
-          <input type="hidden" name="generic_name" class="generic_name" value="##GENERICNAME##">
-          <input type="hidden" name="menufacturer_name" class="menufacturer_name" value="##MANUFACTURERNAME##">
+          <input type="hidden" name="generic_name[]" class="generic_name" value="##GENERICNAME##">
+          <input type="hidden" name="menufacturer_name[]" class="menufacturer_name" value="##MANUFACTURERNAME##">
 
           <button class="btn  btn-danger p-2 edit-temp"><i class="icon-pencil mr-0"></i></button>
           <button class="btn  btn-primary p-2 delete-temp"><i class="icon-trash mr-0"></i></button>
@@ -276,10 +312,6 @@
  
   <!-- Custom js for this page Datatables-->
   <script src="js/data-table.js"></script> 
-  
-  <script>
-  	 $('.datatable').DataTable();
-  </script>
 
   <!-- script for custom validation -->
 <script src="js/parsley.min.js"></script>

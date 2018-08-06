@@ -1,9 +1,9 @@
-<?php  include('include/config.php'); 
-if(!isset($_SESSION['auth']) || empty($_SESSION['auth']) || $_SESSION['auth'] == ""){
+<?php  include('include/config.php');
+if(!isset($_SESSION['auth']) || empty($_SESSION['auth']) || $_SESSION['auth']=="" ){
   header("Location:login.php");
   exit;
 }else{
-  	if($_SESSION['auth']['type'] != '' && !empty($_SESSION['auth']['type'])){
+    if($_SESSION['auth']['type'] != '' && !empty($_SESSION['auth']['type'])){
 	    if($_SESSION['auth']['type'] == "PHARMACY"){
 	      echo'<script>window.location="pharmacy/index.php";</script>';
 	    }

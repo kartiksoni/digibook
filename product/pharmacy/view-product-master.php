@@ -26,7 +26,6 @@
   <!-- endinject -->
   <link rel="shortcut icon" href="images/favicon.png" />
   
-  <link rel="stylesheet" href="js/pines-notify/pnotify.css">
   <link rel="stylesheet" href="css/toggle/style.css">
 </head>
 <body>
@@ -51,6 +50,8 @@
       
         <div class="content-wrapper">
           <?php include('include/flash.php'); ?>
+          <span id="errormsg"></span>
+          
           <div class="row">
             
      
@@ -203,7 +204,6 @@
   
   <!-- change status js -->
   <script src="js/custom/statusupdate.js"></script>
-  <script src="js/pines-notify/pnotify.min.js"></script>
   
   <!-- End custom js for this page-->
 </body>

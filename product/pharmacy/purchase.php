@@ -1,5 +1,5 @@
-<?php include('include/usertypecheck.php'); ?>
-<?php 
+<?php include('include/usertypecheck.php');
+
 if(isset($_GET['id'])){
   $id = $_GET['id'];
   $purchaseQry = "SELECT * FROM `purchase` WHERE id='".$id."' ORDER BY id DESC LIMIT 1";
@@ -359,8 +359,9 @@ if(isset($_POST['submit'])){
                                   $getAllCityRes = mysqli_query($conn, $getAllCityQuery);
                                   if($getAllCityRes && mysqli_num_rows($getAllCityRes) > 0){
                                     while ($rowofcity = mysqli_fetch_array($getAllCityRes)) {
+                                        
                                 ?>
-                                  <option <?php if($purchase_data['city'] == $rowofcity['cityid']){echo "selected";} ?> value="<?php echo $rowofcity['cityid']; ?>"> <?php echo $rowofcity['cityname']; ?> </option>
+                                  <option <?php if(isset($purchase_data)){ if($purchase_data['city'] == $rowofcity['cityid']){echo "selected";} }?> value="<?php echo $rowofcity['cityid']; ?>"> <?php echo $rowofcity['cityname']; ?> </option>
                                 <?php
                                     }
                                   }
@@ -373,6 +374,7 @@ if(isset($_POST['submit'])){
                         <select class="js-example-basic-single" style="width:100%" name="vendor" id="vendor"> 
                             <option value="">Select Vendor</option>
                             <?php 
+                            if(isset($purchase_data)){
                               $query = 'SELECT id, name FROM ledger_master WHERE city = '.$purchase_data['city'].' AND status=1 AND group_id=14 order by name';
                               $result = mysqli_query($conn,$query);
                               while ($rowofvender = mysqli_fetch_array($result)) {
@@ -380,6 +382,7 @@ if(isset($_POST['submit'])){
                                 <option <?php if($purchase_data['vendor'] == $rowofvender['id']){echo "selected";} ?> value="<?php echo $rowofvender['id']; ?>"><?php echo $rowofvender['name']; ?></option>
                                 <?php
                               }
+                            }
                             ?>
                         </select>
                         <input type="hidden" value="<?php echo $purchase_data['statecode']; ?>" name="statecode" id="statecode">
@@ -405,11 +408,11 @@ if(isset($_POST['submit'])){
                         </div>
                         <div class="col-12 col-md-2">
                           <label for="exampleInputName1">Invoice No.</label>
-                          <input type="text" name="invoice_no" class="form-control" id="exampleInputName1" value="<?php echo $purchase_data['invoice_no']; ?>" placeholder="Invoice No">
+                          <input type="text" name="invoice_no"  class="form-control" id="exampleInputName1" value="<?php echo (isset($purchase_data['product_name'])) ? $purchase_data['product_name'] : ''; ?>" placeholder="Invoice No">
                         </div>
                         <div class="col-12 col-md-2">
                           <label for="exampleInputName1">LR No</label>
-                          <input type="text" name="lr_no" value="<?php echo $purchase_data['lr_no']; ?>" class="form-control" id="exampleInputName1" placeholder="LR No">
+                          <input type="text" name="lr_no" value="<?php echo (isset($purchase_data['lr_no'])) ? $purchase_data['lr_no'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="LR No">
                         </div>
                         <div class="col-12 col-md-2">
                           <label for="exampleInputName1">LR Date</label>
@@ -422,7 +425,7 @@ if(isset($_POST['submit'])){
                         </div>
                         <div class="col-12 col-md-2">
                           <label for="exampleInputName1">Transporter Name</label>
-                          <input type="text" value="<?php echo $purchase_data['transporter_name']; ?>" name="transporter_name" class="form-control" id="exampleInputName1" placeholder="Transporter Name">
+                          <input type="text" value="<?php echo (isset($purchase_data['transporter_name'])) ? $purchase_data['transporter_name'] : ''; ?>" name="transporter_name" class="form-control" id="exampleInputName1" placeholder="Transporter Name">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -432,7 +435,7 @@ if(isset($_POST['submit'])){
                           <div class="col">
                               <div class="form-radio">
                               <label class="form-check-label">
-                              <input type="radio" class="form-check-input purchase_type" name="purchase_type" value="Cash" <?php if(!isset($_GET['id'])){echo "checked";} ?>  <?php if($purchase_data['purchase_type'] == "Cash"){echo "checked";} ?>>
+                              <input type="radio" class="form-check-input purchase_type" name="purchase_type" value="Cash" <?php if(!isset($_GET['id'])){echo "checked";} ?>  <?php if(isset($purchase_data) && $purchase_data['purchase_type'] == "Cash"){echo "checked";} ?>>
                              Cash
                               </label>
                               </div>
@@ -441,7 +444,7 @@ if(isset($_POST['submit'])){
                           <div class="col">
                               <div class="form-radio">
                               <label class="form-check-label">
-                              <input type="radio" class="form-check-input purchase_type" name="purchase_type" value="Debit" <?php if($purchase_data['purchase_type'] == "Debit"){echo "checked";} ?>>
+                              <input type="radio" class="form-check-input purchase_type" name="purchase_type" value="Debit" <?php if(isset($purchase_data) && $purchase_data['purchase_type'] == "Debit"){echo "checked";} ?>>
                               Debit
                               </label>
                               </div>
@@ -602,7 +605,7 @@ if(isset($_POST['submit'])){
                                       <td align="right" style="width:100px;">
                                         Total
                                       </td>
-                                      <td align="right"><input class="form-control" type="text" name="total_amount" id="total_amount" value="<?php echo $purchase_data['total_amount']; ?>" readonly="">
+                                      <td align="right"><input class="form-control" type="text" name="total_amount" id="total_amount" value="<?php echo (isset($purchase_data['total_amount'])) ? $purchase_data['total_amount'] : ''; ?>" readonly="">
                                        
                                       </td>
                                     </tr>
@@ -610,20 +613,20 @@ if(isset($_POST['submit'])){
                                       <td align="right">
                                         <select class="form-control" name="courier" id="courier_charge" style="width:250px;">
                                               <option value="">Freight/Courier Charge </option>
-                                              <option <?php if($purchase_data['courier'] == "5"){echo "selected";} ?> value="5">5</option>
-                                              <option <?php if($purchase_data['courier'] == "12"){echo "selected";} ?> value="12">12</option>
-                                              <option <?php if($purchase_data['courier'] == "18"){echo "selected";} ?> value="18">18</option>
+                                              <option <?php if(isset($purchase_data) && $purchase_data['courier'] == "5"){echo "selected";} ?> value="5">5</option>
+                                              <option <?php if(isset($purchase_data) && $purchase_data['courier'] == "12"){echo "selected";} ?> value="12">12</option>
+                                              <option <?php if(isset($purchase_data) && $purchase_data['courier'] == "18"){echo "selected";} ?> value="18">18</option>
                                           </select>
                                       </td>
-                                      <td align="right"> <input type="text" name="total_courier" class="form-control" value="<?php echo $purchase_data['total_courier']; ?>" id="total_courier"></td>
+                                      <td align="right"> <input type="text" name="total_courier" class="form-control" value="<?php echo (isset($purchase_data['total_courier'])) ? $purchase_data['total_courier'] : ''; ?>" id="total_courier"></td>
                                     </tr>
                                     <tr>
                                       <td align="right">
                                         Total Tax (GST)
                                       </td>
                                       <td align="right">
-                                        <input type="text" class="form-control" readonly="" name="total_tax" value="<?php echo $purchase_data['total_tax']; ?>" id="total_tax">
-                                        <input type="hidden" value="<?php echo $purchase_data['hidden_total_tax']; ?>" id="hidden-total_tax" name="hidden-total_tax">
+                                        <input type="text" class="form-control" readonly="" name="total_tax" value="<?php echo (isset($purchase_data['total_tax'])) ? $purchase_data['total_tax'] : ''; ?>" id="total_tax">
+                                        <input type="hidden" value="<?php echo (isset($purchase_data['hidden_total_tax'])) ? $purchase_data['hidden_total_tax'] : ''; ?>" id="hidden-total_tax" name="hidden-total_tax">
                                       </td>
                                     </tr>
                                     <tr>
@@ -631,8 +634,8 @@ if(isset($_POST['submit'])){
                                         IGST
                                       </td>
                                       <td align="right">
-                                        <input type="text" value="<?php echo $purchase_data['total_igst']; ?>" class="form-control" readonly="" name="total_igst" id="total_igst">
-                                        <input type="hidden" value="<?php echo $purchase_data['hidden_total_igst']; ?>" id="hidden_total_igst" name="hidden_total_igst">
+                                        <input type="text" value="<?php echo (isset($purchase_data['total_igst'])) ? $purchase_data['total_igst'] : ''; ?>" class="form-control" readonly="" name="total_igst" id="total_igst">
+                                        <input type="hidden" value="<?php echo (isset($purchase_data['hidden_total_igst'])) ? $purchase_data['hidden_total_igst'] : ''; ?>" id="hidden_total_igst" name="hidden_total_igst">
                                       </td>
                                     </tr>
                                     <tr>
@@ -640,8 +643,8 @@ if(isset($_POST['submit'])){
                                         CGST
                                       </td>
                                       <td align="right">
-                                        <input type="text" class="form-control" value="<?php echo $purchase_data['total_cgst']; ?>" readonly="" name="total_cgst" id="total_cgst">
-                                        <input type="hidden" value="<?php echo $purchase_data['hidden_total_cgst']; ?>" id="hidden_total_cgst" name="hidden_total_cgst">
+                                        <input type="text" class="form-control" value="<?php echo (isset($purchase_data['total_cgst'])) ? $purchase_data['total_cgst'] : ''; ?>" readonly="" name="total_cgst" id="total_cgst">
+                                        <input type="hidden" value="<?php echo (isset($purchase_data['hidden_total_cgst'])) ? $purchase_data['hidden_total_cgst'] : ''; ?>" id="hidden_total_cgst" name="hidden_total_cgst">
                                       </td>
                                     </tr>
                                     
@@ -650,8 +653,8 @@ if(isset($_POST['submit'])){
                                         SGST
                                       </td>
                                       <td align="right">
-                                        <input type="text" class="form-control" value="<?php echo $purchase_data['total_sgst']; ?>" readonly="" name="total_sgst" id="total_sgst">
-                                        <input type="hidden" value="<?php echo $purchase_data['hidden_total_sgst']; ?>" id="hidden_total_sgst" name="hidden_total_sgst">
+                                        <input type="text" class="form-control" value="<?php echo (isset($purchase_data['total_sgst'])) ? $purchase_data['total_sgst'] : ''; ?>" readonly="" name="total_sgst" id="total_sgst">
+                                        <input type="hidden" value="<?php echo (isset($purchase_data['hidden_total_sgst'])) ? $purchase_data['hidden_total_sgst'] : ''; ?>" id="hidden_total_sgst" name="hidden_total_sgst">
                                       </td>
                                     </tr>
                                     <input type="hidden" id="hidden_total">
@@ -662,19 +665,19 @@ if(isset($_POST['submit'])){
                                       <td align="right">
                                         <div class="radio-inline">
                                                <div class="icheck" style="display:inline-block">
-                                                  <input tabindex="7" <?php if($purchase_data['minimal_radio'] == "per"){echo "checked";} ?>  type="radio" id="minimal-radio-1" value="per" name="minimal-radio" checked>
+                                                  <input tabindex="7" <?php if(isset($purchase_data) && $purchase_data['minimal_radio'] == "per"){echo "checked";} ?>  type="radio" id="minimal-radio-1" value="per" name="minimal-radio" checked>
                                                   <label for="minimal-radio-1" class="mt-0" >%</label>
                                                 </div>
-                                                <input type="text" value="<?php echo $purchase_data['per_discount']; ?>"  name="per_discount"  class="form-control f_discount priceOnly" id="exampleInputName1" placeholder="%" style="display:inline-block;width:80px;">
+                                                <input type="text" value="<?php echo (isset($purchase_data['per_discount'])) ? $purchase_data['per_discount'] : ''; ?>"  name="per_discount"  class="form-control f_discount priceOnly" id="exampleInputName1" placeholder="%" style="display:inline-block;width:80px;">
                                         </div>
                                           
                                                       
                                         <div class="radio-inline ml-2">            
                                               <div class="icheck" style="display:inline-block">
-                                                  <input tabindex="8" <?php if($purchase_data['minimal_radio'] == "rs"){echo "checked";} ?> type="radio" id="minimal-radio-2" value="rs" name="minimal-radio" >
+                                                  <input tabindex="8" <?php if(isset($purchase_data) && $purchase_data['minimal_radio'] == "rs"){echo "checked";} ?> type="radio" id="minimal-radio-2" value="rs" name="minimal-radio" >
                                                   <label for="minimal-radio-2" class="mt-0">Rs.</label>
                                               </div>
-                                              <input type="text" value="<?php echo $purchase_data['rs_discount']; ?>" name="rs_discount" class="form-control f_discount priceOnly" id="rs_dis" placeholder="Rs." style="display:inline-block;width:80px;">
+                                              <input type="text" value="<?php echo (isset($purchase_data['rs_discount'])) ? $purchase_data['rs_discount'] : ''; ?>" name="rs_discount" class="form-control f_discount priceOnly" id="rs_dis" placeholder="Rs." style="display:inline-block;width:80px;">
                                           </div>
                                             
                                                   
@@ -684,19 +687,19 @@ if(isset($_POST['submit'])){
                                       <td align="right">
                                        Overall Dis. Value
                                       </td>
-                                      <td align="right"><input type="text" readonly="" name="overall_value" class="form-control" value="<?php echo $purchase_data['overall_value']; ?>"  id="overall_value"></td>
+                                      <td align="right"><input type="text" readonly="" name="overall_value" class="form-control" value="<?php echo (isset($purchase_data['overall_value'])) ? $purchase_data['overall_value'] : ''; ?>"  id="overall_value"></td>
                                     </tr>
                                     
                                      <tr>
                                       <td align="right">
                                         <select class="form-control note_details " name="note_details" id="note_details" style="width:250px;">
-                                              <option <?php if($purchase_data['note_details'] == "credit_note"){echo "selected";} ?> value="credit_note">Credit Note</option>
-                                              <option <?php if($purchase_data['debit_note'] == "debit_note"){echo "selected";} ?> value="debit_note">Debit Note</option>
+                                              <option <?php if(isset($purchase_data) && $purchase_data['note_details'] == "credit_note"){echo "selected";} ?> value="credit_note">Credit Note</option>
+                                              <option <?php if(isset($purchase_data) && $purchase_data['debit_note'] == "debit_note"){echo "selected";} ?> value="debit_note">Debit Note</option>
                                           </select>
                                       </td>
                                       <td align="right">
                                         <i class="fa fa-rupee"></i>&nbsp;
-                                        <input type="text" name="note_value" class="form-control note_details priceOnly" value="<?php echo $purchase_data['note_value']; ?>" id="note_value">
+                                        <input type="text" name="note_value" class="form-control note_details priceOnly" value="<?php echo (isset($purchase_data['note_value'])) ? $purchase_data['note_value'] : ''; ?>" id="note_value">
                                       </td>
                                     </tr>
                                     <tr style="background:#ececec;">
@@ -704,7 +707,7 @@ if(isset($_POST['submit'])){
                                         Purchase Ammount
                                       </td>
                                       <td align="right">
-                                        <input type="text" value="<?php echo $purchase_data['purchase_amount']; ?>" class="form-control" readonly="" name="purchase_amount" id="purchase_amount">
+                                        <input type="text" value="<?php echo (isset($purchase_data['purchase_amount'])) ? $purchase_data['purchase_amount'] : ''; ?>" class="form-control" readonly="" name="purchase_amount" id="purchase_amount">
                                       </td>
                                     </tr>
                                     
@@ -713,7 +716,7 @@ if(isset($_POST['submit'])){
                                         Round off
                                       </td>
                                       <td align="right">
-                                        <input type="text" value="<?php echo $purchase_data['round_off']; ?>" class="form-control" readonly="" name="round_off" id="round_off">
+                                        <input type="text" value="<?php echo (isset($purchase_data['round_off'])) ? $purchase_data['round_off'] : ''; ?>" class="form-control" readonly="" name="round_off" id="round_off">
                                       </td>
                                     </tr>
                                     
@@ -722,7 +725,7 @@ if(isset($_POST['submit'])){
                                         <strong>NET VALUE</strong>
                                       </td>
                                       <td align="right">
-                                       <i class="fa fa-rupee"></i>&nbsp;<input type="text" class="form-control" readonly="" value="<?php echo $purchase_data['total_total']; ?>" name="total_total" id="total_total">
+                                       <i class="fa fa-rupee"></i>&nbsp;<input type="text" class="form-control" readonly="" value="<?php echo (isset($purchase_data['total_total'])) ? $purchase_data['total_total'] : ''; ?>" name="total_total" id="total_total">
                                       </td>
                                     </tr>
                                     

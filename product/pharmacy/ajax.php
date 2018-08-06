@@ -62,24 +62,39 @@ if($_REQUEST['action'] == "getproduct"){
   exit;
 }
 
-  if($_REQUEST['action'] == "getproduct_self"){
+ if($_REQUEST['action'] == "getproduct_self"){
       $getproduct_self = array();
       $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']['term']."%'";
-      print_r($query);exit;
       
       $result = mysqli_query($conn,$query);
       $num = mysqli_num_rows($result);
 
       while($row = mysqli_fetch_array($result)){
-        $getproduct_self[] =array(
+        $query1 = "SELECT * from (SELECT expiry,mrp,SUM(f_cgst+f_cgst)as gst,SUM(qty*qty_ratio+free_qty)as total_qty,batch,product_id,id FROM `purchase_details` GROUP BY batch) as t WHERE t.product_id='".$row['id']."'";
+        $result1 = mysqli_query($conn,$query1);
+          while($row1 = mysqli_fetch_array($result1)){
+            $count_per = $row1['mrp'] / $row['ratio'];
+            $getproduct_self[] = array(
+              'id' => $row['id'],
+              'name' => $row['product_name'].'-'.$row1['batch'],
+              'purchase_id' => $row1['id'],
+              'batch' => $row1['batch'],
+              'expiry' => $row1['expiry'],
+              'total_qty' => $row1['total_qty'],
+              'unit' => $row['unit'],
+              'gst' => $row['igst'],
+              'count_per' => $count_per
+            );
+          }
+       /* $getproduct_self[] =array(
           'id' => $row['id'],
           'name' => $row['product_name'].'-'.$row['batch_no'],
           'batch' => $row['batch_no']
-        );
+        );*/
       }
       echo json_encode($getproduct_self);
       exit;
-    }
+  }
     
     
     
@@ -390,6 +405,119 @@ if($_REQUEST['action'] == "getproduct"){
           $query .="WHERE give_mrp like '%".$searchquery."%' AND give_mrp IS NOT NULL";
         }else{
           $query .="WHERE generic_name like '%".$searchquery."%' AND generic_name IS NOT NULL";
+        }
+        $res = mysqli_query($conn, $query);
+
+        if($res && mysqli_num_rows($res) > 0){
+          $finalres = [];
+            while ($row = mysqli_fetch_array($res)) {
+              $arr['id'] = $row['id'];
+              $arr['productname'] = $row['product_name'];
+              $arr['generic_name'] = $row['generic_name'];
+              $arr['menufacturer_name'] = $row['mfg_company'];
+              $arr['igst'] = ($row['igst'] != '') ? $row['igst'] : 0;
+              $arr['cgst'] = ($row['cgst'] != '') ? $row['cgst'] : 0;
+              $arr['sgst'] = ($row['sgst'] != '') ? $row['sgst'] : 0;
+              $arr['unit'] = ($row['unit'] != '') ? $row['unit'] : 0;
+              $arr['mrp'] = ($row['give_mrp'] != '') ? $row['give_mrp'] : 0;
+              if($type == 'product'){
+                $arr['name'] = $row['product_name'];
+              }elseif ($type == 'mrp') {
+                $arr['name'] = $row['give_mrp'];
+              }else{
+                $arr['name'] = $row['generic_name'];
+              }
+              array_push($finalres, $arr);
+            }
+          $result = array('status' => true, 'message' => 'Success!', 'result' => $finalres);
+        }else{
+          $result = array('status' => false, 'message' => 'Fail!', 'result' => '');
+        }
+      }else{
+        $result = array('status' => false, 'message' => 'Fail!', 'result' => '');
+      }
+
+      echo json_encode($result);
+      exit;
+    }
+    
+    // 08-04-2018 - GAUTAM MAKWANA
+    if($_REQUEST['action'] == "addByVendor"){
+      $data = [];
+      parse_str($_REQUEST['data'], $data);
+
+      if(!empty($data)){
+        $length = count($data['vendor_id']);
+        if($length > 0){
+          for ($i=0; $i < $length; $i++) { 
+            $query = "INSERT INTO byvendor SET vendor_id = '".$data['vendor_id'][$i]."', product_id = '".$data['product_id'][$i]."', purchase_price = '".$data['purchase_price'][$i]."', gst = '".$data['gst'][$i]."', unit = '".$data['unit'][$i]."', qty = '".$data['qty'][$i]."', created = '".date('Y-m-d H:i:s')."', createdby = '".$_SESSION['auth']['id']."'";
+            $res = mysqli_query($conn, $query);
+          }
+          $result = array('status' => true, 'message' => 'Data Save successfully.', 'result' => '');
+        }else{
+          $result = array('status' => false, 'message' => 'Data Save Failed! Try Again.', 'result' => '');
+        }
+      }else{
+        $result = array('status' => false, 'message' => 'Data Save Failed! Try Again.', 'result' => '');
+      }
+      echo json_encode($result);
+      exit;
+    }
+    // 08-04-2018 - GAUTAM MAKWANA
+    if($_REQUEST['action'] == "getAllByVendor"){
+     $data = [];
+        $query = "SELECT bv.id, bv.purchase_price, bv.gst, bv.unit, bv.qty, pm.product_name as product_name, pm.id as product_id, lgr.id as vendor_id, lgr.name as vendor_name FROM byvendor bv INNER JOIN product_master pm ON bv.product_id = pm.id INNER JOIN ledger_master lgr ON bv.vendor_id = lgr.id ORDER BY bv.id DESC";
+        $res = mysqli_query($conn, $query);
+        if($res && mysqli_num_rows($res) > 0){
+          $i = 1;
+          while ($row = mysqli_fetch_array($res)) {
+            $arr['id'] = $row['id'];
+            $arr['no'] = $i;
+            $arr['vendor_name'] = $row['vendor_name'];
+            $arr['product_name'] = $row['product_name'];
+            $arr['purchase_price'] = $row['purchase_price'];
+            $arr['gst'] = $row['gst'];
+            $arr['unit'] = $row['unit'];
+            $arr['qty'] = $row['qty'];
+            array_push($data, $arr);
+            $i++;
+          }
+        }
+        
+      $finaldata['data'] = $data;
+      echo json_encode($finaldata);
+      exit;
+    }
+    
+    if($_REQUEST['action'] == "deleteByVendor"){
+      if(isset($_REQUEST['id']) && $_REQUEST['id'] != ''){
+        $query = "DELETE FROM byvendor WHERE id = '".$_REQUEST['id']."'";
+        $res = mysqli_query($conn, $query);
+        if($res){
+          $result = array('status' => true, 'message' => 'Record deleted successfully.', 'result' => '');
+        }else{
+          $result = array('status' => false, 'message' => 'Record delete fail! Try again.', 'result' => '');
+        }
+      }else{
+        $result = array('status' => false, 'message' => 'Record delete fail! Try again.', 'result' => '');
+      }
+      echo json_encode($result);
+      exit;
+    }
+
+    if($_REQUEST['action'] == "getVendorByProduct"){
+      $searchquery = (isset($_REQUEST['query']['term'])) ? $_REQUEST['query']['term'] : '';
+      $type = (isset($_REQUEST['type'])) ? $_REQUEST['type'] : '';
+      $vendor_id = (isset($_REQUEST['vendor_id'])) ? $_REQUEST['vendor_id'] : '';
+
+      if($searchquery != '' && $type != '' && $vendor_id != ''){
+        $query = "SELECT pm.id, pm.product_name, pm.generic_name, pm.mfg_company, pm.give_mrp, pm.igst, pm.cgst, pm.sgst, pm.unit FROM product_master pm INNER JOIN purchase_details pd ON pm.id = pd.product_id INNER JOIN purchase prc ON prc.id = pd.purchase_id WHERE prc.vendor = '".$vendor_id."' ";
+        if($type == 'product'){
+          $query .="AND pm.product_name like '%".$searchquery."%' AND pm.product_name IS NOT NULL";
+        }elseif($type == 'mrp'){
+          $query .="AND pm.give_mrp like '%".$searchquery."%' AND pm.give_mrp IS NOT NULL";
+        }else{
+          $query .="AND pm.generic_name like '%".$searchquery."%' AND pm.generic_name IS NOT NULL";
         }
         $res = mysqli_query($conn, $query);
 

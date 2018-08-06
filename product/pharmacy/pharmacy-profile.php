@@ -1,4 +1,4 @@
-<?php include('include/usertypecheck.php'); ?>
+<?php include('include/usertypecheck.php');?>
 
 <?php 
 if(isset($_GET['id'])){
@@ -357,20 +357,20 @@ if(isset($_POST['update'])){
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">Select Firm<span class="text-danger">*</span></label>
                     <select name="firm_id" class="js-example-basic-single" required style="width:100%"> 
-                    <option <?php if($data['firm_name'] == "Regular"){echo "selected";} ?> value="Regular">Regular</option>
-                    <option <?php if($data['firm_name'] == "Unregistered"){echo "selected";} ?> value="Unregistered">Unregistered</option>
-                    <option <?php if($data['firm_name'] == "Composition"){echo "selected";} ?> value="Composition">Composition</option>
+                    <option <?php if(isset($data['firm_name']) && $data['firm_name'] == "Regular"){echo "selected";} ?> value="Regular">Regular</option>
+                    <option <?php if(isset($data['firm_name']) && $data['firm_name'] == "Unregistered"){echo "selected";} ?> value="Unregistered">Unregistered</option>
+                    <option <?php if(isset($data['firm_name']) && $data['firm_name'] == "Composition"){echo "selected";} ?> value="Composition">Composition</option>
                     </select>
                     </div>
                     
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">Pharmacy Name<span class="text-danger">*</span></label>
-                    <input name="pharmacy_name" value="<?php echo $data['pharmacy_name']; ?>" type="text" required class="form-control" id="exampleInputName1" placeholder="Pharmacy Name">
+                    <input name="pharmacy_name" value="<?php echo (isset($data['pharmacy_name'])) ? $data['pharmacy_name'] : ''; ?>" type="text" required class="form-control" id="exampleInputName1" placeholder="Pharmacy Name">
                     </div>
                     
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">Contact Person Name <span class="text-danger">*</span></label>
-                    <input type="text" required name="contact_person_name" value="<?php echo $data['contact_person_name']; ?>" class="form-control" id="exampleInputName1" placeholder="Contact Person Name">
+                    <input type="text" required name="contact_person_name" value="<?php echo (isset($data['contact_person_name'])) ? $data['contact_person_name'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Contact Person Name">
                     </div>
                     
                     
@@ -381,16 +381,16 @@ if(isset($_POST['update'])){
                     <div class="form-group row">
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">Address</label>
-                    <input type="text" name="address1" value="<?php echo $data['address1']; ?>" class="form-control" id="exampleInputName1" placeholder="Address line1">
+                    <input type="text" name="address1" value="<?php echo (isset($data['address1'])) ? $data['address1'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Address line1">
                     </div>
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">&nbsp;</label>
-                    <input type="text" name="address2" value="<?php echo $data['address2']; ?>" class="form-control" id="exampleInputName1" placeholder="Address line2">
+                    <input type="text" name="address2" value="<?php echo (isset($data['address2'])) ? $data['address2'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Address line2">
                     </div>
                     
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">&nbsp;</label>
-                    <input type="text" name="address3" value="<?php echo $data['address3']; ?>" class="form-control" id="exampleInputName1" placeholder="Address line3">
+                    <input type="text" name="address3" value="<?php echo (isset($data['address3'])) ? $data['address3'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Address line3">
                     </div>
                     
                     </div>
@@ -406,7 +406,7 @@ if(isset($_POST['update'])){
                                     $states = mysqli_query($conn,$st_qry);
                                     while($row = mysqli_fetch_assoc($states)){
                                     ?>
-                                <option <?php if($data['countryId'] == $row['id']){echo "selected";} ?> value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+                                <option <?php if(isset($data['countryId']) && $data['countryId'] == $row['id']){echo "selected";} ?> value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
                                 <?php } ?>
                             </select>
                     
@@ -421,14 +421,14 @@ if(isset($_POST['update'])){
                                     $states = mysqli_query($conn,$st_qry);
                                     while($row = mysqli_fetch_assoc($states)){
                                     ?>
-                             <option <?php if($data['stateId'] == $row['id']){echo "selected";} ?> value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+                             <option <?php if(isset($data['stateId']) && $data['stateId'] == $row['id']){echo "selected";} ?> value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
                               <?php } ?>
                             </select>
                     </div>
                     
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">District<span class="text-danger">*</span></label>
-                    <input type="text" name="district_name" required class="form-control" id="exampleInputName1" value="<?php echo $data['district_name']; ?>" placeholder="District">
+                    <input type="text" name="district_name" required class="form-control" id="exampleInputName1" value="<?php echo (isset($data['district_name'])) ? $data['district_name'] : ''; ?>" placeholder="District">
                     </div>
                     
                     </div>
@@ -436,12 +436,12 @@ if(isset($_POST['update'])){
                     <div class="form-group row">
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">City<span class="text-danger">*</span></label>
-                    <input type="text" name="city_name" required class="form-control" id="exampleInputName1" value="<?php echo $data['city_name']; ?>" placeholder="City">
+                    <input type="text" name="city_name" required class="form-control" id="exampleInputName1" value="<?php echo (isset($data['city_name'])) ? $data['city_name'] : ''; ?>" placeholder="City">
                     </div>
                     
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">Pincode<span class="text-danger">*</span></label>
-                    <input data-parsley-type="number" type="text" name="pin_code" required class="form-control" id="exampleInputName1" value="<?php echo $data['pin_code']; ?>" placeholder="Pincode">
+                    <input data-parsley-type="number" type="text" name="pin_code" required class="form-control" id="exampleInputName1" value="<?php echo (isset($data['pin_code'])) ? $data['pin_code'] : ''; ?>" placeholder="Pincode">
                     </div>
                     
                     </div>
@@ -454,17 +454,17 @@ if(isset($_POST['update'])){
                     
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Telephone No</label>
-                        <input type="text" name="telephone_no" class="form-control" id="exampleInputName1" value="<?php echo $data['telephone_no']; ?>" placeholder="Telephone No">
+                        <input type="text" name="telephone_no" class="form-control" id="exampleInputName1" value="<?php echo (isset($data['telephone_no'])) ? $data['telephone_no'] : ''; ?>" placeholder="Telephone No">
                         </div>
                         
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Mobile No<span class="text-danger">*</span></label>
-                        <input data-parsley-type="number" type="text" name="mobile_no" required class="form-control" id="exampleInputName1" value="<?php echo $data['mobile_no']; ?>" placeholder="Mobile No">
+                        <input data-parsley-type="number" type="text" name="mobile_no" required class="form-control" id="exampleInputName1" value="<?php echo (isset($data['mobile_no'])) ? $data['mobile_no'] : ''; ?>" placeholder="Mobile No">
                         </div>
                         
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Email<span class="text-danger">*</span></label>
-                        <input class="form-control" name="email" value="<?php echo $data['email']; ?>" required data-inputmask="'alias': 'email'" />
+                        <input class="form-control" name="email" value="<?php echo (isset($data['email'])) ? $data['email'] :''; ?>" required data-inputmask="'alias': 'email'" />
                         </div>
                     
                     </div>
@@ -479,19 +479,19 @@ if(isset($_POST['update'])){
                     
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">PAN No<span class="text-danger">*</span></label>
-                        <input type="text" name="pan_no" required class="form-control" id="exampleInputName1" value="<?php echo $data['pan_no']; ?>" placeholder="PAN No">
+                        <input type="text" name="pan_no" required class="form-control" id="exampleInputName1" value="<?php echo (isset($data['pan_no'])) ? $data['pan_no'] : ''; ?>" placeholder="PAN No">
                         </div>
                         
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">GST No<span class="text-danger">*</span></label>
-                        <input type="text" name="gst_no" required class="form-control" id="exampleInputName1" value="<?php echo $data['gst_no']; ?>" placeholder="GST No">
+                        <input type="text" name="gst_no" required class="form-control" id="exampleInputName1" value="<?php echo (isset($data['gst_no'])) ? $data['gst_no'] : ''; ?>" placeholder="GST No">
                         </div>
                         
                         <div class="col-12 col-md-4">
 
 
                         <label for="exampleInputName1">DL No</label>
-                        <input type="text" name="dl_no1" value="<?php echo $data['dl_no1']; ?>" class="form-control" id="exampleInputName1" placeholder="DL No">
+                        <input type="text" name="dl_no1" value="<?php echo (isset($data['dl_no1'])) ? $data['dl_no1'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="DL No">
                         </div>
                     
                     </div>
@@ -500,7 +500,7 @@ if(isset($_POST['update'])){
                     
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">DL No</label>
-                        <input type="text" name="dl_no2" class="form-control" value="<?php echo $data['dl_no2']; ?>" id="exampleInputName1" placeholder="DL No">
+                        <input type="text" name="dl_no2" class="form-control" value="<?php echo (isset($data['dl_no2'])) ? $data['dl_no2'] : ''; ?>" id="exampleInputName1" placeholder="DL No">
                         </div>
                         
                          <div class="col-12 col-md-4">
@@ -526,7 +526,7 @@ if(isset($_POST['update'])){
                     
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Shop Act License</label>
-                        <input type="text" value="<?php echo $data['shop_act_license']; ?>" name="shop_act_license" class="form-control" id="exampleInputName1" placeholder="Shop Act License">
+                        <input type="text" value="<?php echo (isset($data['shop_act_license'])) ?$data['shop_act_license'] : ''; ?>" name="shop_act_license" class="form-control" id="exampleInputName1" placeholder="Shop Act License">
                         </div>
                         
                         <div class="col-12 col-md-4">
@@ -580,18 +580,18 @@ if(isset($_POST['update'])){
                             <input type="hidden" value="<?php echo $row['id']; ?>" name="id[]">
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Pharmacist Name<span class="text-danger">*</span></label>
-                            <input type="text" required name="pharmacist_name[]" class="form-control" id="exampleInputName1" value="<?php echo $row['pharmacist_name']; ?>" placeholder="Pharmacist Name">
+                            <input type="text" required name="pharmacist_name[]" class="form-control" id="exampleInputName1" value="<?php echo (isset($row['pharmacist_name'])) ? $row['pharmacist_name'] : ''; ?>" placeholder="Pharmacist Name">
                             </div>
                             
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Pharmacist Reg. No<span class="text-danger">*</span></label>
-                            <input type="text" required="" name="pharmacist_reg_no[]" class="form-control" id="exampleInputName1" value="<?php echo $row['pharmacist_reg_no']; ?>" placeholder="Pharmacist Reg. No">
+                            <input type="text" required="" name="pharmacist_reg_no[]" class="form-control" id="exampleInputName1" value="<?php echo (isset($row['pharmacist_reg_no'])) ? $row['pharmacist_reg_no'] : ''; ?>" placeholder="Pharmacist Reg. No">
                             </div>
                             
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Pharmacist Reg. No Exp. Date<span class="text-danger">*</span></label>
                             <div id="" class="input-group date datepicker datepicker-popup">
-                              <input type="text" value="<?php echo date("d/m/Y",strtotime(str_replace("-","/",$row['pharmacist_reg_date']))); ?>" name="pharmacist_reg_date[]" class="form-control" placeholder="Pharmacist Reg. No Exp. Date">
+                              <input type="text" value="<?php echo(isset($row['pharmacist_reg_date']) && $row['pharmacist_reg_date'] != '') ? date("d/m/Y",strtotime(str_replace("-","/",$row['pharmacist_reg_date']))) : ''; ?>" name="pharmacist_reg_date[]" class="form-control" placeholder="Pharmacist Reg. No Exp. Date">
                               <span class="input-group-addon input-group-append border-left">
                                 <span class="mdi mdi-calendar input-group-text"></span>
                               </span>
@@ -602,53 +602,53 @@ if(isset($_POST['update'])){
                         <div class="form-group row">
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Address</label>
-                            <input type="text" name="p_address1[]" class="form-control" id="exampleInputName1" value="<?php echo $row['p_address1']; ?>" placeholder="Address line1">
+                            <input type="text" name="p_address1[]" class="form-control" id="exampleInputName1" value="<?php echo (isset($row['p_address1'])) ? $row['p_address1'] : ''; ?>" placeholder="Address line1">
                             </div>
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">&nbsp;</label>
-                            <input type="text" name="p_address2[]" class="form-control" id="exampleInputName1" value="<?php echo $row['p_address2']; ?>" placeholder="Address line2">
+                            <input type="text" name="p_address2[]" class="form-control" id="exampleInputName1" value="<?php echo (isset($row['p_address2'])) ? $row['p_address2'] : ''; ?>" placeholder="Address line2">
                             </div>
                             
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">&nbsp;</label>
-                            <input type="text" name="p_address3[]" class="form-control" id="exampleInputName1" value="<?php echo $row['p_address3']; ?>" placeholder="Address line3">
+                            <input type="text" name="p_address3[]" class="form-control" id="exampleInputName1" value="<?php echo (isset($row['p_address3'])) ? $row['p_address3'] : ''; ?>" placeholder="Address line3">
                             </div>
                         </div>
                         <div class="form-group row">
                         
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">City<span class="text-danger">*</span></label>
-                            <input type="text" required name="city[]" class="form-control" id="exampleInputName1" value="<?php echo $row['city']; ?>" placeholder="City">
+                            <input type="text" required name="city[]" class="form-control" id="exampleInputName1" value="<?php echo (isset($row['city'])) ? $row['city'] : ''; ?>" placeholder="City">
                             </div>
                             
                              <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Contact No</label>
-                            <input type="text" name="contact_no[]" class="form-control" id="exampleInputName1" value="<?php echo $row['contact_no']; ?>" placeholder="Contact No">
+                            <input type="text" name="contact_no[]" class="form-control" id="exampleInputName1" value="<?php echo (isset($row['contact_no'])) ? $row['contact_no'] : ''; ?>" placeholder="Contact No">
                             </div>
                             
                              <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Photo</label>
-                            <input type="file" value="<?php echo $row['img']; ?>" name="img[]" class="file-upload-default">
+                            <input type="file" value="<?php echo (isset($row['img'])) ? $row['img'] : ''; ?>" name="img[]" class="file-upload-default">
                             <div class="input-group col-xs-12">
-                            <input type="text" value="<?php echo $row['img']; ?>" class="form-control file-upload-info" disabled placeholder="Upload Image">
+                            <input type="text" value="<?php echo(isset($row['img'])) ? $row['img'] : ''; ?>" class="form-control file-upload-info" disabled placeholder="Upload Image">
                             <span class="input-group-append">
                               <button class="file-upload-browse btn btn-info" type="button">Upload</button>
                             </span>
                         </div>
                         </div>
-                        <input type="hidden" name="update_img[]" value="<?php echo $row['img']; ?>">
+                        <input type="hidden" name="update_img[]" value="<?php echo(isset($row['img'])) ? $row['img'] : ''; ?>">
                         </div>
                         <div class="form-group row">
                         
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Aadhar Card No<span class="text-danger">*</span></label>
-                            <input type="text" required name="aadhar_card_no[]" class="form-control" id="exampleInputName1" value="<?php echo $row['aadhar_card_no']; ?>" placeholder="Aadhar Card No">
+                            <input type="text" required name="aadhar_card_no[]" class="form-control" id="exampleInputName1" value="<?php echo (isset($row['aadhar_card_no'])) ? $row['aadhar_card_no'] : ''; ?>" placeholder="Aadhar Card No">
                             </div>
                             
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Exp. Date</label>
                             <div id="" class="input-group date datepicker datepicker-popup">
-                              <input type="text" value="<?php echo date("d/m/Y",strtotime(str_replace("-","/",$row['p_exp_date']))); ?>" name="p_exp_date[]" class="form-control" placeholder="Exp.Date">
+                              <input type="text" value="<?php echo (isset($row['p_exp_date']) && $row['p_exp_date'] != '') ? date("d/m/Y",strtotime(str_replace("-","/",$row['p_exp_date']))) : ''; ?>" name="p_exp_date[]" class="form-control" placeholder="Exp.Date">
                               <span class="input-group-addon input-group-append border-left">
                                 <span class="mdi mdi-calendar input-group-text"></span>
                               </span>
@@ -762,15 +762,15 @@ if(isset($_POST['update'])){
                   
                     
                     <br>
-                    <a href="view-pharmacy-profile.php" class="btn btn-light">Back</a>
+                    <a href="view-pharmacy-profile.php" class="btn btn-light pull-left">Back</a>
                     <?php 
                     if(isset($_GET['id'])){
                       ?>
-                    <button type="submit" name="update" class="btn btn-success mr-2">Update</button>
+                    <button type="submit" name="update" class="btn btn-success mr-2 pull-right">Update</button>
                       <?php
                     }else{
                     ?>
-                    <button type="submit" name="submit" class="btn btn-success mr-2">Submit</button>
+                    <button type="submit" name="submit" class="btn btn-success mr-2 pull-right">Submit</button>
                     <?php } ?>
 
                     
@@ -1003,9 +1003,6 @@ if(isset($_POST['update'])){
 <script type="text/javascript">
   $('form').parsley();
 </script>
-  
-  <!-- End custom js for this page-->
-  <?php include('include/usertypecheck.php'); ?>
 </body>
 
 

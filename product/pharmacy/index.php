@@ -31,11 +31,11 @@
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
         <!-- Right Sidebar -->
-        <?php include "include/sidebar-right.php" ?>
+<?php include "include/sidebar-right.php" ?>
         
        
        <!-- Left Navigation -->
-        <?php include "include/sidebar-nav-left.php" ?>
+<?php include "include/sidebar-nav-left.php" ?>
         
         
       
@@ -44,7 +44,7 @@
         <div class="main-panel">
         
           <!-- <div class="content-wrapper">
-            <?php include('include/flash.php'); ?>
+<?php include('include/flash.php'); ?>
             <div class="row">
               <div class="col-md-4 grid-margin stretch-card">
                 <div class="card text-black">
@@ -563,7 +563,7 @@
           <!-- content-wrapper ends -->
           
           <!-- partial:partials/_footer.php -->
-          <?php include "include/footer.php" ?>
+<?php include "include/footer.php" ?>
           <!-- partial -->
         </div>
      

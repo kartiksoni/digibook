@@ -140,5 +140,4 @@ $(document).ready(function(){
 			$('#city').children('option:not(:first)').remove();
 		}
 	});
-
 });

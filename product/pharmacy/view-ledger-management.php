@@ -171,7 +171,7 @@
   <script src="js/data-table.js"></script> 
   
   <script>
-     $('.datatable').DataTable();
+  	 $('.datatable').DataTable();
   </script>
   <!-- End custom js for this page-->
   

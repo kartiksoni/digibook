@@ -1,9 +1,3 @@
-<?php
-    if(!isset($_SESSION['auth']) && empty($_SESSION['auth'])){
-        header('Location:/product/index.php');
-        exit;
-    }
-?>
 <link rel="stylesheet" href="css/custom.css">
 
 <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row navbar-success">

@@ -6,9 +6,6 @@ $(document).ready(function(){
 
     $('body').on('click', '.btn-addmore-product', function() {
         var totalproduct = $('.product-tr').length;//for product length
-        if(totalproduct <= 2){
-          $('.remove_last').show();
-        }
         var html = $('#html-copy').html();
         
         html = html.replace('##SRNO##',totalproduct);
@@ -19,11 +16,6 @@ $(document).ready(function(){
         html = html.replace('<tbody>','');
         html = html.replace('</tbody>','');
         $('#product-tbody').append(html);
-       /* $('.datepicker-ex').datepicker({
-          enableOnReadonly: true,
-          todayHighlight: true,
-          format: 'dd/mm/yy'
-        });*/
         $(".product-select"+totalproduct).select2();
           $( ".tags" ).autocomplete({
              source: function (query, result) {
@@ -445,7 +437,7 @@ $(document).ready(function(){
         var type = $('input[name=minimal-radio]:checked').val();
         if(type == "per"){
           //var g1_total = 0;
-          
+          console.log(k_total);
           if(k_total !='' && k_total != 0){
             var f_discount = $('.f_discount').val();
             if(f_discount != '' && f_discount != 0){
@@ -461,6 +453,7 @@ $(document).ready(function(){
           //var k_total = 0;
           if(k_total !=='' && k_total !== '0'){
             var f_discount = $('#rs_dis').val();
+            console.log("f_discount"+f_discount);
             if(f_discount !== '' && f_discount !== '0'){
                k_total = (parseFloat(k_total)-parseFloat(f_discount));
             }
@@ -505,14 +498,7 @@ $("#hidden_total").val(parseFloat(k_total).toFixed(2));
     /// Creadit Note Js /// 
 
     /// End Discount Count js ///
-    $(document).on("keypress keyup keydown",".priceOnly",function (e) {
-       //if the letter is not digit then display error and don't type anything
-        //alert(e.which )
-       if (e.which != 110 &&e.which != 46 && e.which != 9 && e.which != 13 && e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && (e.which < 96 || e.which > 105)) {
-        //$("#errmsg").html("Digits Only").show().fadeOut("slow");
-        return false;
-      }
-        }); 
+
     
 
 

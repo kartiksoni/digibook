@@ -1,7 +1,4 @@
-<!-- Author : Gautam Makwana -->
-<!-- Date   : 08-02-2018 -->
-<?php include('include/usertypecheck.php'); ?>
-<?php 
+<?php include('include/usertypecheck.php');
     /* SET SESSION START */
 
         // set alphabet in session
@@ -147,19 +144,19 @@
                               <div class="col-12 col-md-5">
                                 <label>Select anyone</label>
                                   <select class="js-example-basic-single" name="selectsearch" style="width:100%" id="selectsearch"> 
-                                      <option value="product" <?php echo ($_SESSION['selectsearch'] == 'product') ? 'selected' : ''; ?> >Product Name </option>
-                                      <option value="mrp" <?php echo ($_SESSION['selectsearch'] == 'mrp') ? 'selected' : ''; ?> >MRP</option>
-                                      <option value="generic" <?php echo ($_SESSION['selectsearch'] == 'generic') ? 'selected' : ''; ?> >Generic Name</option>
+                                      <option value="product" <?php echo (isset($_SESSION['selectsearch']) && $_SESSION['selectsearch'] == 'product') ? 'selected' : ''; ?>>Product Name </option>
+                                      <option value="mrp" <?php echo (isset($_SESSION['selectsearch']) && $_SESSION['selectsearch'] == 'mrp') ? 'selected' : ''; ?>>MRP</option>
+                                      <option value="generic" <?php echo (isset($_SESSION['selectsearch']) && $_SESSION['selectsearch'] == 'generic') ? 'selected' : ''; ?>>Generic Name</option>
                                   </select>
                               </div>
                               
                               <div class="col-12 col-md-4">
                                   <?php 
-                                    if($_SESSION['selectsearch'] && $_SESSION['selectsearch'] == 'product'){
+                                    if(isset($_SESSION['selectsearch']) && $_SESSION['selectsearch'] == 'product'){
                                       $lbl = 'Enter Product Name';
-                                    }elseif($_SESSION['selectsearch'] && $_SESSION['selectsearch'] == 'mrp'){
+                                    }elseif(isset($_SESSION['selectsearch']) && $_SESSION['selectsearch'] == 'mrp'){
                                       $lbl = 'Enter MRP';
-                                    }elseif ($_SESSION['selectsearch'] && $_SESSION['selectsearch'] == 'generic') {
+                                    }elseif (isset($_SESSION['selectsearch']) && $_SESSION['selectsearch'] == 'generic') {
                                       $lbl = 'Enter Generic Name';
                                     }else{
                                       $lbl = 'Enter Product Name';
@@ -167,7 +164,7 @@
                                   ?>
                                   <label id="search-lable"><?php echo $lbl; ?></label>
                                   <div id="bloodhound">
-                                    <input class="form-control" name="search" id="search" type="text" placeholder="Start typing.." value="<?php echo ($_SESSION['search']) ? $_SESSION['search'] : ''; ?>">
+                                    <input class="form-control" name="search" id="search" type="text" placeholder="Start typing.." value="<?php echo (isset($_SESSION['search'])) ? $_SESSION['search'] : ''; ?>">
                                     <input type="hidden" name="searchid" id="searchid" value="<?php echo ($_SESSION['searchid']) ? $_SESSION['searchid'] : ''; ?>">
                                   </div>
                                   <small class="empty-message text-danger"></small>

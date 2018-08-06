@@ -76,8 +76,6 @@ if(isset($_POST['edit'])){
   <!-- endinject -->
   <link rel="shortcut icon" href="images/favicon.png" />
   <link rel="stylesheet" href="css/parsley.css">
-  
-  <link rel="stylesheet" href="js/pines-notify/pnotify.css">
   <link rel="stylesheet" href="css/toggle/style.css">
 </head>
 <body>
@@ -104,6 +102,7 @@ if(isset($_POST['edit'])){
       
         <div class="content-wrapper">
           <?php include('include/flash.php'); ?>
+          <span id="errormsg"></span>
           <div class="row">
             
        
@@ -119,7 +118,7 @@ if(isset($_POST['edit'])){
                     <div class="form-group row">
                         <div class="col-12 col-md-4">
                           <label for="exampleInputName1">Financial year</label>
-                          <input type="text" class="form-control" name="financial_year" id="exampleInputName1" placeholder="Financial year" value="<?php echo $edit['f_name']; ?>" required="">
+                          <input type="text" class="form-control" name="financial_year" id="exampleInputName1" placeholder="Financial year" value="<?php echo (isset($edit['f_name'])) ? $edit['f_name'] : ''; ?>" required="">
                         </div>
                     </div>    
                         
@@ -132,7 +131,7 @@ if(isset($_POST['edit'])){
                                       <div class="col-12 col-md-6">
                                           <label for="exampleInputName1">Start Date</label>
                                                <div id="datepicker-popup1" class="input-group date datepicker">
-                                              <input type="text" value="<?php echo $edit['start_date']; ?>" name="start_date" class="form-control" required>
+                                              <input type="text" value="<?php echo (isset($edit['start_date'])) ? $edit['start_date'] : ''; ?>" name="start_date" class="form-control" required>
                                               <span class="input-group-addon input-group-append border-left">
                                                 <span class="mdi mdi-calendar input-group-text"></span>
                                               </span>
@@ -143,7 +142,7 @@ if(isset($_POST['edit'])){
                                       <div class="col-12 col-md-6">
                                            <label for="exampleInputName1">End Date</label>
                                           <div id="datepicker-popup2" class="input-group date datepicker">
-                                          <input type="text" value="<?php echo $edit['end_date']; ?>" required name="end_date" class="form-control">
+                                          <input type="text" value="<?php echo (isset($edit['end_date'])) ? $edit['end_date'] : ''; ?>" required name="end_date" class="form-control">
                                           <span class="input-group-addon input-group-append border-left">
                                             <span class="mdi mdi-calendar input-group-text"></span>
                                           </span>
@@ -166,7 +165,7 @@ if(isset($_POST['edit'])){
                                       <div class="col">
                                           <div class="form-radio">
                                           <label class="form-check-label">
-                                          <input type="radio" class="form-check-input" name="action" id="optionsRadios1" value="1" <?php if(isset($_GET['id'])){if($edit['status'] == "1"){echo "checked";}  }else{echo"checked";} ?>>
+                                          <input type="radio" <?php if(isset($edit['status']) && $edit['status'] == "1"){echo "checked";}else{echo"checked";} ?> class="form-check-input" name="action" id="optionsRadios1" value="1">
                                           Active
                                           </label>
                                           </div>
@@ -175,7 +174,7 @@ if(isset($_POST['edit'])){
                                       <div class="col">
                                           <div class="form-radio">
                                           <label class="form-check-label">
-                                          <input type="radio" <?php if($edit['status'] == "0"){echo "checked";} ?> class="form-check-input" name="action" id="optionsRadios2" value="0">
+                                          <input type="radio" <?php if(isset($edit['status']) && $edit['status'] == "0"){echo "checked";} ?> class="form-check-input" name="action" id="optionsRadios2" value="0">
                                           Deactive
                                           </label>
                                           </div>
@@ -345,7 +344,6 @@ if(isset($_POST['edit'])){
   
   <!-- change status js -->
   <script src="js/custom/statusupdate.js"></script>
-  <script src="js/pines-notify/pnotify.min.js"></script>
   
   <!-- End custom js for this page-->
 </body>

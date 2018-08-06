@@ -1,6 +1,4 @@
-<?php include('include/usertypecheck.php'); ?>
-<!DOCTYPE html>
-<html lang="en">
+<?php include('include/usertypecheck.php');?>
 <?php 
 if(isset($_GET['id'])){
   $id = $_GET['id'];
@@ -51,7 +49,8 @@ if(isset($_POST['edit'])){
   }
 }
 ?>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
@@ -77,8 +76,6 @@ if(isset($_POST['edit'])){
   <link rel="stylesheet" href="css/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="images/favicon.png" />
-  
-  <link rel="stylesheet" href="js/pines-notify/pnotify.css">
   <link rel="stylesheet" href="css/toggle/style.css">
 </head>
 <body>
@@ -105,6 +102,7 @@ if(isset($_POST['edit'])){
       
         <div class="content-wrapper">
           <?php include('include/flash.php'); ?>
+          <span id="errormsg"></span>
           <div class="row">
             
        
@@ -120,7 +118,7 @@ if(isset($_POST['edit'])){
                     <div class="form-group row">
                         <div class="col-12 col-md-4">
                           <label for="exampleInputName1">Product Type</label>
-                          <input type="text" class="form-control" name="product_type" id="exampleInputName1" placeholder="Product Type" value="<?php echo $edit['product_type']; ?>" required="">
+                          <input type="text" class="form-control" name="product_type" id="exampleInputName1" placeholder="Product Type" value="<?php echo (isset($edit['product_type'])) ? $edit['product_type'] : ''; ?>" required="">
                         </div>
                     </div>    
                     <div class="form-group row">
@@ -133,7 +131,7 @@ if(isset($_POST['edit'])){
                                       <div class="col">
                                           <div class="form-radio">
                                           <label class="form-check-label">
-                                          <input type="radio" class="form-check-input" name="status" id="optionsRadios1" value="1" <?php if(isset($_GET['id'])){if($edit['status'] == "1"){echo "checked";}  }else{echo"checked";} ?>>
+                                          <input type="radio" class="form-check-input" name="status" id="optionsRadios1" value="1" <?php if(isset($_GET['id'])){if(isset($edit['status']) && $edit['status'] == "1"){echo "checked";}  }else{echo"checked";} ?>>
                                           Active
                                           </label>
                                           </div>
@@ -142,7 +140,7 @@ if(isset($_POST['edit'])){
                                       <div class="col">
                                           <div class="form-radio">
                                           <label class="form-check-label">
-                                          <input type="radio" <?php if($edit['status'] == "0"){echo "checked";} ?> class="form-check-input" name="status" id="optionsRadios2" value="0">
+                                          <input type="radio" <?php if(isset($edit['status']) && $edit['status'] == "0"){echo "checked";} ?> class="form-check-input" name="status" id="optionsRadios2" value="0">
                                           Deactive
                                           </label>
                                           </div>
@@ -309,7 +307,6 @@ if(isset($_POST['edit'])){
   
   <!-- change status js -->
   <script src="js/custom/statusupdate.js"></script>
-  <script src="js/pines-notify/pnotify.min.js"></script>
   
   <!-- End custom js for this page-->
 </body>

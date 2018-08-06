@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
 <?php 
   include("include/config.php");
   if($_POST){
@@ -47,7 +45,8 @@
 
   }
 ?>
-
+<!DOCTYPE html>
+<html lang="en">
 <!-- Mirrored from www.urbanui.com/pearl-admin/pages/samples/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 04 Jul 2018 08:41:24 GMT -->
 <head>
   <!-- Required meta tags -->
