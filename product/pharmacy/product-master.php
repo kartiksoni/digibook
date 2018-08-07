@@ -1,9 +1,9 @@
 <?php include('include/usertypecheck.php');
 if(isset($_GET['id'])){
-	$id = $_GET['id'];
+  $id = $_GET['id'];
   $query = "SELECT * FROM `product_master`WHERE id ='".$_GET['id']."'";
-	$result = mysqli_query($conn,$query);
-	$data = mysqli_fetch_array($result);
+  $result = mysqli_query($conn,$query);
+  $data = mysqli_fetch_array($result);
 }
 
 
@@ -60,66 +60,66 @@ if(isset($_POST['submit'])){
 
 if(isset($_POST['update'])){
 
-	$user_id = $_SESSION['auth']['id'];
-	$financial_year_id = "0";
-	$product_name = $_POST['product_name'];
-	$generic_name = $_POST['generic_name'];
-	$mfg_company = $_POST['mfg_company'];
-	$schedule_cat = $_POST['schedule_cat'];
-	$product_type = $_POST['product_type'];
-	$product_cat = $_POST['product_cat'];
-	$sub_cat = $_POST['sub_cat'];
-	$hsn_code = $_POST['hsn_code'];
-	$batch_no = $_POST['batch_no'];
-	$ex_date = date("Y-m-d",strtotime(str_replace("/","-",$_POST['ex_date'])));
-	$opening_qty = $_POST['opening_qty'];
-	$opening_qty_godown = $_POST['opening_qty_godown'];
-	$give_mrp = $_POST['give_mrp'];
-	$ex_duty = $_POST['ex_duty'];
-	$igst = $_POST['igst'];
-	$cgst = $_POST['cgst'];
-	$sgst = $_POST['sgst'];
-	$inward_rate = $_POST['inward_rate'];
-	$distributor_rate = $_POST['distributor_rate'];
-	$sale_rate_local = $_POST['sale_rate_local'];
-	$sale_rate_out = $_POST['sale_rate_out'];
-	$rack_no = $_POST['rack_no'];
-	$self_no = $_POST['self_no'];
-	$box_no = $_POST['box_no'];
-	$company_code = $_POST['company_code'];
-	$opening_stock = $_POST['opening_stock'];
-	$unit = $_POST['unit'];
-	$min_qty = $_POST['min_qty'];
-	$max_qty = $_POST['max_qty'];
-	$ratio = $_POST['ratio'];
+  $user_id = $_SESSION['auth']['id'];
+  $financial_year_id = "0";
+  $product_name = $_POST['product_name'];
+  $generic_name = $_POST['generic_name'];
+  $mfg_company = $_POST['mfg_company'];
+  $schedule_cat = $_POST['schedule_cat'];
+  $product_type = $_POST['product_type'];
+  $product_cat = $_POST['product_cat'];
+  $sub_cat = $_POST['sub_cat'];
+  $hsn_code = $_POST['hsn_code'];
+  $batch_no = $_POST['batch_no'];
+  $ex_date = date("Y-m-d",strtotime(str_replace("/","-",$_POST['ex_date'])));
+  $opening_qty = $_POST['opening_qty'];
+  $opening_qty_godown = $_POST['opening_qty_godown'];
+  $give_mrp = $_POST['give_mrp'];
+  $ex_duty = $_POST['ex_duty'];
+  $igst = $_POST['igst'];
+  $cgst = $_POST['cgst'];
+  $sgst = $_POST['sgst'];
+  $inward_rate = $_POST['inward_rate'];
+  $distributor_rate = $_POST['distributor_rate'];
+  $sale_rate_local = $_POST['sale_rate_local'];
+  $sale_rate_out = $_POST['sale_rate_out'];
+  $rack_no = $_POST['rack_no'];
+  $self_no = $_POST['self_no'];
+  $box_no = $_POST['box_no'];
+  $company_code = $_POST['company_code'];
+  $opening_stock = $_POST['opening_stock'];
+  $unit = $_POST['unit'];
+  $min_qty = $_POST['min_qty'];
+  $max_qty = $_POST['max_qty'];
+  $ratio = $_POST['ratio'];
   $status = $_POST['status'];
 
-	$query = "SELECT * FROM `product_master`WHERE id ='".$_GET['id']."'";
-	$result = mysqli_query($conn,$query);
-	$data = mysqli_fetch_array($result);
-	
-	if($data['give_mrp'] == $give_mrp){
-		$updateQry = "UPDATE `product_master` SET `product_name`='".$product_name."',`generic_name`='".$generic_name."',`mfg_company`='".$mfg_company."',`schedule_cat`='".$schedule_cat."',`product_type`='".$product_type."',`product_cat`='".$product_cat."',`sub_cat`='".$sub_cat."',`hsn_code`='".$hsn_code."',`batch_no`='".$batch_no."',`ex_date`='".$ex_date."',`opening_qty`='".$opening_qty."',`opening_qty_godown`='".$opening_qty_godown."',`give_mrp`='".$give_mrp."',`ex_duty`='".$ex_duty."',`igst`='".$igst."',`cgst`='".$cgst."',`sgst`='".$sgst."',`inward_rate`='".$inward_rate."',`distributor_rate`='".$distributor_rate."',`sale_rate_local`='".$sale_rate_local."',`sale_rate_out`='".$sale_rate_out."',`rack_no`='".$rack_no."',`self_no`='".$self_no."',`box_no`='".$box_no."',`company_code`='".$company_code."',`opening_stock`='".$opening_stock."',`unit`='".$unit."',`min_qty`='".$min_qty."',`max_qty`='".$max_qty."',`ratio`='".$ratio."',`status`='".$status."',`updated_at`='".date('Y-m-d H:i:s')."',`updated_by`='".$user_id."' WHERE id='".$_GET['id']."'";
-		$queryUpdate = mysqli_query($conn,$updateQry);
-		if($queryUpdate){
-		    $_SESSION['msg']['success'] = "Product Updated Successfully.";
-		    header('Location: view-product-master.php');exit;
-		    //header('location: view-product-master.php');exit;
-		}else{
-			$_SESSION['msg']['fail'] = "Product Updated Failed.";
-	    	header('Location: view-product-master.php');exit;
-	    }
-	}else{
-		$insQry = "INSERT INTO `product_master` (`user_id`, `finance_year_id`, `product_name`, `generic_name`, `mfg_company`, `schedule_cat`, `product_type`, `product_cat`, `sub_cat`, `hsn_code`, `opening_qty`, `opening_qty_godown`, `give_mrp`, `ex_duty`, `igst`, `cgst`, `sgst`, `inward_rate`, `distributor_rate`, `sale_rate_local`, `sale_rate_out`, `rack_no`, `self_no`, `box_no`, `company_code`, `opening_stock`, `unit`, `min_qty`, `max_qty`,`ratio`, `created_at`, `created_by`) VALUES ('".$user_id."', '".$financial_year_id."', '".$product_name."', '".$generic_name."', '".$mfg_company."', '".$schedule_cat."', '".$product_type."', '".$product_cat."', '".$sub_cat."', '".$hsn_code."','".$opening_qty."', '".$opening_qty_godown."', '".$give_mrp."', '".$ex_duty."', '".$igst."', '".$cgst."', '".$sgst."', '".$inward_rate."', '".$distributor_rate."', '".$sale_rate_local."', '".$sale_rate_out."', '".$rack_no."', '".$self_no."', '".$box_no."', '".$company_code."', '".$opening_stock."', '".$unit."', '".$min_qty."', '".$max_qty."','".$ratio."', '".date('Y-m-d H:i:s')."', '".$user_id."')";
-  		$queryInsert = mysqli_query($conn,$insQry);
-  		if($queryInsert){
-		    $_SESSION['msg']['success'] = "Duplicate Product Added Successfully.";
-		    header('Location: view-product-master.php');exit;
-		}else{
-			$_SESSION['msg']['fail'] = "Duplicate Product Added Failed.";
-	    	header('Location: view-product-master.php');exit;
-	    }
-	}
+  $query = "SELECT * FROM `product_master`WHERE id ='".$_GET['id']."'";
+  $result = mysqli_query($conn,$query);
+  $data = mysqli_fetch_array($result);
+  
+  if($data['give_mrp'] == $give_mrp){
+    $updateQry = "UPDATE `product_master` SET `product_name`='".$product_name."',`generic_name`='".$generic_name."',`mfg_company`='".$mfg_company."',`schedule_cat`='".$schedule_cat."',`product_type`='".$product_type."',`product_cat`='".$product_cat."',`sub_cat`='".$sub_cat."',`hsn_code`='".$hsn_code."',`batch_no`='".$batch_no."',`ex_date`='".$ex_date."',`opening_qty`='".$opening_qty."',`opening_qty_godown`='".$opening_qty_godown."',`give_mrp`='".$give_mrp."',`ex_duty`='".$ex_duty."',`igst`='".$igst."',`cgst`='".$cgst."',`sgst`='".$sgst."',`inward_rate`='".$inward_rate."',`distributor_rate`='".$distributor_rate."',`sale_rate_local`='".$sale_rate_local."',`sale_rate_out`='".$sale_rate_out."',`rack_no`='".$rack_no."',`self_no`='".$self_no."',`box_no`='".$box_no."',`company_code`='".$company_code."',`opening_stock`='".$opening_stock."',`unit`='".$unit."',`min_qty`='".$min_qty."',`max_qty`='".$max_qty."',`ratio`='".$ratio."',`status`='".$status."',`updated_at`='".date('Y-m-d H:i:s')."',`updated_by`='".$user_id."' WHERE id='".$_GET['id']."'";
+    $queryUpdate = mysqli_query($conn,$updateQry);
+    if($queryUpdate){
+        $_SESSION['msg']['success'] = "Product Updated Successfully.";
+        header('Location: view-product-master.php');exit;
+        //header('location: view-product-master.php');exit;
+    }else{
+      $_SESSION['msg']['fail'] = "Product Updated Failed.";
+        header('Location: view-product-master.php');exit;
+      }
+  }else{
+    $insQry = "INSERT INTO `product_master` (`user_id`, `finance_year_id`, `product_name`, `generic_name`, `mfg_company`, `schedule_cat`, `product_type`, `product_cat`, `sub_cat`, `hsn_code`, `opening_qty`, `opening_qty_godown`, `give_mrp`, `ex_duty`, `igst`, `cgst`, `sgst`, `inward_rate`, `distributor_rate`, `sale_rate_local`, `sale_rate_out`, `rack_no`, `self_no`, `box_no`, `company_code`, `opening_stock`, `unit`, `min_qty`, `max_qty`,`ratio`, `created_at`, `created_by`) VALUES ('".$user_id."', '".$financial_year_id."', '".$product_name."', '".$generic_name."', '".$mfg_company."', '".$schedule_cat."', '".$product_type."', '".$product_cat."', '".$sub_cat."', '".$hsn_code."','".$opening_qty."', '".$opening_qty_godown."', '".$give_mrp."', '".$ex_duty."', '".$igst."', '".$cgst."', '".$sgst."', '".$inward_rate."', '".$distributor_rate."', '".$sale_rate_local."', '".$sale_rate_out."', '".$rack_no."', '".$self_no."', '".$box_no."', '".$company_code."', '".$opening_stock."', '".$unit."', '".$min_qty."', '".$max_qty."','".$ratio."', '".date('Y-m-d H:i:s')."', '".$user_id."')";
+      $queryInsert = mysqli_query($conn,$insQry);
+      if($queryInsert){
+        $_SESSION['msg']['success'] = "Duplicate Product Added Successfully.";
+        header('Location: view-product-master.php');exit;
+    }else{
+      $_SESSION['msg']['fail'] = "Duplicate Product Added Failed.";
+        header('Location: view-product-master.php');exit;
+      }
+  }
 
 }
 ?>
@@ -198,7 +198,7 @@ if(isset($_POST['update'])){
                       
                        <div class="col-12 col-md-4">
                         <label for="exampleInputName1">MFG. Company<span class="text-danger">*</span></label>
-                      	<input type="text" name="mfg_company" required="" value="<?php echo (isset($data['mfg_company'])) ? $data['mfg_company'] : '';?>" class="form-control" id="exampleInputName1" placeholder="MFG. Company">
+                        <input type="text" name="mfg_company" required="" value="<?php echo (isset($data['mfg_company'])) ? $data['mfg_company'] : '';?>" class="form-control" id="exampleInputName1" placeholder="MFG. Company">
                       </div>
                   </div>
                     
@@ -206,7 +206,7 @@ if(isset($_POST['update'])){
                      
                       <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Schedule Category</label>
-                      	<select class="js-example-basic-single" name="schedule_cat" style="width:100%">
+                        <select class="js-example-basic-single" name="schedule_cat" style="width:100%">
                         <?php $data['schedule_cat'] = (isset($data['schedule_cat'])) ? $data['schedule_cat'] : '';?>
                             <option value="">Select Schedule Category</option>
                             <option <?php if($data['schedule_cat'] == "Schedule1"){echo "selected";} ?> value="Schedule1">Schedule1</option>
@@ -251,8 +251,8 @@ if(isset($_POST['update'])){
                     <div class="form-group row">
                         
                         <div class="col-12 col-md-4">
-                        	<label for="exampleInputName1">Sub Category</label>
-                        	<select name="sub_cat" class="js-example-basic-single" style="width:100%">
+                          <label for="exampleInputName1">Sub Category</label>
+                          <select name="sub_cat" class="js-example-basic-single" style="width:100%">
                                 <option value="">Select Sub Category</option>
                                 <?php $data['sub_cat'] = (isset($data['sub_cat'])) ? $data['sub_cat'] : '';?>
                                 <option <?php if($data['sub_cat'] =="Sub Cat1"){echo"selected";} ?> value="Sub Cat1">Sub Cat1</option>
@@ -280,7 +280,7 @@ if(isset($_POST['update'])){
                         <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Expiry Date</label>
                             <div id="datepicker-popup1" class="input-group date datepicker">
-                            <input name="ex_date" value="<?php echo date("d/m/Y",strtotime(str_replace("-","/",$data['ex_date']))); ?>" type="text" class="form-control border" placeholder="dd/mm/yyyy" >
+                            <input name="ex_date" value="<?php echo (isset($data['ex_date']) && $data['ex_date'] != '') ? date("d/m/Y",strtotime(str_replace("-","/",$data['ex_date']))) : ''; ?>" type="text" class="form-control border" placeholder="dd/mm/yyyy" >
                             <span class="input-group-addon input-group-append border-left">
                               <span class="mdi mdi-calendar input-group-text"></span>
                             </span>
@@ -302,17 +302,17 @@ if(isset($_POST['update'])){
                     <div class="form-group row">
                        
                         <div class="col-12 col-md-4">
-                        <label for="exampleInputName1">Give a New MRP<span class="text-danger">*</span></label>
-                        <input type="text" required="" value="<?php echo (isset($data['give_mrp'])) ? $data['give_mrp'] : '';?>" name="give_mrp" class="form-control numberOnly" id="exampleInputName1" placeholder="Give a New MRP">
+                        <label for="exampleInputName1">Give a New MRP</label>
+                        <input type="text" value="<?php echo (isset($data['give_mrp'])) ? $data['give_mrp'] : '';?>" name="give_mrp" class="form-control numberOnly" id="exampleInputName1" placeholder="Give a New MRP">
                         </div>
                         
                         <div class="col-12 col-md-4">
-                        <label for="exampleInputName1">Ex. Duty<span class="text-danger">*</span></label>
+                        <label for="exampleInputName1">Ex. Duty</label>
                         <div class="input-group">
                           <div class="input-group-prepend bg-dark">
                             <span class="input-group-text bg-transparent"><i class="mdi mdi-percent text-white"></i></span>
                           </div>
-                          <input type="text" required="" value="<?php echo (isset($data['ex_duty'])) ? $data['ex_duty'] : '';?>" name="ex_duty" class="form-control" placeholder="Ex. Duty" aria-label="Ex. Duty">
+                          <input type="text" value="<?php echo (isset($data['ex_duty'])) ? $data['ex_duty'] : '';?>" name="ex_duty" class="form-control" placeholder="Ex. Duty" aria-label="Ex. Duty">
                         </div>
                         </div>
                         
@@ -327,7 +327,7 @@ if(isset($_POST['update'])){
                     <div class="form-group row">
                       <div class="col-12 col-md-4">
                         <label for="exampleInputName1">CGST</label>
-                      	<input type="text"  name="cgst" value="<?php echo (isset($data['cgst'])) ? $data['cgst'] : '';?>" class="form-control numberOnly" id="exampleInputName1" placeholder="CGST">
+                        <input type="text"  name="cgst" value="<?php echo (isset($data['cgst'])) ? $data['cgst'] : '';?>" class="form-control numberOnly" id="exampleInputName1" placeholder="CGST">
                       </div>
                       <div class="col-12 col-md-4">
                         <label for="exampleInputName1">SGST</label>
@@ -379,8 +379,8 @@ if(isset($_POST['update'])){
                     </div>
                     
                     <div class="col-12 col-md-4">
-	                    <label for="exampleInputName1">Company Code</label>
-                    	<input type="text" name="company_code" value="<?php echo (isset($data['company_code'])) ? $data['company_code'] : '';?>" class="form-control" id="exampleInputName1" placeholder="Company Code">
+                      <label for="exampleInputName1">Company Code</label>
+                      <input type="text" name="company_code" value="<?php echo (isset($data['company_code'])) ? $data['company_code'] : '';?>" class="form-control" id="exampleInputName1" placeholder="Company Code">
                     </div>
                     </div>
                     
@@ -398,7 +398,7 @@ if(isset($_POST['update'])){
                             
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Min Qty.<span class="text-danger">*</span></label>
-                      			<input type="text" required="" value="<?php echo (isset($data['min_qty'])) ? $data['min_qty'] : '';?>" name="min_qty" class="form-control numberOnly" id="exampleInputName1" placeholder="Min Qty.">
+                            <input type="text" required="" value="<?php echo (isset($data['min_qty'])) ? $data['min_qty'] : '';?>" name="min_qty" class="form-control numberOnly" id="exampleInputName1" placeholder="Min Qty.">
                             </div>
 
                     </div>
@@ -411,8 +411,8 @@ if(isset($_POST['update'])){
                         </div>
                        
                         <div class="col-12 col-md-4">
-                        	<label for="exampleInputName1">Max Qty.<span class="text-danger">*</span></label>
-                  			<input type="text" required="" value="<?php echo (isset($data['max_qty'])) ? $data['max_qty'] : '';?>" name="max_qty" class="form-control numberOnly" id="exampleInputName1" placeholder="Max Qty.">
+                          <label for="exampleInputName1">Max Qty.<span class="text-danger">*</span></label>
+                        <input type="text" required="" value="<?php echo (isset($data['max_qty'])) ? $data['max_qty'] : '';?>" name="max_qty" class="form-control numberOnly" id="exampleInputName1" placeholder="Max Qty.">
                         </div>
                         <div class="col-12 col-md-4">
                                   <label for="exampleInputName1">Status</label>
@@ -447,13 +447,13 @@ if(isset($_POST['update'])){
                     <a href="view-product-master.php" class="btn btn-light pull-left">Back</a>
                     <?php 
                     if(isset($_GET['id'])){
-                    	?>
+                      ?>
                     <button type="submit" name="update" class="btn btn-success mr-2 pull-left">Update</button>
-                    	<?php
+                      <?php
                     }else{
                     ?>
                     <button type="submit" name="submit" class="btn btn-success mr-2 pull-right">Submit</button>
-                	<?php } ?>
+                  <?php } ?>
                     
                     
                   </form>
@@ -540,11 +540,11 @@ if(isset($_POST['update'])){
   <script src="js/data-table.js"></script> 
   
   <script>
-  	 $('#order-listing2').DataTable();
+     $('#order-listing2').DataTable();
   </script>
   
   <script>
-  	 $('#order-listing1').DataTable();
+     $('#order-listing1').DataTable();
   </script>
   
 </body>

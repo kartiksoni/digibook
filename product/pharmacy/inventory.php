@@ -87,6 +87,7 @@
   <!-- endinject -->
   <link rel="shortcut icon" href="images/favicon.png" />
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="css/parsley.css">
 </head>
 <body>
   <div class="container-scroller">
@@ -119,10 +120,9 @@
                       <div class="col-12 col-md-10 col-sm-12">
                           <div class="enventory">
                               <a href="#" class="btn btn-dark active">Inventory</a>
-                              <a href="inventory-adjustment.php" class="btn btn-dark">Inventory Adjustment</a>
                               <a href="#" class="btn btn-dark">Update Inventory </a>
                               <a href="#" class="btn btn-dark">Inventory Setting </a>
-                              <a href="#" class="btn btn-dark">Product Master </a>
+                              <a href="product-master.php" class="btn btn-dark">Product Master </a>
                               <a href="inventory-self-consumption.php" class="btn btn-dark">Self Consumption </a>
                           </div>          
                       </div> 
@@ -165,8 +165,8 @@
                                   ?>
                                   <label id="search-lable"><?php echo $lbl; ?></label>
                                   <div id="bloodhound">
-                                    <input class="form-control" name="search" id="search" type="text" placeholder="Start typing.." value="<?php echo (isset($_SESSION['search'])) ? $_SESSION['search'] : ''; ?>">
-                                    <input type="hidden" name="searchid" id="searchid" value="<?php echo ($_SESSION['searchid']) ? $_SESSION['searchid'] : ''; ?>">
+                                    <input class="form-control" name="search" id="search" type="text" placeholder="Start typing.." value="<?php echo (isset($_SESSION['search'])) ? $_SESSION['search'] : ''; ?>" required>
+                                    <input type="hidden" name="searchid" id="searchid" value="<?php echo (isset($_SESSION['searchid'])) ? $_SESSION['searchid'] : ''; ?>">
                                   </div>
                                   <small class="empty-message text-danger"></small>
                               </div>
@@ -185,32 +185,32 @@
                             <label class="">Search by alphabet</label>
                           </div>
                           <div class="col-12">  
-                            <a href="?alphabet=a" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'a') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">A</a>
-                            <a href="?alphabet=b" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'b') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">B</a>
-                            <a href="?alphabet=c" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'c') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">C</a>
-                            <a href="?alphabet=d" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'd') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">D</a>
-                            <a href="?alphabet=e" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'e') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">E</a>
-                            <a href="?alphabet=f" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'f') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">F</a>
-                            <a href="?alphabet=g" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'g') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">G</a>
-                            <a href="?alphabet=h" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'h') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">H</a>
-                            <a href="?alphabet=i" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'i') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">I</a>
-                            <a href="?alphabet=j" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'j') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">J</a>
-                            <a href="?alphabet=k" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'k') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">K</a>
-                            <a href="?alphabet=l" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'l') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">L</a>
-                            <a href="?alphabet=m" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'm') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">M</a>
-                            <a href="?alphabet=n" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'n') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">N</a>
-                            <a href="?alphabet=o" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'o') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">O</a>
-                            <a href="?alphabet=p" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'p') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">P</a>
-                            <a href="?alphabet=q" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'q') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">Q</a>
-                            <a href="?alphabet=r" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'r') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">R</a>
-                            <a href="?alphabet=s" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 's') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">S</a>
-                            <a href="?alphabet=t" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 't') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">T</a>
-                            <a href="?alphabet=u" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'u') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">U</a>
-                            <a href="?alphabet=v" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'v') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">V</a>
-                            <a href="?alphabet=w" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'w') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">W</a>
-                            <a href="?alphabet=x" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'x') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">X</a>
-                            <a href="?alphabet=y" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'y') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">Y</a>
-                            <a href="?alphabet=z" class="btn <?php echo ($_SESSION['inventory_alphabet'] == 'z') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">Z</a>
+                            <a href="?alphabet=a" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'a') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">A</a>
+                            <a href="?alphabet=b" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'b') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">B</a>
+                            <a href="?alphabet=c" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'c') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">C</a>
+                            <a href="?alphabet=d" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'd') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">D</a>
+                            <a href="?alphabet=e" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'e') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">E</a>
+                            <a href="?alphabet=f" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'f') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">F</a>
+                            <a href="?alphabet=g" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'g') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">G</a>
+                            <a href="?alphabet=h" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'h') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">H</a>
+                            <a href="?alphabet=i" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'i') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">I</a>
+                            <a href="?alphabet=j" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'j') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">J</a>
+                            <a href="?alphabet=k" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'k') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">K</a>
+                            <a href="?alphabet=l" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'l') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">L</a>
+                            <a href="?alphabet=m" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'm') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">M</a>
+                            <a href="?alphabet=n" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'n') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">N</a>
+                            <a href="?alphabet=o" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'o') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">O</a>
+                            <a href="?alphabet=p" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'p') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">P</a>
+                            <a href="?alphabet=q" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'q') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">Q</a>
+                            <a href="?alphabet=r" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'r') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">R</a>
+                            <a href="?alphabet=s" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 's') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">S</a>
+                            <a href="?alphabet=t" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 't') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">T</a>
+                            <a href="?alphabet=u" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'u') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">U</a>
+                            <a href="?alphabet=v" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'v') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">V</a>
+                            <a href="?alphabet=w" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'w') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">W</a>
+                            <a href="?alphabet=x" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'x') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">X</a>
+                            <a href="?alphabet=y" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'y') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">Y</a>
+                            <a href="?alphabet=z" class="btn <?php echo (isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] == 'z') ? 'btn-success' : 'btn-primary'; ?> filter-alphabet btn-xs">Z</a>
                           </div>
                         </div>
                       </div>
@@ -231,24 +231,27 @@
                           $allRes = mysqli_query($conn, $allQuery);
                           $product_all = ($allRes) ? mysqli_num_rows($allRes) : 0;
                         ?>
-                        <a href="?product=all" class="btn btn-sm <?php echo ($_SESSION['product'] == '' || $_SESSION['product'] == 'all') ? 'btn-success' : 'btn-outline-success'; ?>">All (<?php echo $product_all; ?>)</a>
+                        <a href="?product=all" class="btn btn-sm <?php echo (!isset($_SESSION['product']) || (isset($_SESSION['product']) && $_SESSION['product'] == '') || (isset($_SESSION['product']) && $_SESSION['product'] == 'all')) ? 'btn-success' : 'btn-outline-success'; ?>">All (<?php echo $product_all; ?>)</a>
                         <?php
                           $availableQuery = "SELECT id FROM product_master WHERE status = 1 AND ex_date >= '".date('Y-m-d')."'";
                           $availableRes = mysqli_query($conn, $availableQuery);
                           $product_available = ($availableRes) ? mysqli_num_rows($availableRes) : 0;
                         ?>
-                        <a href="?product=available" class="btn btn-sm <?php echo ($_SESSION['product'] == 'available') ? 'btn-success' : 'btn-outline-success'; ?>">Available (<?php echo $product_available; ?>)</a>
+                        <a href="?product=available" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'available') ? 'btn-success' : 'btn-outline-success'; ?>">Available (<?php echo $product_available; ?>)</a>
+
+                        <a href="?product=nearexpiry" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'nearexpiry') ? 'btn-success' : 'btn-outline-success'; ?>">Near Expiry (0)</a>
+
                         <?php
                           $expiryQuery = "SELECT id FROM product_master WHERE status = 1 AND ex_date < '".date('Y-m-d')."'";
                           $expiryRes = mysqli_query($conn, $expiryQuery);
                           $product_expiry = ($expiryRes) ? mysqli_num_rows($expiryRes) : 0;
                         ?> 
-                        <a href="?product=expiry" class="btn btn-sm <?php echo ($_SESSION['product'] == 'expiry') ? 'btn-success' : 'btn-outline-success'; ?>">Expiry (<?php echo $product_expiry; ?>)</a>
+                        <a href="?product=expiry" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'expiry') ? 'btn-success' : 'btn-outline-success'; ?>">Expired (<?php echo $product_expiry; ?>)</a>
 
-                        <a href="?product=zerostock" class="btn btn-sm <?php echo ($_SESSION['product'] == 'zerostock') ? 'btn-success' : 'btn-outline-success'; ?>">Zero Stock (0)</a>   
-                        <a href="?product=overstock" class="btn btn-sm <?php echo ($_SESSION['product'] == 'overstock') ? 'btn-success' : 'btn-outline-success'; ?>">Over Stock (0)</a>
-                        <a href="?product=nonmovingstock" class="btn btn-sm <?php echo ($_SESSION['product'] == 'nonmovingstock') ? 'btn-success' : 'btn-outline-success'; ?>">Non Moving Stock</a>   
-                        <a href="?product=reorder" class="btn btn-sm <?php echo ($_SESSION['product'] == 'reorder') ? 'btn-success' : 'btn-outline-success'; ?>">Reorder</a>
+                        <a href="?product=zerostock" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'zerostock') ? 'btn-success' : 'btn-outline-success'; ?>">Zero Stock (0)</a>   
+                        <a href="?product=overstock" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'overstock') ? 'btn-success' : 'btn-outline-success'; ?>">Over Stock (0)</a>
+                        <a href="?product=nonmovingstock" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'nonmovingstock') ? 'btn-success' : 'btn-outline-success'; ?>">Non Moving Stock</a>   
+                        <a href="?product=reorder" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'reorder') ? 'btn-success' : 'btn-outline-success'; ?>">Reorder</a>
                     </div>
                     <hr>
                     
@@ -483,6 +486,12 @@
   <script src="js/custom/inventory.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <!-- End custom js for this page-->
+
+  <!-- script for custom validation -->
+<script src="js/parsley.min.js"></script>
+<script type="text/javascript">
+  $('form').parsley();
+</script>
 </body>
 
 
