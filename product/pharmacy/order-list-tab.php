@@ -20,7 +20,8 @@
   <!-- plugin css for this page -->
   <link rel="stylesheet" href="vendors/iconfonts/font-awesome/css/font-awesome.min.css" />
   <!-- End plugin css for this page -->
-  <!-- inject:css -->
+  <!-- inject:css --> 
+
   <link rel="stylesheet" href="css/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="images/favicon.png" />
@@ -85,10 +86,10 @@
                     <div class="row">
                     <div class="col-12">
                         <div class="enventory">
-                            <a href="#" class="btn btn-warning">Order</a>
-                            <a href="order-list-tab.php" class="btn btn-warning  active">List</a>
-                            <a href="#" class="btn btn-warning">Missed Sales Order</a>
-                            <a href="#" class="btn btn-warning btn-fw">Settings</a>
+                            <a href="order.php" class="btn btn-dark">Order</a>
+                            <a href="order-list-tab.php" class="btn btn-dark  active">List</a>
+                            <a href="#" class="btn btn-dark">Missed Sales Order</a>
+                            <a href="#" class="btn btn-dark btn-fw">Settings</a>
                         </div>  
                     </div> 
                     </div>
@@ -118,9 +119,6 @@
                             <option value="Composition">Generic Name</option>
                             </select>
                        </div>     
-                        <div class="col-md-2">
-                        <a href="#" class="btn btn-warning mt-30"><i class="fa fa-search"></i></a>
-                        </div>
                     </div>    
                     </div>
                     
@@ -131,9 +129,6 @@
                             <label class="col-12 row">Mobile</label>
                             <input type="text" class="form-control" id="exampleInputName1" placeholder="Mobile">
                        </div>     
-                        <div class="col-md-2">
-                        <a href="#" class="btn btn-warning mt-30"><i class="fa fa-search"></i></a>
-                        </div>
                     </div>    
                     </div>
                     
@@ -144,10 +139,7 @@
                             <label class="col-12 row">Order No.</label>
                             <input type="text" class="form-control" id="exampleInputName1" placeholder="Order No.">
                        </div>     
-                        <div class="col-md-2">
-                        <a href="#" class="btn btn-warning mt-30"><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>    
+                       </div>    
                     </div>
                     
                     
@@ -157,22 +149,48 @@
                             <label class="col-12 row">Email ID</label>
                             <input type="text" class="form-control" id="exampleInputName1" placeholder="Email ID">
                        </div>     
-                        <div class="col-md-2">
-                        <a href="#" class="btn btn-warning mt-30"><i class="fa fa-search"></i></a>
-                        </div>
                     </div>    
                     </div>
                     
-                    </div> 
                     
-                    <div class="col-12 col-md-12">
-	                    <button type="submit" class="btn btn-success mt-30" style="margin-top:30px;">Search</button>
+                    </div>
+                    
+                     <div class="form-group row">
+                    
+                    <div class="col-12 col-md-3">
+                    <div class="row no-gutters">
+                    	<div  class="col-md-12">
+                        <label class="col-12 row">From Date</label>
+                       <div id="datepicker-popup" class="input-group date datepicker">
+                        <input type="text" class="form-control">
+                        <span class="input-group-addon input-group-append border-left">
+                          <span class="mdi mdi-calendar input-group-text"></span>
+                        </span>
+                      </div>
+                    	</div>
+                    </div>    
                     </div>
                     
                     
-                   
+                      <div class="col-12 col-md-3">
+                    <div class="row no-gutters">
+                    	<div  class="col-md-12">
+                        <label class="col-12 row">To Date</label>
+                       <div id="datepicker-popup" class="input-group date datepicker">
+                        <input type="text" class="form-control">
+                        <span class="input-group-addon input-group-append border-left">
+                          <span class="mdi mdi-calendar input-group-text"></span>
+                        </span>
+                      </div>
+                    	</div>
+                    </div>    
+                    </div>
                     
-                    
+                    <div class="col-12 col-md-3">
+	                    <button type="submit" class="btn btn-success mt-30" style="margin-top:30px;">Search</button>
+                    </div>
+              
+                    </div>   
                     </form>
                 
                 </div>
@@ -180,10 +198,6 @@
               
                   
             </div>
-          
-      
-            
-           
             
              <!-- Table ------------------------------------------------------------------------------------------------------>
             
@@ -197,63 +211,59 @@
                    
                     
                     <!-- TABLE STARTS -->
+                    <?php 
+                        $sqlqry = "SELECT product_master.id as orderno, byvendor.created as orderdate, product_master.product_name as productname, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((byvendor INNER JOIN product_master ON byvendor.product_id = product_master.id) INNER JOIN ledger_master ON byvendor.vendor_id = ledger_master.id) WHERE byvendor.status = '0'";
+                        $sqlqryrun = mysqli_query($conn, $sqlqry); ?>
+
                     <div class="col mt-3">
                     	 <div class="row">
                             <div class="col-12">
                               <table id="order-listing1" class="table">
                                 <thead>
                                   <tr>
+                                      <th>Order No</th>
+                                      <th>Order Date</th>
+                                      <th>Product Name</th>
                                       <th>Vendor Name</th>
-                                      <th>Product</th>
-                                      <th>Purchase Price</th>
-                                      <th>GST</th>
-                                      <th>Unit / Strip / Packing</th>
-                                      <th>Qty</th>
+                                      <th>Mobile</th>
+                                      <th>Email</th>
+                                      <th>&nbsp;</th>
                                       <th>Action</th>
                                   </tr>
                                 </thead>
+                                <?php
+                                while($sqldata = mysqli_fetch_assoc($sqlqryrun))
+                                {
+                                ?>        
                                 <tbody>
                                   <!-- Row Starts --> 	
                                   <tr>
-                                      <td>1267</td>
-                                      <td>501 SOAP 300gm</td>
-                                      <td>94.40</td>
-                                      <td>12</td>
-                                      <td>4</td>
-                                      <td>40</td>
+                                      <td><?php echo $sqldata['orderno'];?></td>
+                                      <td><?php echo date('d/m/Y',strtotime($sqldata['orderdate']));?></td>
+                                      <td><?php echo $sqldata['productname'];?></td>
+                                      <td><?php echo $sqldata['vendorname']?></td>
+                                      <td><?php echo $sqldata['mobile'];?></td>
+                                      <td><?php echo $sqldata['email']?></td>
                                       <td>
-                                      	<a href="#" class="btn  btn-danger p-2">Remove</a>
-                                        <a href="#" class="btn  btn-dark p-2">Edit</a>
+                                      	<a href="#" class="btn btn-warning p-2" title="Email">
+                                        	<i class="fa fa-envelope mr-0"></i>
+                                        </a>
+                                      </td>
+                                      <td>
+                                      	<a href="#" class="btn btn-primary p-2" title="Print">
+                                        	<i class="fa fa-print mr-0"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-primary p-2" title="CSV">
+                                        	<i class="fa fa-file mr-0"></i>
+                                        </a>
                                       </td>
                                   </tr><!-- End Row --> 	
-                                  
-                                   <tr>
-                                      <td>1267</td>
-                                      <td>501 SOAP 300gm</td>
-                                      <td>94.40</td>
-                                      <td>12</td>
-                                      <td>4</td>
-                                      <td>40</td>
-                                      <td>
-                                      	<a href="#" class="btn  btn-danger p-2">Remove</a>
-                                        <a href="#" class="btn  btn-dark p-2">Edit</a>
-                                      </td>
-                                  </tr>
-                                  
-                                   <tr>
-                                      <td>1267</td>
-                                      <td>501 SOAP 300gm</td>
-                                      <td>94.40</td>
-                                      <td>12</td>
-                                      <td>4</td>
-                                      <td>40</td>
-                                      <td>
-                                      	<a href="#" class="btn  btn-danger p-2">Remove</a>
-                                        <a href="#" class="btn  btn-dark p-2">Edit</a>
-                                      </td>
-                                  </tr>
+                                 
                                  
                                 </tbody>
+                                <?php
+                                }
+                                ?>
                               </table>
                             </div>
                           </div>
@@ -369,7 +379,6 @@
   
   
   <!-- End custom js for this page-->
-  <?php include('include/usertypecheck.php'); ?>
 </body>
 
 
