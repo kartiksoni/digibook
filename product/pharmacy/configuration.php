@@ -214,6 +214,34 @@
                 </div>
               </a>
             </div>
+            <div class="col-md-3 grid-margin">
+              <a href="near-by.php" class="">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex flex-row align-items-top">
+                      <i class="mdi mdi-blur-linear text-facebook icon-md"></i>
+                      <div class="ml-3 p-t-5">
+                        <h5 class="text-facebook">Near Expiry</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+            <div class="col-md-3 grid-margin">
+              <a href="company-master.php" class="">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex flex-row align-items-top">
+                      <i class="mdi mdi-city text-facebook icon-md"></i>
+                      <div class="ml-3 p-t-5">
+                        <h5 class="text-facebook">Company Master</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
           </div>
         </div>
         <!-- content-wrapper ends -->
@@ -228,9 +256,6 @@
     <!-- page-body-wrapper ends -->
   </div>
   <!-- container-scroller -->
-  
-  
-
   
   
   

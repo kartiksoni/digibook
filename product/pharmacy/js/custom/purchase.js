@@ -20,47 +20,113 @@ $(document).ready(function(){
           $('.remove_last').show();
         }
         $(".product-select"+totalproduct).select2();
-          $( ".tags" ).autocomplete({
-             source: function (query, result) {
-          $.ajax({
-              url: "ajax.php",
-              data: {'query': query, 'action': 'getproduct'},            
-              dataType: "json",
-              type: "POST",
-              success: function (data) {
-                if(data.length === 0){
-                  $(".empty-message"+totalproduct).text("No results found");
-                }else{
-                  $(".empty-message"+totalproduct).empty();
-                  result($.map(data, function (item) {
-                    return {
-                        label: item.name,
-                        value: item.id,
-                        ratio: item.ratio,
-                        igst: item.igst,
-                        cgst: item.cgst,
-                        sgst: item.sgst    // EDIT
-                    }
-                  }));
-                }
+        $.widget('custom.mcautocomplete', $.ui.autocomplete, {
+          _create: function () {
+              this._super();
+              this.widget().menu("option", "items", "> :not(.ui-widget-header)");
+          },
+          _renderMenu: function (ul, items) {
+              var self = this,
+                  thead;
+              if (this.options.showHeader) {
+                  table = $('<div class="ui-widget-header" style="width:100%"></div>');
+                  $.each(this.options.columns, function (index, item) {
+                      table.append('<span style="padding:0 4px;float:left;width:' + item.width + ';">' + item.name + '</span>');
+                  });
+                  table.append('<div style="clear: both;"></div>');
+                  ul.append(table);
               }
-          });
-      },
-      focus: function( query, result ) {
-        $(this).closest('tr').find('.tags').val(result.item.label);
-        //$( ".tags" ).val( result.item.label );
-          return false;
-        },
-      select: function( query, result ) {
-          $(this).closest('tr').find('.product-id').val(result.item.value);
-          $(this).closest('tr').find('.qty-value').val(result.item.ratio);
-          $(this).closest('tr').find('.f_igst').val(result.item.igst);
-          $(this).closest('tr').find('.f_cgst').val(result.item.cgst);
-          $(this).closest('tr').find('.f_sgst').val(result.item.sgst);
-            //$( ".product-id" ).val( result.item.value );
-            return false;
-        }
-          });
+              $.each(items, function (index, item) {
+                  self._renderItem(ul, item);
+              });
+          },
+          _renderItem: function (ul, item) {
+              var t = '',
+                  result = '';
+              $.each(this.options.columns, function (index, column) {
+                  t += '<span style="padding:0 4px;float:left;width:' + column.width + ';">' + item[column.valueField ? column.valueField : index] + '</span>'
+              });
+              result = $('<li></li>')
+                  .data('ui-autocomplete-item', item)
+                  .append('<a class="mcacAnchor">' + t + '<div style="clear: both;"></div></a>')
+                  .appendTo(ul);
+              return result;
+          }
+        });
+
+        $(".tags").mcautocomplete({
+            // These next two options are what this plugin adds to the autocomplete widget.
+            showHeader: true,
+            columns: [{
+                name: 'Name',
+                width: '100px;',
+                valueField: 'name'
+            }, {
+                name: 'Qty',
+                width: '100px',
+                valueField: 'total_qty'
+            }, {
+                name: 'Batch',
+                width: '100px',
+                valueField: 'batch'
+            }, {
+                name: 'Generic Name',
+                width: '100px',
+                valueField: 'generic_name'
+            }, {
+                name: 'MRP',
+                width: '100px',
+                valueField: 'mrp'
+            }, {
+                name: 'Expiry Date',
+                width: '150px',
+                valueField: 'expiry'
+            }],
+
+            // Event handler for when a list item is selected.
+            select: function (event, ui) {
+                this.value = (ui.item ? ui.item.name : '');
+                //$('#results').text(ui.item ? 'Selected: ' + ui.item.name + ', ' + ui.item.purchase_id + ', ' + ui.item.batch : 'Nothing selected, input was ' + this.value);
+                console.log(ui);
+                $(this).closest('tr').find('.product-id').val(ui.item.id);
+                $(this).closest('tr').find('.qty-value').val(ui.item.ratio);
+                $(this).closest('tr').find('.f_igst').val(ui.item.igst);
+                $(this).closest('tr').find('.f_cgst').val(ui.item.cgst);
+                $(this).closest('tr').find('.f_sgst').val(ui.item.sgst);
+                return false;
+            },
+
+            // The rest of the options are for configuring the ajax webservice call.
+            minLength: 1,
+            source: function (request, response) {
+                $.ajax({
+                    url: 'ajax.php',
+                    dataType: 'json',
+                    type: "POST",
+                    data: {
+                        query: request.term,
+                        action: "getproduct_purchase"
+                    },
+                    // The success event handler will display "No match found" if no items are returned.
+                    success: function (data) {
+                      if(data.length === 0){
+                        $(".empty-message"+totalproduct).text("No results found");
+                      }else{
+                        $(".empty-message"+totalproduct).empty();
+                        var result;
+                        if (data.length < 0) {
+                            result = [{
+                                label: 'No match found.'
+                            }];
+                        } else {
+                            result = data;
+                        }
+                        response(result);
+                    }
+                  }
+                });
+            }
+        }); 
     });
 
     
@@ -80,47 +146,113 @@ $(document).ready(function(){
 
     // Auto Compalete For getproduct //
 
-    $( ".tags" ).autocomplete({
-     source: function (query, result) {
-          $.ajax({
-              url: "ajax.php",
-              data: {'query': query, 'action': 'getproduct'},            
-              dataType: "json",
-              type: "POST",
-              success: function (data) {
-                if(data.length === 0){
-                  $(".empty-message0").text("No results found");
-                }else{
-                  $(".empty-message0").empty();
-                  result($.map(data, function (item) {
-                    return {
-                        label: item.name,
-                        value: item.id,
-                        ratio: item.ratio,
-                        igst: item.igst,
-                        cgst: item.cgst,
-                        sgst: item.sgst    // EDIT
+    $.widget('custom.mcautocomplete', $.ui.autocomplete, {
+          _create: function () {
+              this._super();
+              this.widget().menu("option", "items", "> :not(.ui-widget-header)");
+          },
+          _renderMenu: function (ul, items) {
+              var self = this,
+                  thead;
+              if (this.options.showHeader) {
+                  table = $('<div class="ui-widget-header" style="width:100%"></div>');
+                  $.each(this.options.columns, function (index, item) {
+                      table.append('<span style="padding:0 4px;float:left;width:' + item.width + ';">' + item.name + '</span>');
+                  });
+                  table.append('<div style="clear: both;"></div>');
+                  ul.append(table);
+              }
+              $.each(items, function (index, item) {
+                  self._renderItem(ul, item);
+              });
+          },
+          _renderItem: function (ul, item) {
+              var t = '',
+                  result = '';
+              $.each(this.options.columns, function (index, column) {
+                  t += '<span style="padding:0 4px;float:left;width:' + column.width + ';">' + item[column.valueField ? column.valueField : index] + '</span>'
+              });
+              result = $('<li></li>')
+                  .data('ui-autocomplete-item', item)
+                  .append('<a class="mcacAnchor">' + t + '<div style="clear: both;"></div></a>')
+                  .appendTo(ul);
+              return result;
+          }
+    });
+
+    $(".tags").mcautocomplete({
+        // These next two options are what this plugin adds to the autocomplete widget.
+        showHeader: true,
+        columns: [{
+            name: 'Name',
+            width: '100px;',
+            valueField: 'name'
+        }, {
+            name: 'Qty',
+            width: '100px',
+            valueField: 'total_qty'
+        }, {
+            name: 'Batch',
+            width: '100px',
+            valueField: 'batch'
+        }, {
+            name: 'Generic Name',
+            width: '100px',
+            valueField: 'generic_name'
+        }, {
+            name: 'MRP',
+            width: '100px',
+            valueField: 'mrp'
+        }, {
+            name: 'Expiry Date',
+            width: '150px',
+            valueField: 'expiry'
+        }],
+
+        // Event handler for when a list item is selected.
+        select: function (event, ui) {
+            this.value = (ui.item ? ui.item.name : '');
+            //$('#results').text(ui.item ? 'Selected: ' + ui.item.name + ', ' + ui.item.purchase_id + ', ' + ui.item.batch : 'Nothing selected, input was ' + this.value);
+            console.log(ui);
+            $(this).closest('tr').find('.product-id').val(ui.item.id);
+            $(this).closest('tr').find('.qty-value').val(ui.item.ratio);
+            $(this).closest('tr').find('.f_igst').val(ui.item.igst);
+            $(this).closest('tr').find('.f_cgst').val(ui.item.cgst);
+            $(this).closest('tr').find('.f_sgst').val(ui.item.sgst);
+            return false;
+        },
+
+        // The rest of the options are for configuring the ajax webservice call.
+        minLength: 1,
+        source: function (request, response) {
+            $.ajax({
+                url: 'ajax.php',
+                dataType: 'json',
+                type: "POST",
+                data: {
+                    query: request.term,
+                    action: "getproduct_purchase"
+                },
+                // The success event handler will display "No match found" if no items are returned.
+                success: function (data) {
+                  if(data.length === 0){
+                    $(".empty-message0").text("No results found");
+                  }else{
+                    $(".empty-message0").empty();
+                    var result;
+                    if (data.length < 0) {
+                        result = [{
+                            label: 'No match found.'
+                        }];
+                    } else {
+                        result = data;
                     }
-                  }));
+                    response(result);
                 }
               }
-          });
-      },
-      focus: function( query, result ) {
-        $(this).closest('tr').find('.tags').val(result.item.label);
-        //$( ".tags" ).val( result.item.label );
-          return false;
-        },
-      select: function( query, result ) {
-
-          $(this).closest('tr').find('.product-id').val(result.item.value);
-          $(this).closest('tr').find('.qty-value').val(result.item.ratio);
-          $(this).closest('tr').find('.f_igst').val(result.item.igst);
-          $(this).closest('tr').find('.f_cgst').val(result.item.cgst);
-          $(this).closest('tr').find('.f_sgst').val(result.item.sgst);
-          return false;
+            });
         }
-    });
+    }); 
     // End Auto Compalete For getproduct //
 
     // Rate,Discount,rate js //
@@ -754,7 +886,11 @@ $( document ).ready(function() {
                 url: 'ajax.php',
                 data: {'vendor_id':vendor_id, 'action':'getPoiByVendor'},
                 dataType: "json",
+                beforeSend: function() {
+                    $('.vendor-loader').show();
+                },
                 success: function (data) {
+                    $('.vendor-loader').hide();
                   if(data.status == true){
                     var html = $('#poi-tr-html').html();
                     html = html.replace("<table>", "");
@@ -767,6 +903,7 @@ $( document ).ready(function() {
                       var tmphtml = html;
                       tmphtml = tmphtml.replace("##SRNO##",i+1);
                       tmphtml = tmphtml.replace("##DATE##",item.date);
+                      tmphtml = tmphtml.replace("##ORDER##",item.order_no);
                       tmphtml = tmphtml.replace("##PRODUCTNAME##",item.product_name);
                       tmphtml = tmphtml.replace("##PRODUCTID##",item.product_id);
                       tmphtml = tmphtml.replace("##GENERIC##",item.generic_name);
@@ -776,6 +913,7 @@ $( document ).ready(function() {
                       tmphtml = tmphtml.replace("##UNIT##",item.unit);
                       tmphtml = tmphtml.replace("##QTY##",item.qty);
                       tmphtml = tmphtml.replace("##POIID##",item.id);
+                      tmphtml = tmphtml.replace("##TABLE##",item.table);
                       finalhtml += tmphtml;
                     });
                     
@@ -787,7 +925,8 @@ $( document ).ready(function() {
                   }
                 },
                 error: function () {
-                  return false;
+                    $('.vendor-loader').hide();
+                    return false;
                 }
             });
       }else{
@@ -813,6 +952,7 @@ $( document ).ready(function() {
             tmparray['unit'] = $(this).closest('tr').find('.poi-unit').html();
             tmparray['qty'] = $(this).closest('tr').find('.poi-qty').html();
             tmparray['id'] = $(this).closest('tr').find('.poi-id').val();
+            tmparray['table'] = $(this).closest('tr').find('.poi-table').val();
             data.push(tmparray);
         });
 
@@ -849,6 +989,7 @@ $( document ).ready(function() {
                 $('#product-tbody tr:last').find('.f_igst').val(item.gst);
               }
               $('#product-tbody tr:last').find('.f_poi_id').val(item.id);
+              $('#product-tbody tr:last').find('.f_poi_table').val(item.table);
           });
 
         $('#poi-model').modal('hide');
