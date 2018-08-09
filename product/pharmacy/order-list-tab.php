@@ -103,7 +103,7 @@
                     </div>
 
                     
-                    <form class="forms-sample">
+                    <form class="forms-sample" method="post" action="">
                     
                     
                     <div class="form-group row">
@@ -123,11 +123,12 @@
                     </div>
                     
                     
+                    
                     <div class="col-12 col-md-3">
                     <div class="row no-gutters">
                         <div  class="col-md-10">
                             <label class="col-12 row">Mobile</label>
-                            <input type="text" class="form-control" id="exampleInputName1" placeholder="Mobile">
+                            <input type="text" class="form-control" id="exampleInputName1" placeholder="Mobile" name="mobile" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['mobile']; }?>">
                        </div>     
                     </div>    
                     </div>
@@ -137,7 +138,7 @@
                     <div class="row no-gutters">
                         <div  class="col-md-10">
                             <label class="col-12 row">Order No.</label>
-                            <input type="text" class="form-control" id="exampleInputName1" placeholder="Order No.">
+                            <input type="text" class="form-control" id="exampleInputName1" placeholder="Order No." name="orderno" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['orderno']; }?>">
                        </div>     
                        </div>    
                     </div>
@@ -147,7 +148,7 @@
                     <div class="row no-gutters">
                         <div  class="col-md-10">
                             <label class="col-12 row">Email ID</label>
-                            <input type="text" class="form-control" id="exampleInputName1" placeholder="Email ID">
+                            <input type="text" class="form-control" id="exampleInputName1" placeholder="Email ID" name="email" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['email']; }?>">
                        </div>     
                     </div>    
                     </div>
@@ -161,8 +162,8 @@
                     <div class="row no-gutters">
                     	<div  class="col-md-12">
                         <label class="col-12 row">From Date</label>
-                       <div id="datepicker-popup" class="input-group date datepicker">
-                        <input type="text" class="form-control">
+                       <div  class="input-group date datepicker">
+                        <input type="text" class="form-control" name="fromdate" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['fromdate']; }?>">
                         <span class="input-group-addon input-group-append border-left">
                           <span class="mdi mdi-calendar input-group-text"></span>
                         </span>
@@ -176,8 +177,8 @@
                     <div class="row no-gutters">
                     	<div  class="col-md-12">
                         <label class="col-12 row">To Date</label>
-                       <div id="datepicker-popup" class="input-group date datepicker">
-                        <input type="text" class="form-control">
+                       <div class="input-group date datepicker">
+                        <input type="text" class="form-control" name="todate" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['todate']; }?>">
                         <span class="input-group-addon input-group-append border-left">
                           <span class="mdi mdi-calendar input-group-text"></span>
                         </span>
@@ -187,7 +188,7 @@
                     </div>
                     
                     <div class="col-12 col-md-3">
-	                    <button type="submit" class="btn btn-success mt-30" style="margin-top:30px;">Search</button>
+	                    <button type="submit" name="search" class="btn btn-success mt-30" style="margin-top:30px;">Search</button>
                     </div>
               
                     </div>   
@@ -208,12 +209,70 @@
                 	<!-- TABLE Filters btn -->
                     
                     
-                   
-                    
                     <!-- TABLE STARTS -->
                     <?php 
-                        $sqlqry = "SELECT product_master.id as orderno, byvendor.created as orderdate, product_master.product_name as productname, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((byvendor INNER JOIN product_master ON byvendor.product_id = product_master.id) INNER JOIN ledger_master ON byvendor.vendor_id = ledger_master.id) WHERE byvendor.status = '0'";
-                        $sqlqryrun = mysqli_query($conn, $sqlqry); ?>
+
+                        $data = [];
+                        /// by vender ///
+                        $sqlqry = "SELECT byvendor.order_no as orderno, byvendor.created as orderdate, product_master.product_name as productname, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((byvendor INNER JOIN product_master ON byvendor.product_id = product_master.id) INNER JOIN ledger_master ON byvendor.vendor_id = ledger_master.id) WHERE byvendor.status = '0' ";
+
+                        $sql = "SELECT byproduct.order_no as orderno, byproduct.created as orderdate, product_master.product_name as productname, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((byproduct INNER JOIN product_master ON byproduct.product_id = product_master.id) INNER JOIN ledger_master ON byproduct.vendor_id = ledger_master.id) WHERE byproduct.status = '0'";
+                        
+                        $productqry = "";
+                    
+                        if(isset($_REQUEST['mobile']) && $_REQUEST['mobile'] != ''){
+                         $sqlqry .= "AND (ledger_master.mobile = '".$_REQUEST['mobile']."') ";
+                         $sql .= "AND (ledger_master.mobile = '".$_REQUEST['mobile']."') ";
+                        }
+
+                        if(isset($_REQUEST['orderno']) && $_REQUEST['orderno'] != '')
+                        {
+                          $sqlqry .= "AND (byvendor.order_no = '".$_REQUEST['orderno']."') ";
+                          $sql .= "AND (byproduct.order_no = '".$_REQUEST['orderno']."') ";
+                        }
+
+                        if(isset($_REQUEST['email']) && $_REQUEST['email'] != '')
+                        {
+                          $sqlqry .= "AND (ledger_master.email = '".$_REQUEST['email']."') ";
+                          $sql .= "AND (ledger_master.email = '".$_REQUEST['email']."') ";
+                        }
+
+                        if((isset($_REQUEST['fromdate']) && $_REQUEST['fromdate'] != '') && (isset($_REQUEST['todate']) && $_REQUEST['todate'] != ''))  
+                        {
+                          $from = date('Y-m-d',strtotime($_REQUEST['fromdate']));
+                          $to = date('Y-m-d',strtotime($_REQUEST['todate']));
+                          $sqlqry .= "AND DATE_FORMAT(byvendor.created,'%Y-%m-%d') >= '".$from."' AND DATE_FORMAT(byvendor.created,'%Y-%m-%d') <= '".$to."' ";
+                          $sql .= "AND DATE_FORMAT(byproduct.created,'%Y-%m-%d') >= '".$from."' AND DATE_FORMAT(byproduct.created,'%Y-%m-%d') <= '".$to."' ";
+                        }
+                        $sqlqryrun = mysqli_query($conn, $sqlqry);
+
+                        if($sqlqryrun){
+                          while($sqldata = mysqli_fetch_assoc($sqlqryrun)){
+                            $arr['orderno'] = $sqldata['orderno'];
+                            $arr['orderdate'] = $sqldata['orderdate'];
+                            $arr['productname'] = $sqldata['productname'];
+                            $arr['vendorname'] = $sqldata['vendorname'];
+                            $arr['mobile'] = $sqldata['mobile'];
+                            $arr['email'] = $sqldata['email'];
+                            array_push($data, $arr);
+                          }
+                        }
+
+                        $insql = mysqli_query($conn, $sql);
+
+                        if($insql){
+                          while($sqldata1 = mysqli_fetch_assoc($insql)){
+                            $arr1['orderno'] = $sqldata1['orderno'];
+                            $arr1['orderdate'] = $sqldata1['orderdate'];
+                            $arr1['productname'] = $sqldata1['productname'];
+                            $arr1['vendorname'] = $sqldata1['vendorname'];
+                            $arr1['mobile'] = $sqldata1['mobile'];
+                            $arr1['email'] = $sqldata1['email'];
+                            array_push($data, $arr1);
+                          }
+                        }                      
+                
+                    ?>
 
                     <div class="col mt-3">
                     	 <div class="row">
@@ -231,46 +290,41 @@
                                       <th>Action</th>
                                   </tr>
                                 </thead>
-                                <?php
-                                while($sqldata = mysqli_fetch_assoc($sqlqryrun))
-                                {
-                                ?>        
                                 <tbody>
-                                  <!-- Row Starts --> 	
-                                  <tr>
-                                      <td><?php echo $sqldata['orderno'];?></td>
-                                      <td><?php echo date('d/m/Y',strtotime($sqldata['orderdate']));?></td>
-                                      <td><?php echo $sqldata['productname'];?></td>
-                                      <td><?php echo $sqldata['vendorname']?></td>
-                                      <td><?php echo $sqldata['mobile'];?></td>
-                                      <td><?php echo $sqldata['email']?></td>
-                                      <td>
-                                      	<a href="#" class="btn btn-warning p-2" title="Email">
-                                        	<i class="fa fa-envelope mr-0"></i>
-                                        </a>
-                                      </td>
-                                      <td>
-                                      	<a href="#" class="btn btn-primary p-2" title="Print">
-                                        	<i class="fa fa-print mr-0"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-primary p-2" title="CSV">
-                                        	<i class="fa fa-file mr-0"></i>
-                                        </a>
-                                      </td>
-                                  </tr><!-- End Row --> 	
-                                 
+                                  <!-- Row Starts --> 
+                                  <?php if(isset($data) && !empty($data)){ ?>
+                                    <?php foreach ($data as $key => $value){ ?>
+                                      <tr>
+                                          <td><?php echo $value['orderno'];?></td>
+                                          <td><?php echo date('d/m/Y',strtotime($value['orderdate']));?></td>
+                                          <td><?php echo $value['productname'];?></td>
+                                          <td><?php echo $value['vendorname']?></td>
+                                          <td><?php echo $value['mobile'];?></td>
+                                          <td><?php echo $value['email']?></td>
+                                          <td>
+                                            <a href="email_send.php?email=<?php echo $value['email'];?>" class="btn btn-warning p-2" title="Email">
+                                              <i class="fa fa-envelope mr-0"></i>
+                                            </a>
+                                          </td>
+                                          <td>
+                                            <a href="#" class="btn btn-primary p-2" title="Print">
+                                              <i class="fa fa-print mr-0"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-primary p-2" title="CSV">
+                                              <i class="fa fa-file mr-0"></i>
+                                            </a>
+                                          </td>
+                                      </tr><!-- End Row -->
+                                      <?php } ?>
+                                  <?php } ?>
                                  
                                 </tbody>
-                                <?php
-                                }
-                                ?>
                               </table>
                             </div>
                           </div>
                     </div>
-                    
-                    
                     <hr>
+                    
                     
                     
                 
@@ -339,30 +393,10 @@
   
   <!-- Datepicker Initialise-->
  <script>
-    $('#datepicker-popup1').datepicker({
+    $('.datepicker').datepicker({
       enableOnReadonly: true,
       todayHighlight: true,
-    });
- </script>
- 
- <script>
-    $('#datepicker-popup2').datepicker({
-      enableOnReadonly: true,
-      todayHighlight: true,
-    });
- </script>
- 
- <script>
-    $('#datepicker-popup3').datepicker({
-      enableOnReadonly: true,
-      todayHighlight: true,
-    });
- </script>
- 
- <script>
-    $('#datepicker-popup4').datepicker({
-      enableOnReadonly: true,
-      todayHighlight: true,
+      autoclose: true,
     });
  </script>
  
