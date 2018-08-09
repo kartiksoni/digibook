@@ -112,19 +112,19 @@
                       <div class="form-group row">
                         <div class="col-12 col-md-2">
                             <label >Purchase Price </label>
-                            <input type="text" class="form-control" name="purchase_price" id="purchase_price" placeholder="0.00" value="0" data-parsley-type="number">
+                            <input type="text" class="form-control onlynumber" name="purchase_price" id="purchase_price" placeholder="0.00" value="0" data-parsley-type="number">
                         </div>
                         <div class="col-12 col-md-1">
                             <label >GST</label>
-                            <input type="text" class="form-control" name="gst" id="gst" placeholder="0" value="0" data-parsley-type="number">
+                            <input type="text" class="form-control onlynumber" name="gst" id="gst" placeholder="0" value="0" data-parsley-type="number">
                         </div>
                         <div class="col-12 col-md-2">
                             <label >Unit/Strip/Packing </label>
-                            <input type="text" class="form-control" name="unit" id="unit" placeholder="0" value="0" data-parsley-type="number">
+                            <input type="text" class="form-control onlynumber" name="unit" id="unit" placeholder="0" value="0" data-parsley-type="number">
                         </div>
                         <div class="col-12 col-md-1">
                             <label >Qty</label>
-                            <input type="text" class="form-control" id="qty" name="qty" placeholder="0" value="1" data-parsley-type="number" data-parsley-min="1" required>
+                            <input type="text" class="form-control onlynumber" id="qty" name="qty" placeholder="0" value="1" data-parsley-type="number" data-parsley-min="1" required>
                         </div>
                         <div class="col-12 col-md-1">
                           <button type="submit" class="btn btn-success mt-30" id="btn-addtop" style="margin-top:30px;" disabled>Add</button>
@@ -320,6 +320,7 @@
 </script>
 <script src="js/jquery-ui.js"></script>
 <script src="js/custom/order_by_vendor.js"></script>
+<script src="js/custom/onlynumber.js"></script>
   
   
   <!-- End custom js for this page-->

@@ -144,7 +144,7 @@
                         </div>
                         <div class="col-12 col-md-2">
                             <label >Stock per. Of Sales</label>
-                            <input type="text" class="form-control" id="exampleInputName1" placeholder="0.00">
+                            <input type="text" class="form-control onlynumber" placeholder="0.00">
                         </div>
                         <div class="col-12 col-md-2">
                           <button type="submit" class="btn btn-success mt-30" style="margin-top:30px;">Search</button>
@@ -343,6 +343,7 @@
   <script>
      $('.datatable').DataTable();
   </script>
+  <script src="js/custom/onlynumber.js"></script>
   
   <!-- End custom js for this page-->
 </body>
