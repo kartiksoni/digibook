@@ -45,7 +45,7 @@
             <?php include('include/flash.php'); ?>
             <span id="errormsg"></span>
             <div class="row">
-             <!-- Inventory Form ------------------------------------------------------------------------------------------------------>
+              <!-- Inventory Form ------------------------------------------------------------------------------------------------------>
               <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                   <div class="card-body">
@@ -69,101 +69,70 @@
                               <a href="order-by-transition.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-transition.php') ? 'active' : ''; ?>">By Transition</a>
                               <a href="order-by-min-qty.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-min-qty.php.php') ? 'active' : ''; ?>">By Max Reorder</a>
                               <a href="order-by-product.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-product.php') ? 'active' : ''; ?>">By Product</a>
-                          </div>   
+                          </div>  
                       </div> 
                     </div>
                     <hr>
-                    <form class="forms-sample" id="add_byvendor_temp" method="POST">
+                    <form class="forms-sample" id="byproduct_temp_form" method="POST">
                       <div class="form-group row">
-                        <div class="col-12 col-md-2 col-sm-3">
-                          <label>Select Vendor</label>
-                          <select class="js-example-basic-single" style="width:100%" name="vendor_id" id="vendor_id" data-parsley-errors-container="#error-vendor" required> 
-                              <option value="">Please select</option>
-                              <?php 
-                                $getAllVendorQuery = "SELECT id, name FROM ledger_master WHERE status=1 AND group_id=14 order by name";
-                                $getAllVendorRes = mysqli_query($conn, $getAllVendorQuery);
-                              ?>
-                              <?php if($getAllVendorRes && mysqli_num_rows($getAllVendorRes) > 0){ ?>
-                                <?php while ($getAllVendorRow = mysqli_fetch_array($getAllVendorRes)) { ?>
-                                  <option value="<?php echo $getAllVendorRow['id']; ?>"><?php echo $getAllVendorRow['name']; ?></option>
-                                <?php } ?>
-                              <?php } ?>
-                          </select>
-                          <div id="error-vendor"></div>
-                          <input type="hidden" id="statecode" name="statecode">
-                          <input type="hidden" id="vendor_name" name="vendor_name">
-                        </div>
-                        <div class="col-12 col-md-2 col-lg-2">
-                            <label >Select anyone</label>
-                            <select class="js-example-basic-single" style="width:100%" id="selectsearch"> 
-                                <option value="product">Product Name </option>
-                                <option value="mrp">MRP</option>
-                                <option value="generic">Generic Name</option>
-                            </select>
-                        </div>
                         <div class="col-12 col-md-2">
-                            <label id="search-lable">Product Name</label>
-                            <input class="form-control" name="search" id="search" type="text" placeholder="Start typing.." required>
+                            <label>Product Name <span class="text-danger">*</span></label>
+                            <input class="form-control" name="search" id="search" type="text" placeholder="Enter product name" required>
                             <input type="hidden" name="product_id" id="product_id">
-                            <input type="hidden" name="product_name" id="product_name">
                             <small class="empty-message text-danger"></small>
                         </div>
-                      </div>
-                      <div class="form-group row">
-                        <div class="col-12 col-md-2">
-                            <label >Purchase Price </label>
-                            <input type="text" class="form-control" name="purchase_price" id="purchase_price" placeholder="0.00" value="0" data-parsley-type="number">
-                        </div>
-                        <div class="col-12 col-md-1">
-                            <label >GST</label>
-                            <input type="text" class="form-control" name="gst" id="gst" placeholder="0" value="0" data-parsley-type="number">
+                        <div class="col-12 col-md-2 col-sm-3">
+                          <label>Select Vendor <span class="text-danger">*</span></label>
+                          <select class="" style="width:100%" name="vendor_id" id="vendor_id" data-parsley-errors-container="#error-vendor" required>
+                              <option value="">Please select</option>
+                          </select>
+                          <div id="error-vendor"></div>
+                          <input type="hidden" id="vendor_name" name="vendor_name">
                         </div>
                         <div class="col-12 col-md-2">
-                            <label >Unit/Strip/Packing </label>
-                            <input type="text" class="form-control" name="unit" id="unit" placeholder="0" value="0" data-parsley-type="number">
+                            <label>Email</label>
+                            <input type="text" class="form-control" name="email" id="email" placeholder="Enter email" data-parsley-type="email" readonly>
                         </div>
-                        <div class="col-12 col-md-1">
-                            <label >Qty</label>
-                            <input type="text" class="form-control" id="qty" name="qty" placeholder="0" value="1" data-parsley-type="number" data-parsley-min="1" required>
+                        <div class="col-12 col-md-2">
+                            <label>Mobile</label>
+                            <input type="text" class="form-control" name="mobile" id="mobile" placeholder="Enter mobile" data-parsley-type="number" maxlength="10" readonly>
                         </div>
-                        <div class="col-12 col-md-1">
-                          <button type="submit" class="btn btn-success mt-30" id="btn-addtop" style="margin-top:30px;" disabled>Add</button>
+                        <div class="col-12 col-md-2">
+                            <label>Generic Name</label>
+                            <input type="text" class="form-control" name="generic_name" id="generic_name" placeholder="Enter Generic Name" readonly>
                         </div>
-                      </div> 
-                      <div class="form-group row">
-                        <div class="col-6 col-md-3">
-                          <label>Generic Name</label>
-                          <p id="generic-name"></p>
-                          <input type="hidden" name="generic_name" id="generic-name-input">
+                        <div class="col-12 col-md-2">
+                            <label>MFG. Company</label>
+                            <input type="text" class="form-control" name="mfg_co" id="mfg_co" placeholder="Enter MFG. Company" readonly>
                         </div>
-                        <div class="col-6 col-md-3">
-                          <label>Manufacturer Name</label>
-                          <p id="menufacturer-name"></p>
-                          <input type="hidden" name="menufacturer_name" id="menufacturer-name-input">
-                          <input type="hidden" name="editid" id="editid">
+                        <input type="hidden" name="editid" class="editid" id="editid">
+                        <div class="col-12 col-md-12">
+                          <button type="button" class="btn btn-primary pull-left" data-toggle="modal" data-target="#purchase-addproductmodel" style="margin-top:30px;"><i class="fa fa-plus"></i> Add New Product</button>
+                          <button type="submit" class="btn btn-success pull-right" id="btn-addtmp" style="margin-top:30px;" disabled>Add</button>
                         </div>
                       </div>
                     </form>
                   </div>
                 </div>
               </div>
-               <!-- Table ------------------------------------------------------------------------------------------------------>
-              <div class="col-md-12 grid-margin stretch-card" id="tmpdata-div" style="display: none;">
+
+              <!-- Temporary data table ------------------------------------------------------------------------------------------------>
+              <div class="col-md-12 grid-margin stretch-card display-none" id="tmpdata-div">
                 <div class="card">
                   <div class="card-body">
                     <div class="col mt-3">
                        <div class="row">
                           <div class="col-12">
-                            <form id="add-byvendor-form" method="POST">
+                            <form id="add-byproduct-form" method="POST">
                               <table class="table">
                                 <thead>
                                   <tr>
+                                      <th>Product Name</th>
                                       <th>Vendor Name</th>
-                                      <th>Product</th>
-                                      <th>Purchase Price</th>
-                                      <th>GST</th>
-                                      <th>Unit / Strip / Packing</th>
-                                      <th>Qty</th>
+                                      <th>Email</th>
+                                      <th>Mobile</th>
+                                      <th>Generic Name</th>
+                                      <th>MFG. Company</th>
                                       <th>Action</th>
                                   </tr>
                                 </thead>
@@ -171,7 +140,7 @@
                                  
                                 </tbody>
                               </table>
-                              <button type="submit" class="btn btn-success mt-30 pull-right btn-savebyvendor" style="margin-top:30px;">Save</button>
+                              <button type="submit" class="btn btn-success mt-30 pull-right btn-savebyproduct" style="margin-top:30px;">Save</button>
                             </form>
                           </div>
                         </div>
@@ -191,12 +160,12 @@
                                 <thead>
                                   <tr>
                                       <th>Sr. No</th>
+                                      <th>Product Name</th>
                                       <th>Vendor Name</th>
-                                      <th>Product</th>
-                                      <th>Purchase Price</th>
-                                      <th>GST</th>
-                                      <th>Unit / Strip / Packing</th>
-                                      <th>Qty</th>
+                                      <th>Email</th>
+                                      <th>Mobile</th>
+                                      <th>Generic Name</th>
+                                      <th>MFG. Company</th>
                                       <th>Action</th>
                                   </tr> 
                                 </thead>
@@ -219,6 +188,11 @@
           <!-- partial:partials/_footer.php -->
           <?php include "include/footer.php" ?>
           <!-- partial -->
+
+          <!-- Add new Product Model -->
+          <?php include("include/addproductmodel.php");?>
+
+
         </div>
         <!-- main-panel ends -->
       </div>
@@ -226,50 +200,44 @@
   </div>
   <!-- container-scroller -->
   
-  
- <!-- HIDDEN TR HTML -->
-  <div id="addproduct-tr-html" style="display: none;">
+  <!-- Hidden temp tr html start -->
+  <div id="tr-html" class="display-none">
     <table>
       <tr id="##DATAID##">
-        <td>
-          ##VENDORNAME##
-          <input type="hidden" name="vendor_id[]" class="vendor_id" value="##VENDORID##">
-          <input type="hidden" name="vendor_name[]" class="vendor_name" value="##VENDORNAME##">
-          <input type="hidden" name="state_code[]" class="state_code" value="##STATECODE##">
-        </td>
         <td>
           ##PRODUCTNAME##
           <input type="hidden" name="product_id[]" class="product_id" value="##PRODUCTID##">
           <input type="hidden" name="product_name[]" class="product_name" value="##PRODUCTNAME##">
         </td>
         <td>
-          ##MRP##
-          <input type="hidden" name="purchase_price[]" class="purchase_price" value="##MRP##">
+          ##VENDORNAME##
+          <input type="hidden" name="vendor_name[]" class="vendor_name" value="##VENDORNAME##">
+          <input type="hidden" name="vendor_id[]" class="vendor_id" value="##VENDORID##">
         </td>
         <td>
-          ##GST##
-          <input type="hidden" name="gst[]" class="gst" value="##GST##">
+          ##EMAIL##
+          <input type="hidden" name="email[]" class="email" value="##EMAIL##">
         </td>
         <td>
-          ##UNIT##
-          <input type="hidden" name="unit[]" class="unit" value="##UNIT##">
+          ##MOBILE##
+          <input type="hidden" name="mobile[]" class="mobile" value="##MOBILE##">
         </td>
         <td>
-          ##QTY##
-          <input type="hidden" name="qty[]" class="qty" value="##QTY##">
+          ##GENERIC##
+          <input type="hidden" name="generic[]" class="generic" value="##GENERIC##">
         </td>
         <td>
-          <input type="hidden" name="generic_name[]" class="generic_name" value="##GENERICNAME##">
-          <input type="hidden" name="menufacturer_name[]" class="menufacturer_name" value="##MANUFACTURERNAME##">
-
-          <button class="btn  btn-danger p-2 edit-temp"><i class="icon-pencil mr-0"></i></button>
-          <button class="btn  btn-primary p-2 delete-temp"><i class="icon-trash mr-0"></i></button>
+          ##MFG##
+          <input type="hidden" name="mfg[]" class="mfg" value="##MFG##">
+        </td>
+        <td>
+          <button type="button" class="btn  btn-danger p-2 edit-temp"><i class="icon-pencil mr-0"></i></button>
+          <button type="button" class="btn  btn-primary p-2 delete-temp"><i class="icon-trash mr-0"></i></button>
         </td>
       </tr>
     </table>
   </div>
-  
-  
+  <!-- Hidden temp tr html end -->
 
   <!-- plugins:js -->
   <script src="vendors/js/vendor.bundle.base.js"></script>
@@ -317,12 +285,13 @@
 <script src="js/parsley.min.js"></script>
 <script type="text/javascript">
   $('form').parsley();
+  $('#vendor_id').select2({
+      tags: true
+    });
 </script>
 <script src="js/jquery-ui.js"></script>
-<script src="js/custom/order_by_vendor.js"></script>
-  
-  
-  <!-- End custom js for this page-->
+<script src="js/custom/order_by_product.js"></script>
+<!-- End custom js for this page-->
 </body>
 
 
