@@ -67,7 +67,7 @@
                           <div class="order-sub">
                               <a href="order.php" class="btn btn-grey-1 btn-rounded btn-xs <?php echo (basename($_SERVER['PHP_SELF']) == 'order.php') ? 'active' : ''; ?>">By Vendor</a>
                               <a href="order-by-transition.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-transition.php') ? 'active' : ''; ?>">By Transition</a>
-                              <a href="order-by-min-qty.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-min-qty.php.php') ? 'active' : ''; ?>">By Max Reorder</a>
+                              <a href="order-by-min-qty.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-min-qty.php') ? 'active' : ''; ?>">By Max Reorder</a>
                               <a href="order-by-product.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-product.php') ? 'active' : ''; ?>">By Product</a>
                           </div>   
                       </div> 
@@ -112,19 +112,19 @@
                       <div class="form-group row">
                         <div class="col-12 col-md-2">
                             <label >Purchase Price </label>
-                            <input type="text" class="form-control" name="purchase_price" id="purchase_price" placeholder="0.00" value="0" data-parsley-type="number">
+                            <input type="text" class="form-control onlynumber" name="purchase_price" id="purchase_price" placeholder="0.00" value="0" data-parsley-type="number">
                         </div>
                         <div class="col-12 col-md-1">
                             <label >GST</label>
-                            <input type="text" class="form-control" name="gst" id="gst" placeholder="0" value="0" data-parsley-type="number">
+                            <input type="text" class="form-control onlynumber" name="gst" id="gst" placeholder="0" value="0" data-parsley-type="number">
                         </div>
                         <div class="col-12 col-md-2">
                             <label >Unit/Strip/Packing </label>
-                            <input type="text" class="form-control" name="unit" id="unit" placeholder="0" value="0" data-parsley-type="number">
+                            <input type="text" class="form-control onlynumber" name="unit" id="unit" placeholder="0" value="0" data-parsley-type="number">
                         </div>
                         <div class="col-12 col-md-1">
                             <label >Qty</label>
-                            <input type="text" class="form-control" id="qty" name="qty" placeholder="0" value="1" data-parsley-type="number" data-parsley-min="1" required>
+                            <input type="text" class="form-control onlynumber" id="qty" name="qty" placeholder="0" value="1" data-parsley-type="number" data-parsley-min="1" required>
                         </div>
                         <div class="col-12 col-md-1">
                           <button type="submit" class="btn btn-success mt-30" id="btn-addtop" style="margin-top:30px;" disabled>Add</button>
@@ -320,6 +320,7 @@
 </script>
 <script src="js/jquery-ui.js"></script>
 <script src="js/custom/order_by_vendor.js"></script>
+<script src="js/custom/onlynumber.js"></script>
   
   
   <!-- End custom js for this page-->
