@@ -16,6 +16,9 @@ $(document).ready(function(){
         html = html.replace('<tbody>','');
         html = html.replace('</tbody>','');
         $('#product-tbody').append(html);
+        if(totalproduct <= '2'){
+          $('.remove_last').show();
+        }
         $(".product-select"+totalproduct).select2();
           $( ".tags" ).autocomplete({
              source: function (query, result) {

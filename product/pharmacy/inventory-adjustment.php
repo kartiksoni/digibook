@@ -1,7 +1,7 @@
 <?php include('include/usertypecheck.php');
 if(isset($_GET['id'])){
 	$id = $_GET['id'];
-  	$editQry = "SELECT * FROM `self_consumption` WHERE id='".$id."' ORDER BY id DESC LIMIT 1";
+  	$editQry = "SELECT * FROM `adjustment` WHERE id='".$id."' ORDER BY id DESC LIMIT 1";
   	$edit = mysqli_query($conn,$editQry);
   	$edit = mysqli_fetch_assoc($edit);
 
@@ -10,6 +10,7 @@ if(isset($_GET['id'])){
 if(isset($_POST['submit'])){
 	$user_id = $_SESSION['auth']['id'];
 	$count = count($_POST['product_name']);
+  $type = $_POST['action'];
 	for($i=0;$i<$count;$i++){
 
 		$product_id = "";
@@ -22,14 +23,19 @@ if(isset($_POST['submit'])){
             $purchase_id = $_POST["purchase_id"][$i];
         }
 
-        $batch = "";
-        if(isset($_POST["batch"][$i])){
-            $batch = $_POST["batch"][$i];
+        $mrp = "";
+        if(isset($_POST["mrp"][$i])){
+            $mrp = $_POST["mrp"][$i];
         }
 
-        $qty = "";
-        if(isset($_POST["qty"][$i])){
-            $qty = $_POST["qty"][$i];
+        $mfg_co = "";
+        if(isset($_POST["mfg_co"][$i])){
+            $mfg_co = $_POST["mfg_co"][$i];
+        }
+
+        $batch_no = "";
+        if(isset($_POST["batch_no"][$i])){
+            $batch_no = $_POST["batch_no"][$i];
         }
 
         $expiry = "";
@@ -37,42 +43,27 @@ if(isset($_POST['submit'])){
             $expiry = $_POST["expiry"][$i];
         }
 
-        $gst = "";
-        if(isset($_POST["gst"][$i])){
-            $gst = $_POST["gst"][$i];
+        $qty = "";
+        if(isset($_POST["qty"][$i])){
+            $qty = $_POST["qty"][$i];
         }
 
-        $units_strip = "";
-        if(isset($_POST["units_strip"][$i])){
-            $units_strip = $_POST["units_strip"][$i];
+        $remark = "";
+        if(isset($_POST["remark"][$i])){
+            $remark = $_POST["remark"][$i];
         }
 
-        $price_strip = "";
-        if(isset($_POST["price_strip"][$i])){
-            $price_strip = $_POST["price_strip"][$i];
-        }
-
-        $consumption = "";
-        if(isset($_POST["consumption"][$i])){
-            $consumption = $_POST["consumption"][$i];
-        }
-
-        $note = "";
-        if(isset($_POST["note"][$i])){
-            $note = $_POST["note"][$i];
-        }
-
-        $ins_product = "INSERT INTO `self_consumption` (`product_id`, `purchase_id`, `batch`, `qty`, `expiry`, `gst`,`units_strip`, `price_strip`, `consumption`, `note`, `createdat`, `createdby`) VALUES ('".$product_id."','".$purchase_id."',  '".$batch."', '".$qty."', '".$expiry."', '".$gst."','".$units_strip."', '".$price_strip."', '".$consumption."', '".$note."', '".date('Y-m-d H:i:s')."', '".$user_id."')";	
+        $ins_product = "INSERT INTO `adjustment` (`product_id`, `purchase_id`, `mrp`, `mfg_co`, `batch_no`, `expiry`,`qty`, `remark`,`type`, `created_at`, `created_by`) VALUES ('".$product_id."','".$purchase_id."',  '".$mrp."', '".$mfg_co."', '".$batch_no."', '".$expiry."','".$qty."', '".$remark."','".$type."', '".date('Y-m-d H:i:s')."', '".$user_id."')";	
         $in = mysqli_query($conn,$ins_product);
 
 	}
 
 	if($in){
-		$_SESSION['msg']['success'] = 'Self Consumption Added Successfully.';
-		header('location:inventory-self-consumption.php');exit;
+		$_SESSION['msg']['success'] = 'Adjustment Added Successfully.';
+		header('location:inventory-adjustment.php');exit;
 	}else{
-		$_SESSION['msg']['fail'] = 'Self Consumption Added Failed.';
-		header('location:inventory-self-consumption.php');exit; 
+		$_SESSION['msg']['fail'] = 'Adjustment Added Failed.';
+		header('location:inventory-adjustment.php');exit; 
 	}
 	/*$_SESSION['msg']['success'] = 'Self Consumption Added Successfully.';
 	$_SESSION['msg']['fail'] = 'Self Consumption Added Failed.';
@@ -82,25 +73,25 @@ if(isset($_POST['submit'])){
 
 <?php 
 if(isset($_POST['edit'])){
+  $type = $_POST['action'];
 	$user_id = $_SESSION['auth']['id'];
 	$product_id = $_POST["product_id"][0];
 	$purchase_id = $_POST["purchase_id"][0];
-	$batch = $_POST["batch"][0];
-	$qty = $_POST["qty"][0];
-	$expiry = $_POST["expiry"][0];
-	$gst = $_POST["gst"][0];
-	$units_strip = $_POST["units_strip"][0];
-	$price_strip = $_POST["price_strip"][0];
-	$consumption = $_POST["consumption"][0];
-	$note = $_POST["note"][0];
-	$updateQry = "UPDATE `self_consumption` SET `product_id`='".$product_id."',`purchase_id`='".$purchase_id."',`batch`='".$batch."',`qty`='".$qty."',`expiry`='".$expiry."',`gst`='".$gst."',`units_strip`='".$units_strip."',`price_strip`='".$price_strip."',`consumption`='".$consumption."',`note`='".$note."',`updatedat`='".date('Y-m-d H:i:s')."',`updateby`='".$user_id."' WHERE id='".$_GET['id']."'";
+  $mrp = $_POST["mrp"][0];
+  $mfg_co = $_POST["mfg_co"][0];
+  $batch_no = $_POST["batch_no"][0];
+  $expiry = $_POST["expiry"][0];
+  $qty = $_POST["qty"][0];
+  $remark = $_POST["remark"][0];
+
+	$updateQry = "UPDATE `adjustment` SET `product_id`='".$product_id."',`purchase_id`='".$purchase_id."',`mrp`='".$mrp."',`mfg_co`='".$mfg_co."',`batch_no`='".$batch_no."',`expiry`='".$expiry."',`qty`='".$qty."',`remark`='".$remark."',`type`='".$type."',`updated_at`='".date('Y-m-d H:i:s')."',`updated_by`='".$user_id."' WHERE id='".$_GET['id']."'";
   	$updateInsert = mysqli_query($conn,$updateQry);
   	if($updateInsert){
-  		$_SESSION['msg']['success'] = 'Self Consumption Updated Successfully.';
-		header('location:inventory-self-consumption.php');exit;
+  		$_SESSION['msg']['success'] = 'Adjustment Updated Successfully.';
+		header('location:inventory-adjustment.php');exit;
   	}else{
-  		$_SESSION['msg']['fail'] = 'Self Consumption Updated Failed.';
-		header('location:inventory-self-consumption.php');exit; 
+  		$_SESSION['msg']['fail'] = 'Adjustment Updated Failed.';
+		header('location:inventory-adjustment.php');exit; 
   	}
 }
 ?>
@@ -185,11 +176,10 @@ if(isset($_POST['edit'])){
 	                    <div class="form-group row">
                           <div class="col-12 col-md-4">
                               <div class="row no-gutters">
-                              
                                   <div class="col">
                                       <div class="form-radio">
                                       <label class="form-check-label">
-                                      <input type="radio" <?php if(isset($edit['adjust_type']) && $edit['adjust_type'] == "inward"){echo "checked";}else{echo"checked";} ?> class="form-check-input" name="action" id="optionsRadios1" value="inward">
+                                      <input type="radio" <?php if(isset($edit['type']) && $edit['type'] == "inward"){echo "checked";}else{echo"checked";} ?> class="form-check-input" name="action" id="optionsRadios1" value="inward">
                                       Inward
                                       </label>
                                       </div>
@@ -198,7 +188,7 @@ if(isset($_POST['edit'])){
                                   <div class="col">
                                       <div class="form-radio">
                                       <label class="form-check-label">
-                                      <input type="radio" <?php if(isset($edit['status']) && $edit['status'] == "outward"){echo "checked";} ?> class="form-check-input" name="action" id="optionsRadios2" value="outward">
+                                      <input type="radio" <?php if(isset($edit['type']) && $edit['type'] == "outward"){echo "checked";} ?> class="form-check-input" name="action" id="optionsRadios2" value="outward">
                                       Outward
                                       </label>
                                       </div>
@@ -220,7 +210,7 @@ if(isset($_POST['edit'])){
           									  	$product = mysqli_fetch_assoc($product);
           								  	}
 			                        ?>
-			                        <input type="text" value="<?php echo (isset($product['product_name'])) ? $product['product_name'] : ''; ?><?php if(isset($_GET['id'])){echo "-";} ?><?php echo (isset($edit['batch'])) ? $edit['batch'] : ''; ?>" class="form-control tags" required="" name="product_name[]" id="product_name" placeholder="Product Name"> 
+			                        <input type="text" value="<?php echo (isset($product['product_name'])) ? $product['product_name'] : ''; ?><?php if(isset($_GET['id'])){echo "-";} ?><?php echo (isset($edit['batch_no'])) ? $edit['batch_no'] : ''; ?>" class="form-control tags" required="" name="product_name[]" id="product_name" placeholder="Product Name"> 
 			                        <small class="text-danger empty-message0"></small>
 			                        <input type="hidden" name="product_id[]" value="<?php echo $edit['product_id']; ?>" class="product_id">
 			                        <input type="hidden" name="purchase_id[]" value="<?php echo $edit['purchase_id']; ?>" class="purchase_id">
@@ -259,7 +249,8 @@ if(isset($_POST['edit'])){
 			                      	if(!isset($_GET['id'])){
 			                      	?>
 			                      	<div class="col-12 col-md-6 text-right" style="margin-top: 35px;">
-			                      		<a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
+                                <a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product remove_last" style="display: none;"><i class="fa fa-close mr-0 ml-0"></i></a>
+                                <a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
 			                      	</div>
 			                      <?php } ?>
 			                    </div>
@@ -290,10 +281,10 @@ if(isset($_POST['edit'])){
                                   <tr>
                                       <th>Sr No</th>
                                       <th>Product Name</th>
-                                      <th>Batch</th>
-                                      <th>Consumption</th>
-                                      <th>Expiry</th>
-                                      <th>Price/Strip</th>
+                                      <th>MRP</th>
+                                      <th>Mfg Co</th>
+                                      <th>Qty</th>
+                                      <th>Type</th>
                                       <th>Action</th>
                                   </tr>
                                 </thead>
@@ -301,9 +292,9 @@ if(isset($_POST['edit'])){
                                   <!-- Row Starts -->   
                                   <?php 
                                   $i = 1;
-                                  $financialQry = "SELECT * FROM `self_consumption` ORDER BY id DESC";
-                                  $financial = mysqli_query($conn,$financialQry);
-                                  while($row = mysqli_fetch_assoc($financial)){
+                                  $adjustmentQry = "SELECT * FROM `adjustment` ORDER BY id DESC";
+                                  $adjustment = mysqli_query($conn,$adjustmentQry);
+                                  while($row = mysqli_fetch_assoc($adjustment)){
                                   ?>
                                   <tr>
                                       <td><?php echo $i; ?></td>
@@ -313,12 +304,12 @@ if(isset($_POST['edit'])){
                                   	  $row1 = mysqli_fetch_assoc($product);
                                       ?>
                                       <td><?php echo $row1['product_name']; ?></td>
-                                      <td><?php echo $row['batch']; ?></td>
-                                      <td><?php echo $row['consumption']; ?></td>
-                                      <td><?php echo date("d-m-Y",strtotime($row['expiry'])); ?></td>
-                                      <td><?php echo $row['price_strip']; ?></td>
+                                      <td><?php echo $row['mrp']; ?></td>
+                                      <td><?php echo $row['mfg_co']; ?></td>
+                                      <td><?php echo $row['qty']; ?></td>
+                                      <td><?php echo $row['type']; ?></td>
                                       <td>
-                                        <a href="inventory-self-consumption.php?id=<?php echo $row['id']; ?>" title="edit"><i class="fa fa-edit"></i></a>
+                                        <a href="inventory-adjustment.php?id=<?php echo $row['id']; ?>" title="edit"><i class="fa fa-edit"></i></a>
                                       </td>
                                   </tr><!-- End Row --> 
                                   <?php 
@@ -344,7 +335,7 @@ if(isset($_POST['edit'])){
 	          <div class="col-12 col-md-2">
 	            <label for="product_name">Product Name</label>
 	            <input type="text" class="form-control tags" required="" name="product_name[]" id="product_name" placeholder="Product Name">
-	            <small class="text-danger empty-message0"></small>
+	            <small class="text-danger empty-message##PRODUCTCOUNT##"></small>
 	            <input type="hidden" name="product_id[]" class="product_id">
 			        <input type="hidden" name="purchase_id[]" class="purchase_id">
 	          </div>

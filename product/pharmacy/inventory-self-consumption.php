@@ -1,18 +1,18 @@
 <?php include('include/usertypecheck.php');
 if(isset($_GET['id'])){
-	$id = $_GET['id'];
-  	$editQry = "SELECT * FROM `self_consumption` WHERE id='".$id."' ORDER BY id DESC LIMIT 1";
-  	$edit = mysqli_query($conn,$editQry);
-  	$edit = mysqli_fetch_assoc($edit);
+  $id = $_GET['id'];
+    $editQry = "SELECT * FROM `self_consumption` WHERE id='".$id."' ORDER BY id DESC LIMIT 1";
+    $edit = mysqli_query($conn,$editQry);
+    $edit = mysqli_fetch_assoc($edit);
 
 }
  
 if(isset($_POST['submit'])){
-	$user_id = $_SESSION['auth']['id'];
-	$count = count($_POST['product_name']);
-	for($i=0;$i<$count;$i++){
+  $user_id = $_SESSION['auth']['id'];
+  $count = count($_POST['product_name']);
+  for($i=0;$i<$count;$i++){
 
-		$product_id = "";
+    $product_id = "";
         if(isset($_POST["product_id"][$i])){
             $product_id = $_POST["product_id"][$i];
         }
@@ -62,46 +62,46 @@ if(isset($_POST['submit'])){
             $note = $_POST["note"][$i];
         }
 
-        $ins_product = "INSERT INTO `self_consumption` (`product_id`, `purchase_id`, `batch`, `qty`, `expiry`, `gst`,`units_strip`, `price_strip`, `consumption`, `note`, `createdat`, `createdby`) VALUES ('".$product_id."','".$purchase_id."',  '".$batch."', '".$qty."', '".$expiry."', '".$gst."','".$units_strip."', '".$price_strip."', '".$consumption."', '".$note."', '".date('Y-m-d H:i:s')."', '".$user_id."')";	
+        $ins_product = "INSERT INTO `self_consumption` (`product_id`, `purchase_id`, `batch`, `qty`, `expiry`, `gst`,`units_strip`, `price_strip`, `consumption`, `note`, `createdat`, `createdby`) VALUES ('".$product_id."','".$purchase_id."',  '".$batch."', '".$qty."', '".$expiry."', '".$gst."','".$units_strip."', '".$price_strip."', '".$consumption."', '".$note."', '".date('Y-m-d H:i:s')."', '".$user_id."')";  
         $in = mysqli_query($conn,$ins_product);
 
-	}
+  }
 
-	if($in){
-		$_SESSION['msg']['success'] = 'Self Consumption Added Successfully.';
-		header('location:inventory-self-consumption.php');exit;
-	}else{
-		$_SESSION['msg']['fail'] = 'Self Consumption Added Failed.';
-		header('location:inventory-self-consumption.php');exit; 
-	}
-	/*$_SESSION['msg']['success'] = 'Self Consumption Added Successfully.';
-	$_SESSION['msg']['fail'] = 'Self Consumption Added Failed.';
-	header('location:purchase.php');exit; */
+  if($in){
+    $_SESSION['msg']['success'] = 'Self Consumption Added Successfully.';
+    header('location:inventory-self-consumption.php');exit;
+  }else{
+    $_SESSION['msg']['fail'] = 'Self Consumption Added Failed.';
+    header('location:inventory-self-consumption.php');exit; 
+  }
+  /*$_SESSION['msg']['success'] = 'Self Consumption Added Successfully.';
+  $_SESSION['msg']['fail'] = 'Self Consumption Added Failed.';
+  header('location:purchase.php');exit; */
 }
 ?>
 
 <?php 
 if(isset($_POST['edit'])){
-	$user_id = $_SESSION['auth']['id'];
-	$product_id = $_POST["product_id"][0];
-	$purchase_id = $_POST["purchase_id"][0];
-	$batch = $_POST["batch"][0];
-	$qty = $_POST["qty"][0];
-	$expiry = $_POST["expiry"][0];
-	$gst = $_POST["gst"][0];
-	$units_strip = $_POST["units_strip"][0];
-	$price_strip = $_POST["price_strip"][0];
-	$consumption = $_POST["consumption"][0];
-	$note = $_POST["note"][0];
-	$updateQry = "UPDATE `self_consumption` SET `product_id`='".$product_id."',`purchase_id`='".$purchase_id."',`batch`='".$batch."',`qty`='".$qty."',`expiry`='".$expiry."',`gst`='".$gst."',`units_strip`='".$units_strip."',`price_strip`='".$price_strip."',`consumption`='".$consumption."',`note`='".$note."',`updatedat`='".date('Y-m-d H:i:s')."',`updateby`='".$user_id."' WHERE id='".$_GET['id']."'";
-  	$updateInsert = mysqli_query($conn,$updateQry);
-  	if($updateInsert){
-  		$_SESSION['msg']['success'] = 'Self Consumption Updated Successfully.';
-		header('location:inventory-self-consumption.php');exit;
-  	}else{
-  		$_SESSION['msg']['fail'] = 'Self Consumption Updated Failed.';
-		header('location:inventory-self-consumption.php');exit; 
-  	}
+  $user_id = $_SESSION['auth']['id'];
+  $product_id = $_POST["product_id"][0];
+  $purchase_id = $_POST["purchase_id"][0];
+  $batch = $_POST["batch"][0];
+  $qty = $_POST["qty"][0];
+  $expiry = $_POST["expiry"][0];
+  $gst = $_POST["gst"][0];
+  $units_strip = $_POST["units_strip"][0];
+  $price_strip = $_POST["price_strip"][0];
+  $consumption = $_POST["consumption"][0];
+  $note = $_POST["note"][0];
+  $updateQry = "UPDATE `self_consumption` SET `product_id`='".$product_id."',`purchase_id`='".$purchase_id."',`batch`='".$batch."',`qty`='".$qty."',`expiry`='".$expiry."',`gst`='".$gst."',`units_strip`='".$units_strip."',`price_strip`='".$price_strip."',`consumption`='".$consumption."',`note`='".$note."',`updatedat`='".date('Y-m-d H:i:s')."',`updateby`='".$user_id."' WHERE id='".$_GET['id']."'";
+    $updateInsert = mysqli_query($conn,$updateQry);
+    if($updateInsert){
+      $_SESSION['msg']['success'] = 'Self Consumption Updated Successfully.';
+    header('location:inventory-self-consumption.php');exit;
+    }else{
+      $_SESSION['msg']['fail'] = 'Self Consumption Updated Failed.';
+    header('location:inventory-self-consumption.php');exit; 
+    }
 }
 ?>
 
@@ -152,8 +152,8 @@ if(isset($_POST['edit'])){
       
       <div class="main-panel">
         <div class="content-wrapper">
-        	<?php include('include/flash.php'); ?>
-         	<div class="row">
+          <?php include('include/flash.php'); ?>
+          <div class="row">
             
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
@@ -169,7 +169,7 @@ if(isset($_POST['edit'])){
                               <a href="inventory-adjustment.php" class="btn btn-dark">Inventory Adjustment</a>
                               <a href="#" class="btn btn-dark">Update Inventory </a>
                               <a href="#" class="btn btn-dark">Inventory Setting </a>
-                              <a href="#" class="btn btn-dark">Product Master </a>
+                              <a href="product-master.php" class="btn btn-dark">Product Master </a>
                               <a href="inventory-self-consumption.php" class="btn btn-dark active">Self Consumption </a>
                           </div>          
                       </div> 
@@ -181,84 +181,85 @@ if(isset($_POST['edit'])){
                     </div>
 
                 <form action="" method="POST">
-                  	<div class="card-body">
-	                    
-	                	<div id="self-more">
-	                		<div class="self-sub-more">
-			                    <div class="form-group row">
-			                  
-			                      <div class="col-12 col-md-2">
-			                        <label for="product_name">Product Name</label>
-			                        <?php 
-			                        if(isset($edit['product_id'])){
-				                        $productQry = "SELECT * FROM `product_master` WHERE id='".$edit['product_id']."'";
-          									  	$product = mysqli_query($conn,$productQry);
-          									  	$product = mysqli_fetch_assoc($product);
-          								  	}
-			                        ?>
-			                        <input type="text" value="<?php echo (isset($product['product_name'])) ? $product['product_name'] : ''; ?><?php if(isset($_GET['id'])){echo "-";} ?><?php echo (isset($edit['batch'])) ? $edit['batch'] : ''; ?>" class="form-control tags" required="" name="product_name[]" id="product_name" placeholder="Product Name"> 
-			                        <small class="text-danger empty-message0"></small>
-			                        <input type="hidden" name="product_id[]" value="<?php echo $edit['product_id']; ?>" class="product_id">
-			                        <input type="hidden" name="purchase_id[]" value="<?php echo $edit['purchase_id']; ?>" class="purchase_id">
-			                      </div>
-			                      <div class="col-12 col-md-2">
-			                        <label for="batch">Batch</label>
-			                        <input type="text"  value="<?php echo (isset($edit['batch'])) ? $edit['batch'] : ''; ?>" class="form-control batch" name="batch[]"  id="batch" placeholder="Batch"> 
-			                      </div>
-			                      <div class="col-12 col-md-2">
-			                        <label for="qty">Qty</label>
-			                        <input type="text" readonly="" value="<?php echo (isset($edit['qty'])) ? $edit['qty'] : ''; ?>" class="form-control qty" name="qty[]" id="qty" placeholder="Qty"> 
-			                      </div>
-			                      <div class="col-12 col-md-2">
-			                        <label for="expiry">Expiry</label>
-			                        <input type="text" readonly="" value="<?php echo (isset($edit['expiry'])) ? $edit['expiry'] : ''; ?>" class="form-control expiry" name="expiry[]" id="expiry" placeholder="Expiry"> 
-			                      </div>
-			                      <div class="col-12 col-md-2">
-			                        <label for="gst">GST %</label>
-			                        <input type="text" readonly="" value="<?php echo (isset($edit['gst'])) ? $edit['gst'] : ''; ?>" class="form-control gst" name="gst[]" id="gst" placeholder="GST %"> 
-			                      </div>
-			                      <div class="col-12 col-md-2">
-			                        <label for="units_strip">Units/Strip</label>
-			                        <input type="text" readonly="" value="<?php echo (isset($edit['units_strip'])) ? $edit['units_strip'] : ''; ?>" class="form-control units_strip" name="units_strip[]"  id="units_strip" placeholder="Units/Strip"> 
-			                      </div>
-			                    </div>
-			                    <div class="form-group row">
-			                    	<div class="col-12 col-md-2">
-				                        <label for="units_strip">Price/Strip</label>
-				                        <input type="text" readonly="" value="<?php echo (isset($edit['price_strip'])) ? $edit['price_strip'] : ''; ?>" class="form-control price_strip" name="price_strip[]"  id="price_strip" placeholder="Price/Strip"> 
-			                      	</div>
-			                      	<div class="col-12 col-md-2">
-				                        <label for="consumption">Consumption</label>
-				                        <input type="text" value="<?php echo (isset($edit['consumption'])) ? $edit['consumption'] : ''; ?>" class="form-control consumption" name="consumption[]"  id="consumption" placeholder="Qty"> 
-			                      	</div>
-			                      	<div class="col-12 col-md-2">
-				                        <label for="consumption">Note</label>
-				                        <textarea class="form-control note" name="note[]" id="note"><?php echo (isset($edit['note'])) ? $edit['note'] : ''; ?></textarea>  
-			                      	</div>
-			                      	<?php 
-			                      	if(!isset($_GET['id'])){
-			                      	?>
-			                      	<div class="col-12 col-md-6 text-right" style="margin-top: 35px;">
-			                      		<a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
-			                      	</div>
-			                      <?php } ?>
-			                    </div>
-			                    
-		                	</div>
-	                	</div>
-	                	<div class="col-md-12">
-	                      	<a href="view-purchase.php" type="button" class="btn btn-light pull-left">Back</a>
-	                      	<?php 
-	                      	if(isset($_GET['id'])){
-	                      		?>
-	                      		<button type="submit" name="edit" class="btn btn-success pull-right">Edit</button>
-	                      		<?php
-	                      	}else{
-	                      	?>
-	                    	<button type="submit" name="submit" class="btn btn-success pull-right">Submit</button>
-	                    	<?php } ?>
-	                  	</div>
-                	</div>
+                    <div class="card-body">
+                      
+                    <div id="self-more">
+                      <div class="self-sub-more">
+                          <div class="form-group row">
+                        
+                            <div class="col-12 col-md-2">
+                              <label for="product_name">Product Name</label>
+                              <?php 
+                              if(isset($edit['product_id'])){
+                                $productQry = "SELECT * FROM `product_master` WHERE id='".$edit['product_id']."'";
+                                $product = mysqli_query($conn,$productQry);
+                                $product = mysqli_fetch_assoc($product);
+                              }
+                              ?>
+                              <input type="text" value="<?php echo (isset($product['product_name'])) ? $product['product_name'] : ''; ?><?php if(isset($_GET['id'])){echo "-";} ?><?php echo (isset($edit['batch'])) ? $edit['batch'] : ''; ?>" class="form-control tags" required="" name="product_name[]" id="product_name" placeholder="Product Name"> 
+                              <small class="text-danger empty-message0"></small>
+                              <input type="hidden" name="product_id[]" value="<?php echo (isset($edit['product_id'])) ? $product['product_id'] : ''; ?>" class="product_id">
+                              <input type="hidden" name="purchase_id[]" value="<?php echo (isset($edit['purchase_id'])) ? $product['purchase_id'] : ''; ?>" class="purchase_id">
+                            </div>
+                            <div class="col-12 col-md-2">
+                              <label for="batch">Batch</label>
+                              <input type="text"  value="<?php echo (isset($edit['batch'])) ? $edit['batch'] : ''; ?>" class="form-control batch" name="batch[]"  id="batch" placeholder="Batch"> 
+                            </div>
+                            <div class="col-12 col-md-2">
+                              <label for="qty">Qty</label>
+                              <input type="text" readonly="" value="<?php echo (isset($edit['qty'])) ? $edit['qty'] : ''; ?>" class="form-control qty" name="qty[]" id="qty" placeholder="Qty"> 
+                            </div>
+                            <div class="col-12 col-md-2">
+                              <label for="expiry">Expiry</label>
+                              <input type="text" readonly="" value="<?php echo (isset($edit['expiry'])) ? $edit['expiry'] : ''; ?>" class="form-control expiry" name="expiry[]" id="expiry" placeholder="Expiry"> 
+                            </div>
+                            <div class="col-12 col-md-2">
+                              <label for="gst">GST %</label>
+                              <input type="text" readonly="" value="<?php echo (isset($edit['gst'])) ? $edit['gst'] : ''; ?>" class="form-control gst" name="gst[]" id="gst" placeholder="GST %"> 
+                            </div>
+                            <div class="col-12 col-md-2">
+                              <label for="units_strip">Units/Strip</label>
+                              <input type="text" readonly="" value="<?php echo (isset($edit['units_strip'])) ? $edit['units_strip'] : ''; ?>" class="form-control units_strip" name="units_strip[]"  id="units_strip" placeholder="Units/Strip"> 
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <div class="col-12 col-md-2">
+                                <label for="units_strip">Price/Strip</label>
+                                <input type="text" readonly="" value="<?php echo (isset($edit['price_strip'])) ? $edit['price_strip'] : ''; ?>" class="form-control price_strip" name="price_strip[]"  id="price_strip" placeholder="Price/Strip"> 
+                              </div>
+                              <div class="col-12 col-md-2">
+                                <label for="consumption">Consumption</label>
+                                <input type="text" value="<?php echo (isset($edit['consumption'])) ? $edit['consumption'] : ''; ?>" class="form-control consumption" name="consumption[]"  id="consumption" placeholder="Qty"> 
+                              </div>
+                              <div class="col-12 col-md-2">
+                                <label for="consumption">Note</label>
+                                <textarea class="form-control note" name="note[]" id="note"><?php echo (isset($edit['note'])) ? $edit['note'] : ''; ?></textarea>  
+                              </div>
+                              <?php 
+                              if(!isset($_GET['id'])){
+                              ?>
+                              <div class="col-12 col-md-6 text-right" style="margin-top: 35px;">
+                                <a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product remove_last" style="display: none;"><i class="fa fa-close mr-0 ml-0"></i></a>
+                                <a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
+                              </div>
+                            <?php } ?>
+                          </div>
+                          
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                          <a href="view-purchase.php" type="button" class="btn btn-light pull-left">Back</a>
+                          <?php 
+                          if(isset($_GET['id'])){
+                            ?>
+                            <button type="submit" name="edit" class="btn btn-success pull-right">Edit</button>
+                            <?php
+                          }else{
+                          ?>
+                        <button type="submit" name="submit" class="btn btn-success pull-right">Submit</button>
+                        <?php } ?>
+                      </div>
+                  </div>
                 </form>
                 <div class="col mt-3">
                     <h4 class="card-title">Self Consumption</h4>
@@ -289,8 +290,8 @@ if(isset($_POST['edit'])){
                                       <td><?php echo $i; ?></td>
                                       <?php 
                                       $product_id = "SELECT * FROM `product_master` WHERE id='".$row['product_id']."'";
-                                  	  $product = mysqli_query($conn,$product_id);
-                                  	  $row1 = mysqli_fetch_assoc($product);
+                                      $product = mysqli_query($conn,$product_id);
+                                      $row1 = mysqli_fetch_assoc($product);
                                       ?>
                                       <td><?php echo $row1['product_name']; ?></td>
                                       <td><?php echo $row['batch']; ?></td>
@@ -310,66 +311,66 @@ if(isset($_POST['edit'])){
                             </div>
                           </div>
                     </div>
-            	</div>
+              </div>
             </div>
            
           </div>
         </div>
 
         <div id="copy-html" style="display: none;">
-        	
-        	<div class="self-sub-more">
-        		<hr>
-        	 <div class="form-group row">       
-	          <div class="col-12 col-md-2">
-	            <label for="product_name">Product Name</label>
-	            <input type="text" class="form-control tags" required="" name="product_name[]" id="product_name" placeholder="Product Name">
-	            <small class="text-danger empty-message0"></small>
-	            <input type="hidden" name="product_id[]" class="product_id">
-			    <input type="hidden" name="purchase_id[]" class="purchase_id">
-	          </div>
-	          <div class="col-12 col-md-2">
-	            <label for="batch">Batch</label>
-	            <input type="text" readonly="" class="form-control batch" name="batch[]"  id="batch" placeholder="Batch"> 
-	          </div>
-	          <div class="col-12 col-md-2">
-	            <label for="qty">Qty</label>
-	            <input type="text" readonly="" class="form-control qty" name="qty[]" id="qty" placeholder="Qty"> 
-	          </div>
-	          <div class="col-12 col-md-2">
-	            <label for="expiry">Expiry</label>
-	            <input type="text" readonly="" class="form-control expiry" name="expiry[]" id="expiry" placeholder="Expiry"> 
-	          </div>
-	          <div class="col-12 col-md-2">
-	            <label for="gst">GST %</label>
-	            <input type="text" readonly="" class="form-control gst" name="gst[]" id="gst" placeholder="GST %"> 
-	          </div>
-	          <div class="col-12 col-md-2">
-	            <label for="units_strip">Units/Strip</label>
-	            <input type="text" readonly="" class="form-control units_strip" name="units_strip[]"  id="units_strip" placeholder="Units/Strip"> 
-	          </div>
-	        </div>
-	        <div class="form-group row">
-	        	<div class="col-12 col-md-2">
-	                <label for="units_strip">Price/Strip</label>
-	                <input type="text" readonly="" class="form-control price_strip" name="price_strip[]"  id="price_strip" placeholder="Price/Strip"> 
-	          	</div>
-	          	<div class="col-12 col-md-2">
-	                <label for="consumption">Consumption</label>
-	                <input type="text" class="form-control consumption" name="consumption[]"  id="consumption" placeholder="Qty"> 
-	          	</div>
-	          	<div class="col-12 col-md-2">
-	                <label for="consumption">Note</label>
-	                <textarea class="form-control note" name="note[]" id="note"></textarea>  
-	          	</div>
-	          	<div class="col-12 col-md-6 text-right" style="margin-top: 35px;">
-	          		<a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product"><i class="fa fa-close mr-0 ml-0"></i></a>
-	          		<a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
-	        		
-	          	</div>
-	        </div>
-	        
-	        </div>
+          
+          <div class="self-sub-more">
+            <hr>
+           <div class="form-group row">       
+            <div class="col-12 col-md-2">
+              <label for="product_name">Product Name</label>
+              <input type="text" class="form-control tags" required="" name="product_name[]" id="product_name" placeholder="Product Name">
+              <small class="text-danger empty-message##PRODUCTCOUNT##"></small>
+              <input type="hidden" name="product_id[]" class="product_id">
+          <input type="hidden" name="purchase_id[]" class="purchase_id">
+            </div>
+            <div class="col-12 col-md-2">
+              <label for="batch">Batch</label>
+              <input type="text" readonly="" class="form-control batch" name="batch[]"  id="batch" placeholder="Batch"> 
+            </div>
+            <div class="col-12 col-md-2">
+              <label for="qty">Qty</label>
+              <input type="text" readonly="" class="form-control qty" name="qty[]" id="qty" placeholder="Qty"> 
+            </div>
+            <div class="col-12 col-md-2">
+              <label for="expiry">Expiry</label>
+              <input type="text" readonly="" class="form-control expiry" name="expiry[]" id="expiry" placeholder="Expiry"> 
+            </div>
+            <div class="col-12 col-md-2">
+              <label for="gst">GST %</label>
+              <input type="text" readonly="" class="form-control gst" name="gst[]" id="gst" placeholder="GST %"> 
+            </div>
+            <div class="col-12 col-md-2">
+              <label for="units_strip">Units/Strip</label>
+              <input type="text" readonly="" class="form-control units_strip" name="units_strip[]"  id="units_strip" placeholder="Units/Strip"> 
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-12 col-md-2">
+                  <label for="units_strip">Price/Strip</label>
+                  <input type="text" readonly="" class="form-control price_strip" name="price_strip[]"  id="price_strip" placeholder="Price/Strip"> 
+              </div>
+              <div class="col-12 col-md-2">
+                  <label for="consumption">Consumption</label>
+                  <input type="text" class="form-control consumption" name="consumption[]"  id="consumption" placeholder="Qty"> 
+              </div>
+              <div class="col-12 col-md-2">
+                  <label for="consumption">Note</label>
+                  <textarea class="form-control note" name="note[]" id="note"></textarea>  
+              </div>
+              <div class="col-12 col-md-6 text-right" style="margin-top: 35px;">
+                <a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product"><i class="fa fa-close mr-0 ml-0"></i></a>
+                <a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a>
+              
+              </div>
+          </div>
+          
+          </div>
         </div>
     </div>
 
@@ -426,6 +427,7 @@ if(isset($_POST['edit'])){
   <script>
      $('.datatable').DataTable();
   </script>
+  
   <script src="js/custom/inventory-self-consumption.js"></script>
   <script src="js/jquery-ui.js"></script>
   <script src="js/parsley.min.js"></script>
