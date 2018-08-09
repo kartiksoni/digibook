@@ -1,4 +1,4 @@
-<?php include('include/usertypecheck.php'); ?>
+<?php include('include/usertypecheck.php');?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,43 +29,17 @@
   <div class="container-scroller">
   
     <!-- Topbar -->
-        <?php include "include/topbar.php" ?>
+    <?php include "include/topbar.php" ?>
     
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
-    
         
-        
-        <!-- partial:partials/_settings-panel.html -->
-        
-        <!--<div class="theme-setting-wrapper">
-        <div id="settings-trigger"><i class="mdi mdi-settings"></i></div>
-        <div id="theme-settings" class="settings-panel">
-        <i class="settings-close mdi mdi-close"></i>
-        <p class="settings-heading">SIDEBAR SKINS</p>
-        <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
-        <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
-        <p class="settings-heading mt-2">HEADER SKINS</p>
-        <div class="color-tiles mx-0 px-4">
-          <div class="tiles primary"></div>
-          <div class="tiles success"></div>
-          <div class="tiles warning"></div>
-          <div class="tiles danger"></div>
-          <div class="tiles pink"></div>
-          <div class="tiles info"></div>
-          <div class="tiles dark"></div>
-          <div class="tiles default"></div>
-        </div>
-        </div>
-        </div>-->
-        
-        
-        <!-- Right Sidebar -->
-        <?php include "include/sidebar-right.php" ?>
+      <!-- Right Sidebar -->
+      <?php include "include/sidebar-right.php" ?>
         
        
-       <!-- Left Navigation -->
-        <?php include "include/sidebar-nav-left.php" ?>
+      <!-- Left Navigation -->
+      <?php include "include/sidebar-nav-left.php" ?>
         
         
       
@@ -75,217 +49,231 @@
         <div class="content-wrapper">
           <div class="row">
           
-           <!-- Inventory Form ------------------------------------------------------------------------------------------------------>
+            <!-- Inventory Form ------------------------------------------------------------------------------------------------------>
             <div class="col-md-12 grid-margin stretch-card">
-            
-                <div class="card">
+              <div class="card">
                 <div class="card-body">
-                   	
-                    <!-- Main Catagory -->
-                    <div class="row">
+                    
+                  <!-- Main Catagory -->
+                  <div class="row">
                     <div class="col-12">
                         <div class="enventory">
-                            <button type="button" class="btn btn-warning active">Order</button>
-                            <button type="button" class="btn btn-warning">List</button>
-                            <button type="button" class="btn btn-warning">Missed Sales Order</button>
-                            <button type="button" class="btn btn-warning btn-fw">Settings</button>
+                            <a href="order.php" class="btn btn-dark btn-fw active">Order</a>
+                            <a href="order-list-tab.php" class="btn btn-dark btn-fw ">List</a>
+                            <a href="#" class="btn btn-dark btn-fw ">Missed Sales Order</a>
+                            <a href="#" class="btn btn-dark btn-fw ">Settings</a>
                         </div>  
                     </div> 
-                    </div>
-                    <hr>
-                    
-                    <!-- Sub Catagory Catagory -->
-                    <div class="row">
-                    <div class="col-12 bg-inverse-light" >
-                        <div class="order-sub">
-                            <button type="button" class="btn btn-grey-1">By Vendor</button>
-                            <button type="button" class="btn btn-grey-1 active">By Min/Max Reorder</button>
-                            <button type="button" class="btn btn-grey-1">By Min/Max Reorder</button>
-                        </div>  
-                    </div> 
-                    </div>
-                    <hr>
+                  </div>
 
-                    
-                    <form class="forms-sample">
-                    
+                  <hr>
+                  
+                  <!-- Sub Catagory Catagory -->
+                  <div class="row">
+                    <div class="col-12 bg-inverse-light" >
+                      <div class="order-sub">
+                          <a href="order.php" class="btn btn-grey-1 btn-rounded btn-xs <?php echo (basename($_SERVER['PHP_SELF']) == 'order.php') ? 'active' : ''; ?>">By Vendor</a>
+                          <a href="order-by-transition.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-transition.php') ? 'active' : ''; ?>">By Transition</a>
+                          <a href="order-by-min-qty.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-min-qty.php') ? 'active' : ''; ?>">By Max Reorder</a>
+                          <a href="order-by-product.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-product.php') ? 'active' : ''; ?>">By Product</a>
+                      </div>  
+                    </div> 
+                  </div>
+
+                  <hr>
+                  
+                  <form class="forms-sample">
                     <div class="col-md-12">
-                    
-                    	<div class="form-group row">
-                    
-                    <div class="col-12 col-md-2 col-sm-3">
-                    <label>Select Vendor</label>
-                        <select class="js-example-basic-single" style="width:100%"> 
-                            <option value="Regular">Please select</option>
-                            <option value="Unregistered">MRP</option>
-                            <option value="Composition">Product Name </option>
-                            <option value="Composition">Generic Name</option>
-                        </select>
+                      <div class="form-group row">
+                        <div class="col-12 col-md-8 col-sm-12">
+                            <label for="exampleInputName1">Select Type  </label>
+                            <div class="row no-gutters">
+                              <div class="col">
+                                  <div class="form-radio">
+                                    <label class="form-check-label">
+                                      <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="Active" checked>
+                                      Company wise  
+                                    </label>
+                                  </div>
+                              </div>
+                              <div class="col">
+                                  <div class="form-radio">
+                                    <label class="form-check-label">
+                                      <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="Deactive">
+                                      All Company wise
+                                    </label>
+                                  </div>
+                              </div>
+                              <div class="col">
+                                  <div class="form-radio">
+                                    <label class="form-check-label">
+                                      <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="Active" checked>
+                                      Selected Company wise
+                                    </label>
+                                  </div>
+                              </div>
+                              <div class="col">
+                                  <div class="form-radio">
+                                    <label class="form-check-label">
+                                      <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="Deactive">
+                                      All Products
+                                    </label>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-12 col-md-2">
+                          <label for="exampleInputName1">From Date</label>
+                          <div class="input-group date datepicker">
+                            <input type="text" class="form-control border" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon input-group-append border-left">
+                              <span class="mdi mdi-calendar input-group-text"></span>
+                            </span>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-2">
+                          <label for="exampleInputName1">To Date</label>
+                          <div class="input-group date datepicker">
+                            <input type="text" class="form-control border" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon input-group-append border-left">
+                              <span class="mdi mdi-calendar input-group-text"></span>
+                            </span>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <label >Stock per. Of Sales</label>
+                            <input type="text" class="form-control" id="exampleInputName1" placeholder="0.00">
+                        </div>
+                        <div class="col-12 col-md-2">
+                          <button type="submit" class="btn btn-success mt-30" style="margin-top:30px;">Search</button>
+                        </div>
+                      </div>
                     </div>
-                    
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <label >Product</label>
-                        <select class="js-example-basic-single" style="width:100%"> 
-                            <option value="Regular">Please select</option>
-                            <option value="Unregistered">MRP</option>
-                            <option value="Composition">Product Name </option>
-                            <option value="Composition">Generic Name</option>
-                        </select>
-                    </div>
-                    
-                    <div class="col-12 col-md-2">
-                        <label >Product</label>
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="Product">
-                    </div>
-                    
-                    <div class="col-12 col-md-2">
-                        <label >Purchase Price </label>
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="0.00">
-                    </div>
-                    
-                    <div class="col-12 col-md-1">
-                        <label >GST</label>
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="0">
-                    </div>
-                    
-                    <div class="col-12 col-md-2">
-                        <label >Unit/Strip/Packing </label>
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="0">
-                    </div>
-                    
-                    <div class="col-12 col-md-1">
-                        <label >Qty</label>
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="0">
-                    </div>
-                    
-                   
-                    
-                    <div class="col-12 col-md-1">
-                    <button type="submit" class="btn btn-success mt-30" style="margin-top:30px;">Add</button>
-                    </div>
-                    
-                    </div> 
-                    
-                    	<div class="form-group row">
-                    
-                    <div class="col-6 col-md-3">
-                    <label>Generic Name</label>
-                    <p>Aloe vera gel and glycerin</p>
-                      
-                    </div>
-                    
-                     <div class="col-6 col-md-3">
-                    <label>Manufacturer Name</label>
-                    <p>ABBOTT LABO-R- (I) LTD.</p>
-                      
-                    </div>
-                    
-                   
-                    
-                    </div> 
-                    
-                    </div>
-                    
-                    </form>
+                  </form>
                 
                 </div>
-                </div>
-              
-                  
+              </div>
             </div>
-          
-      
             
-           
-            
-             <!-- Table ------------------------------------------------------------------------------------------------------>
+            <!-- Table ------------------------------------------------------------------------------------------------------>
             
             <div class="col-md-12 grid-margin stretch-card">
-              	<div class="card">
+              <div class="card">
                 <div class="card-body">
-                
-                	<!-- TABLE Filters btn -->
-                    
-                    
-                   
-                    
+                  <!-- TABLE Filters btn -->
                     <!-- TABLE STARTS -->
                     <div class="col mt-3">
-                    	 <div class="row">
-                            <div class="col-12">
-                              <table id="order-listing1" class="table">
-                                <thead>
-                                  <tr>
-                                      <th>Vendor Name</th>
-                                      <th>Product</th>
-                                      <th>Purchase Price</th>
-                                      <th>GST</th>
-                                      <th>Unit / Strip / Packing</th>
-                                      <th>Qty</th>
-                                      <th>Action</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <!-- Row Starts --> 	
-                                  <tr>
-                                      <td>1267</td>
-                                      <td>501 SOAP 300gm</td>
-                                      <td>94.40</td>
-                                      <td>12</td>
-                                      <td>4</td>
-                                      <td>40</td>
-                                      <td>
-                                      	<a href="#" class="btn  btn-danger p-2">Remove</a>
-                                        <a href="#" class="btn  btn-dark p-2">Edit</a>
-                                      </td>
-                                  </tr><!-- End Row --> 	
-                                  
-                                   <tr>
-                                      <td>1267</td>
-                                      <td>501 SOAP 300gm</td>
-                                      <td>94.40</td>
-                                      <td>12</td>
-                                      <td>4</td>
-                                      <td>40</td>
-                                      <td>
-                                      	<a href="#" class="btn  btn-danger p-2">Remove</a>
-                                        <a href="#" class="btn  btn-dark p-2">Edit</a>
-                                      </td>
-                                  </tr>
-                                  
-                                   <tr>
-                                      <td>1267</td>
-                                      <td>501 SOAP 300gm</td>
-                                      <td>94.40</td>
-                                      <td>12</td>
-                                      <td>4</td>
-                                      <td>40</td>
-                                      <td>
-                                      	<a href="#" class="btn  btn-danger p-2">Remove</a>
-                                        <a href="#" class="btn  btn-dark p-2">Edit</a>
-                                      </td>
-                                  </tr>
+                      <div class="row">
+                        <div class="col-12">
+                          <table class="table datatable">
+                            <thead>
+                              <tr>
+                                  <th>Product Name</th>
+                                  <th>Manufacturer Name</th>
+                                  <th>Purchase Price</th>
+                                  <th>Last Purchase Price</th>
+                                  <th>GST</th>
+                                  <th>Unit/Stip</th>
+                                  <th>No. of Strips</th>
+                                  <th>Order Qty</th>
+                                  <th>Current Stock</th>
+                                  <th>Vendor</th>
                                  
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <!-- Row Starts -->   
+                              <tr>
+                                  <td>501 SOAP 300gm</td>
+                                  <td>Chennai Pharma (HO)</td>
+                                  <td>2.00</td>
+                                  <td>56.00</td>
+                                  <td>12</td>
+                                  <td>12</td>
+                                  <td>5</td>
+                                  <td>5</td>
+                                  <td>189</td>
+                                  <td>
+                                    <select class="js-example-basic-single" style="width:100%"> 
+                                        <option value="Regular">H</option>
+                                        <option value="Unregistered">H1</option>
+                                    </select>
+                                  </td>
+                                 
+                              </tr><!-- End Row -->   
+                              
+                               <tr>
+                                  <td>501 SOAP 300gm</td>
+                                  <td>Chennai Pharma (HO)</td>
+                                  <td>2.00</td>
+                                  <td>56.00</td>
+                                  <td>12</td>
+                                  <td>12</td>
+                                  <td>5</td>
+                                  <td>5</td>
+                                  <td>189</td>
+                                  <td>
+                                    <select class="js-example-basic-single" style="width:100%"> 
+                                        <option value="Regular">H</option>
+                                        <option value="Unregistered">H1</option>
+                                    </select>
+                                  </td>
+                                 
+                              </tr>
+                              
+                               <tr>
+                                  <td>501 SOAP 300gm</td>
+                                  <td>Chennai Pharma (HO)</td>
+                                  <td>2.00</td>
+                                  <td>56.00</td>
+                                  <td>12</td>
+                                  <td>12</td>
+                                  <td>5</td>
+                                  <td>5</td>
+                                  <td>189</td>
+                                  <td>
+                                    <select class="js-example-basic-single" style="width:100%"> 
+                                        <option value="Regular">H</option>
+                                        <option value="Unregistered">H1</option>
+                                    </select>
+                                  </td>
+                                 
+                              </tr>
+                              
+                               <tr>
+                                  <td>501 SOAP 300gm</td>
+                                  <td>Chennai Pharma (HO)</td>
+                                  <td>2.00</td>
+                                  <td>56.00</td>
+                                  <td>12</td>
+                                  <td>12</td>
+                                  <td>5</td>
+                                  <td>5</td>
+                                  <td>189</td>
+                                  <td>
+                                    <select class="js-example-basic-single" style="width:100%"> 
+                                        <option value="Regular">H</option>
+                                        <option value="Unregistered">H1</option>
+                                    </select>
+                                  </td>
+                                 
+                              </tr>
+                              
+                             
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                     </div>
                     
-                    
                     <hr>
-                    
-                    
                 
                 </div>
-                </div>
-                </div>  
-            
-            
-            
-            
-      
-            
+              </div>
+            </div>
+
           </div>
         </div>
         <!-- content-wrapper ends -->
@@ -342,30 +330,10 @@
   
   <!-- Datepicker Initialise-->
  <script>
-    $('#datepicker-popup1').datepicker({
+    $('.datepicker').datepicker({
       enableOnReadonly: true,
       todayHighlight: true,
-    });
- </script>
- 
- <script>
-    $('#datepicker-popup2').datepicker({
-      enableOnReadonly: true,
-      todayHighlight: true,
-    });
- </script>
- 
- <script>
-    $('#datepicker-popup3').datepicker({
-      enableOnReadonly: true,
-      todayHighlight: true,
-    });
- </script>
- 
- <script>
-    $('#datepicker-popup4').datepicker({
-      enableOnReadonly: true,
-      todayHighlight: true,
+      autoclose: true
     });
  </script>
  
@@ -373,16 +341,10 @@
   <script src="js/data-table.js"></script> 
   
   <script>
-  	 $('#order-listing2').DataTable();
+     $('.datatable').DataTable();
   </script>
-  
-  <script>
-  	 $('#order-listing1').DataTable();
-  </script>
-  
   
   <!-- End custom js for this page-->
-  <?php include('include/usertypecheck.php'); ?>
 </body>
 
 
