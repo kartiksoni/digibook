@@ -763,7 +763,7 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
       exit;
     }
 
-    // 08-08-2018 - GAUTAM MAKWANA
+    // 09-08-2018 - GAUTAM MAKWANA
     if($_REQUEST['action'] == "deleteByProduct"){
       if(isset($_REQUEST['id']) && $_REQUEST['id'] != ''){
         $query = "DELETE FROM byproduct WHERE id = '".$_REQUEST['id']."'";
@@ -775,6 +775,52 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
         }
       }else{
         $result = array('status' => false, 'message' => 'Record delete fail! Try again.', 'result' => '');
+      }
+      echo json_encode($result);
+      exit;
+    }
+
+    // 10-08-2018 - GAUTAM MAKWANA
+    if($_REQUEST['action'] == "getCompanyCode"){
+      $searchquery = (isset($_REQUEST['query']['term'])) ? $_REQUEST['query']['term'] : '';
+      $data = [];
+      if($searchquery != ''){
+        $query = "SELECT id, name, code FROM company_master WHERE status = 1 AND code like '%".$searchquery."%' ORDER BY name";
+        $res = mysqli_query($conn, $query);
+
+        if($res && mysqli_num_rows($res) > 0){
+          while ($row = mysqli_fetch_array($res)) {
+            $arr['id'] = $row['id'];
+            $arr['name'] = (isset($row['name'])) ? $row['name'] : '';
+            $arr['code'] = (isset($row['code'])) ? $row['code'] : '';
+            array_push($data, $arr);
+          }
+        }
+      }
+
+      if(!empty($data)){
+        $result = array('status' => true, 'message' => 'Data Found Success!', 'result' => $data);
+      }else{
+        $result = array('status' => false, 'message' => 'Data Not Found!', 'result' => '');
+      }
+      echo json_encode($result);
+      exit;
+    }
+
+    // 10-08-2018 - GAUTAM MAKWANA
+    if($_REQUEST['action'] == "addcompany"){
+      $name = (isset($_REQUEST['data']['name'])) ? $_REQUEST['data']['name'] : '';
+      $code = (isset($_REQUEST['data']['code'])) ? $_REQUEST['data']['code'] : '';
+      if($name != '' && $code != ''){
+        $query = "INSERT INTO company_master SET name = '".$name."', code = '".$code."', status = 1, created = '".date('Y-m-d H:i:s')."', createdby ='".$_SESSION['auth']['id']."'";
+        $res = mysqli_query($conn, $query);
+        if($res){
+          $result = array('status' => true, 'message' => 'Product Added successfully.', 'result' => '');
+        }else{
+          $result = array('status' => false, 'message' => 'Product Added fail! Try again.', 'result' => '');  
+        }
+      }else{
+        $result = array('status' => false, 'message' => 'All fields is required!', 'result' => '');
       }
       echo json_encode($result);
       exit;

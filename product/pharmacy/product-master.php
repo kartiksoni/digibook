@@ -149,6 +149,7 @@ if(isset($_POST['update'])){
   <link rel="stylesheet" href="css/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="images/favicon.png" />
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 </head>
 <body>
   <div class="container-scroller">
@@ -209,8 +210,8 @@ if(isset($_POST['update'])){
                         <select class="js-example-basic-single" name="schedule_cat" style="width:100%">
                         <?php $data['schedule_cat'] = (isset($data['schedule_cat'])) ? $data['schedule_cat'] : '';?>
                             <option value="">Select Schedule Category</option>
-                            <option <?php if($data['schedule_cat'] == "Schedule1"){echo "selected";} ?> value="Schedule1">Schedule1</option>
-                            <option <?php if($data['schedule_cat'] == "Schedule2"){echo "selected";} ?> value="Schedule2">Schedule2</option>
+                            <option <?php if($data['schedule_cat'] == "Schedule1"){echo "selected";} ?> value="X">X</option>
+                            <option <?php if($data['schedule_cat'] == "Schedule2"){echo "selected";} ?> value="H">H</option>
                         </select>
                   </div>
                       
@@ -279,7 +280,7 @@ if(isset($_POST['update'])){
                         
                         <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Expiry Date</label>
-                            <div id="datepicker-popup1" class="input-group date datepicker">
+                            <div class="input-group date datepicker">
                             <input name="ex_date" value="<?php echo (isset($data['ex_date']) && $data['ex_date'] != '') ? date("d/m/Y",strtotime(str_replace("-","/",$data['ex_date']))) : ''; ?>" type="text" class="form-control border" placeholder="dd/mm/yyyy" >
                             <span class="input-group-addon input-group-append border-left">
                               <span class="mdi mdi-calendar input-group-text"></span>
@@ -303,7 +304,7 @@ if(isset($_POST['update'])){
                        
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Give a New MRP</label>
-                        <input type="text" value="<?php echo (isset($data['give_mrp'])) ? $data['give_mrp'] : '';?>" name="give_mrp" class="form-control numberOnly" id="exampleInputName1" placeholder="Give a New MRP">
+                        <input type="text" value="<?php echo (isset($data['give_mrp'])) ? $data['give_mrp'] : '';?>" name="give_mrp" class="form-control onlynumber" id="exampleInputName1" placeholder="Give a New MRP">
                         </div>
                         
                         <div class="col-12 col-md-4">
@@ -318,7 +319,7 @@ if(isset($_POST['update'])){
                         
                          <div class="col-12 col-md-4">
                         <label for="exampleInputName1">IGST</label>
-                        <input type="text" name="igst"  value="<?php echo (isset($data['igst'])) ? $data['igst'] : '';?>" class="form-control numberOnly" id="exampleInputName1" placeholder="IGST">
+                        <input type="text" name="igst"  value="<?php echo (isset($data['igst'])) ? $data['igst'] : '';?>" class="form-control onlynumber" id="exampleInputName1" placeholder="IGST">
                         </div>
                         
                     
@@ -327,16 +328,16 @@ if(isset($_POST['update'])){
                     <div class="form-group row">
                       <div class="col-12 col-md-4">
                         <label for="exampleInputName1">CGST</label>
-                        <input type="text"  name="cgst" value="<?php echo (isset($data['cgst'])) ? $data['cgst'] : '';?>" class="form-control numberOnly" id="exampleInputName1" placeholder="CGST">
+                        <input type="text"  name="cgst" value="<?php echo (isset($data['cgst'])) ? $data['cgst'] : '';?>" class="form-control onlynumber" id="exampleInputName1" placeholder="CGST">
                       </div>
                       <div class="col-12 col-md-4">
                         <label for="exampleInputName1">SGST</label>
-                      <input type="text"  name="sgst" value="<?php echo (isset($data['sgst'])) ? $data['sgst'] : '';?>" class="form-control numberOnly" id="exampleInputName1" placeholder="SGST">
+                      <input type="text"  name="sgst" value="<?php echo (isset($data['sgst'])) ? $data['sgst'] : '';?>" class="form-control onlynumber" id="exampleInputName1" placeholder="SGST">
                       </div>
                       
                       <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Inward Rate<span class="text-danger">*</span></label>
-                      <input type="text" required="" name="inward_rate" value="<?php echo (isset($data['inward_rate'])) ? $data['inward_rate'] : '';?>" class="form-control numberOnly" id="exampleInputName1" placeholder="INWARD Rate">
+                      <input type="text" required="" name="inward_rate" value="<?php echo (isset($data['inward_rate'])) ? $data['inward_rate'] : '';?>" class="form-control onlynumber" id="exampleInputName1" placeholder="INWARD Rate">
                       </div>
                       
                     </div>
@@ -346,16 +347,16 @@ if(isset($_POST['update'])){
                       
                           <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Distributor Rate<span class="text-danger">*</span></label>
-                            <input type="text" required="" value="<?php echo (isset($data['distributor_rate'])) ? $data['distributor_rate'] : '';?>" name="distributor_rate" class="form-control numberOnly" id="exampleInputName1" placeholder="Distributor Rate">
+                            <input type="text" required="" value="<?php echo (isset($data['distributor_rate'])) ? $data['distributor_rate'] : '';?>" name="distributor_rate" class="form-control onlynumber" id="exampleInputName1" placeholder="Distributor Rate">
                           </div>
                           <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Sales Rate<span class="text-danger">*</span></label>
                               <div class="row no-gutters">
                                   <div class="col-12 col-md-6">
-                                 <input type="text" value="<?php echo (isset($data['sale_rate_local'])) ? $data['sale_rate_local'] : '';?>" name="sale_rate_local" required="" class="form-control numberOnly" id="exampleInputName1" placeholder="Local">
+                                 <input type="text" value="<?php echo (isset($data['sale_rate_local'])) ? $data['sale_rate_local'] : '';?>" name="sale_rate_local" required="" class="form-control onlynumber" id="exampleInputName1" placeholder="Local">
                                     </div>
                                    <div class="col-12 col-md-6">
-                                    <input type="text" value="<?php echo (isset($data['sale_rate_out'])) ? $data['sale_rate_out'] : '';?>" name="sale_rate_out" required="" class="form-control numberOnly" id="exampleInputName1" placeholder="Out">
+                                    <input type="text" value="<?php echo (isset($data['sale_rate_out'])) ? $data['sale_rate_out'] : '';?>" name="sale_rate_out" required="" class="form-control onlynumber" id="exampleInputName1" placeholder="Out">
                                    </div>
                                 </div>
                           </div>
@@ -378,17 +379,21 @@ if(isset($_POST['update'])){
                     <input type="text" name="box_no" required="" value="<?php echo (isset($data['box_no'])) ? $data['box_no'] : '';?>" class="form-control" id="exampleInputName1" placeholder="Box No">
                     </div>
                     
-                    <div class="col-12 col-md-4">
-                      <label for="exampleInputName1">Company Code</label>
-                      <input type="text" name="company_code" value="<?php echo (isset($data['company_code'])) ? $data['company_code'] : '';?>" class="form-control" id="exampleInputName1" placeholder="Company Code">
-                    </div>
+                      <div class="col-12 col-md-3">
+                        <label for="exampleInputName1">Company Code</label>
+                        <input type="text" name="company_code" value="<?php echo (isset($data['company_code'])) ? $data['company_code'] : '';?>" class="form-control" id="company_code" placeholder="Company Code">
+                        <small class="empty-message text-danger"></small>
+                      </div>
+                      <div class="col-12 col-md-1">
+                        <button type="button" data-target="#addcompany-model" data-toggle="modal" class="btn btn-outline-primary btn-sm pull-right" style="margin-top: 30px;"><i class="mdi mdi-plus"></i></button>
+                      </div>
                     </div>
                     
                     <div class="form-group row">
                             
                             <div class="col-12 col-md-4">
                                 <label for="exampleInputName1">Opening Stock Rs</label>
-                                <input type="text" value="<?php echo (isset($data['opening_stock'])) ? $data['opening_stock'] : '';?>" name="opening_stock" class="form-control numberOnly" id="exampleInputName1" placeholder="Opening Stock Rs">
+                                <input type="text" value="<?php echo (isset($data['opening_stock'])) ? $data['opening_stock'] : '';?>" name="opening_stock" class="form-control onlynumber" id="exampleInputName1" placeholder="Opening Stock Rs">
                             </div>
                             
                             <div class="col-12 col-md-4">
@@ -398,7 +403,7 @@ if(isset($_POST['update'])){
                             
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Min Qty.<span class="text-danger">*</span></label>
-                            <input type="text" required="" value="<?php echo (isset($data['min_qty'])) ? $data['min_qty'] : '';?>" name="min_qty" class="form-control numberOnly" id="exampleInputName1" placeholder="Min Qty.">
+                            <input type="text" required="" value="<?php echo (isset($data['min_qty'])) ? $data['min_qty'] : '';?>" name="min_qty" class="form-control onlynumber" id="exampleInputName1" placeholder="Min Qty.">
                             </div>
 
                     </div>
@@ -407,12 +412,12 @@ if(isset($_POST['update'])){
                         
                         <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Ratio<span class="text-danger">*</span></label>
-                            <input type="text" required="" value="<?php echo (isset($data['ratio'])) ? $data['ratio'] : '';?>" name="ratio" class="form-control numberOnly" id="Ratio" placeholder="Ratio.">
+                            <input type="text" required="" value="<?php echo (isset($data['ratio'])) ? $data['ratio'] : '';?>" name="ratio" class="form-control onlynumber" id="Ratio" placeholder="Ratio.">
                         </div>
                        
                         <div class="col-12 col-md-4">
                           <label for="exampleInputName1">Max Qty.<span class="text-danger">*</span></label>
-                        <input type="text" required="" value="<?php echo (isset($data['max_qty'])) ? $data['max_qty'] : '';?>" name="max_qty" class="form-control numberOnly" id="exampleInputName1" placeholder="Max Qty.">
+                        <input type="text" required="" value="<?php echo (isset($data['max_qty'])) ? $data['max_qty'] : '';?>" name="max_qty" class="form-control onlynumber" id="exampleInputName1" placeholder="Max Qty.">
                         </div>
                         <div class="col-12 col-md-4">
                                   <label for="exampleInputName1">Status</label>
@@ -469,9 +474,11 @@ if(isset($_POST['update'])){
         <!-- content-wrapper ends -->
         
         <!-- partial:partials/_footer.php -->
-        <?php include "include/footer.php" ?>
+        <?php include "include/footer.php"?>
         <!-- partial -->
-        
+
+        <!-- Add Company model -->
+        <?php include "include/addcompanymodel.php"?>
       </div>
       <!-- main-panel ends -->
     </div>
@@ -521,36 +528,17 @@ if(isset($_POST['update'])){
     </script>
   
  <script>
-    $('#datepicker-popup1').datepicker({
+    $('.datepicker').datepicker({
       enableOnReadonly: true,
       todayHighlight: true,
-      format: 'dd/mm/yyyy'
+      format: 'dd/mm/yyyy',
+      autoclose: true,
     });
  </script>
- 
- <script>
-    $('#datepicker-popup2').datepicker({
-      enableOnReadonly: true,
-      todayHighlight: true,
-      format: 'dd/mm/yyyy'
-    });
- </script>
- 
   <!-- Custom js for this page-->
-  <script src="js/data-table.js"></script> 
-  
-  <script>
-     $('#order-listing2').DataTable();
-  </script>
-  
-  <script>
-     $('#order-listing1').DataTable();
-  </script>
+  <script src="js/custom/onlynumber.js"></script>
+  <script src="js/custom/product_master.js"></script>
+  <script src="js/jquery-ui.js"></script>
   
 </body>
-<script type="text/javascript">
-  $(function() {
-    $('body').on('keydown', '.numberOnly', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||(/65|67|86|88/.test(e.keyCode)&&(e.ctrlKey===true||e.metaKey===true))&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
-    })
-</script>
 </html>
