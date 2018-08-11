@@ -231,7 +231,7 @@ $(document).ready(function(){
                 type: "POST",
                 data: {
                     query: request.term,
-                    action: "getproduct_purchase"
+                    action: "getproduct_purchase_return"
                 },
                 // The success event handler will display "No match found" if no items are returned.
                 success: function (data) {
@@ -884,7 +884,7 @@ $( document ).ready(function() {
           $.ajax({
                 type: "POST",
                 url: 'ajax.php',
-                data: {'vendor_id':vendor_id, 'action':'getPoiByVendor'},
+                data: {'vendor_id':vendor_id, 'action':'getAllOrdersByVendorID'},
                 dataType: "json",
                 beforeSend: function() {
                     $('.vendor-loader').show();
@@ -913,7 +913,6 @@ $( document ).ready(function() {
                       tmphtml = tmphtml.replace("##UNIT##",item.unit);
                       tmphtml = tmphtml.replace("##QTY##",item.qty);
                       tmphtml = tmphtml.replace("##POIID##",item.id);
-                      tmphtml = tmphtml.replace("##TABLE##",item.table);
                       finalhtml += tmphtml;
                     });
                     
@@ -989,7 +988,6 @@ $( document ).ready(function() {
                 $('#product-tbody tr:last').find('.f_igst').val(item.gst);
               }
               $('#product-tbody tr:last').find('.f_poi_id').val(item.id);
-              $('#product-tbody tr:last').find('.f_poi_table').val(item.table);
           });
 
         $('#poi-model').modal('hide');

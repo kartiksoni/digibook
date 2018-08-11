@@ -79,6 +79,9 @@
                             <label>Product Name <span class="text-danger">*</span></label>
                             <input class="form-control" name="search" id="search" type="text" placeholder="Enter product name" required>
                             <input type="hidden" name="product_id" id="product_id">
+                            <input type="hidden" name="sgst" id="sgst">
+                            <input type="hidden" name="cgst" id="cgst">
+                            <input type="hidden" name="igst" id="igst">
                             <small class="empty-message text-danger"></small>
                         </div>
                         <div class="col-12 col-md-2 col-sm-3">
@@ -88,6 +91,7 @@
                           </select>
                           <div id="error-vendor"></div>
                           <input type="hidden" id="vendor_name" name="vendor_name">
+                          <input type="hidden" id="statecode" name="statecode">
                         </div>
                         <div class="col-12 col-md-2">
                             <label>Email</label>
@@ -106,9 +110,29 @@
                             <input type="text" class="form-control" name="mfg_co" id="mfg_co" placeholder="Enter MFG. Company" readonly>
                         </div>
                         <input type="hidden" name="editid" class="editid" id="editid">
-                        <div class="col-12 col-md-12">
-                          <button type="button" class="btn btn-primary pull-left" data-toggle="modal" data-target="#purchase-addproductmodel" style="margin-top:30px;"><i class="fa fa-plus"></i> Add New Product</button>
-                          <button type="submit" class="btn btn-success pull-right" id="btn-addtmp" style="margin-top:30px;" disabled>Add</button>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-12 col-md-2">
+                            <label>Purchase Price</label>
+                            <input type="text" class="form-control onlynumber" name="purchase_price" id="purchase_price" placeholder="Enter Purchase Price" value="0">
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <label>GST</label>
+                            <input type="text" class="form-control onlynumber" name="gst" id="gst" placeholder="Enter GST %" value="0">
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <label>Unit/Strip/Packing</label>
+                            <input type="text" class="form-control onlynumber" name="unit" id="unit" placeholder="Enter Unit/Strip/Packing" value="0">
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <label>Qty</label>
+                            <input type="text" class="form-control onlynumber" name="qty" id="qty" placeholder="Enter Quantity" value="1" data-parsley-min="1">
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#purchase-addproductmodel" style="margin-top:30px;"><i class="fa fa-plus"></i> Add New Product</button>
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <button type="submit" class="btn btn-success" id="btn-addtmp" style="margin-top:30px;" disabled>Add</button>
                         </div>
                       </div>
                     </form>
@@ -128,11 +152,13 @@
                                 <thead>
                                   <tr>
                                       <th>Product Name</th>
+                                      <th>Purchase Price</th>
+                                      <th>GST</th>
+                                      <th>Unit</th>
+                                      <th>Qty</th>
                                       <th>Vendor Name</th>
                                       <th>Email</th>
                                       <th>Mobile</th>
-                                      <th>Generic Name</th>
-                                      <th>MFG. Company</th>
                                       <th>Action</th>
                                   </tr>
                                 </thead>
@@ -160,12 +186,12 @@
                                 <thead>
                                   <tr>
                                       <th>Sr. No</th>
-                                      <th>Product Name</th>
                                       <th>Vendor Name</th>
-                                      <th>Email</th>
-                                      <th>Mobile</th>
-                                      <th>Generic Name</th>
-                                      <th>MFG. Company</th>
+                                      <th>Product Name</th>
+                                      <th>Purchase Price</th>
+                                      <th>GST</th>
+                                      <th>Unit/Strip/Packing</th>
+                                      <th>QTY</th>
                                       <th>Action</th>
                                   </tr> 
                                 </thead>
@@ -210,9 +236,29 @@
           <input type="hidden" name="product_name[]" class="product_name" value="##PRODUCTNAME##">
         </td>
         <td>
+          ##PURCHASEPRICE##
+          <input type="hidden" name="purchase_price[]" class="purchase_price" value="##PURCHASEPRICE##">
+        </td>
+        <td>
+          ##GST##
+          <input type="hidden" name="gst[]" class="gst" value="##GST##">
+          <input type="hidden" name="cgst[]" class="cgst" value="##CGST##">
+          <input type="hidden" name="sgst[]" class="sgst" value="##SGST##">
+          <input type="hidden" name="igst[]" class="igst" value="##IGST##">
+        </td>
+        <td>
+          ##UNIT##
+          <input type="hidden" name="unit[]" class="unit" value="##UNIT##">
+        </td>
+        <td>
+          ##QTY##
+          <input type="hidden" name="qty[]" class="qty" value="##QTY##">
+        </td>
+        <td>
           ##VENDORNAME##
           <input type="hidden" name="vendor_name[]" class="vendor_name" value="##VENDORNAME##">
           <input type="hidden" name="vendor_id[]" class="vendor_id" value="##VENDORID##">
+          <input type="hidden" name="statecode[]" class="statecode" value="##STATECODE##">
         </td>
         <td>
           ##EMAIL##
@@ -223,14 +269,8 @@
           <input type="hidden" name="mobile[]" class="mobile" value="##MOBILE##">
         </td>
         <td>
-          ##GENERIC##
           <input type="hidden" name="generic[]" class="generic" value="##GENERIC##">
-        </td>
-        <td>
-          ##MFG##
           <input type="hidden" name="mfg[]" class="mfg" value="##MFG##">
-        </td>
-        <td>
           <button type="button" class="btn  btn-danger p-2 edit-temp"><i class="icon-pencil mr-0"></i></button>
           <button type="button" class="btn  btn-primary p-2 delete-temp"><i class="icon-trash mr-0"></i></button>
         </td>
@@ -291,6 +331,7 @@
 </script>
 <script src="js/jquery-ui.js"></script>
 <script src="js/custom/order_by_product.js"></script>
+<script src="js/custom/onlynumber.js"></script>
 <!-- End custom js for this page-->
 </body>
 

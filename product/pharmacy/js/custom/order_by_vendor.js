@@ -2,7 +2,7 @@ $( document ).ready(function() {
 
   // table listing
   var table = $('.datatable').DataTable( {
-        "ajax": "ajax.php?action=getAllByVendor",
+        "ajax": "ajax.php?action=getOrder&type=1",
         "columns": [
             { "data": "no" },
             { "data": "vendor_name" },
@@ -261,7 +261,7 @@ $( document ).ready(function() {
       $.ajax({
             type: "POST",
             url: 'ajax.php',
-            data: {'action':'addByVendor', 'data': data},
+            data: {'action':'addOrder', 'type': 1, 'data': data},
             dataType: "json",
             beforeSend: function() {
               $('.btn-savebyvendor').html('Wait.. <i class="fa fa-spin fa-refresh"></i>');
@@ -305,7 +305,7 @@ $( document ).ready(function() {
     if(conf && id !== ''){
       $.ajax({
           url: "ajax.php",
-          data: {'id': id, 'action': 'deleteByVendor'},            
+          data: {'id': id, 'action': 'deleteOrder'},            
           dataType: "json",
           type: "POST",
           success: function (data) {

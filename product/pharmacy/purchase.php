@@ -187,9 +187,8 @@ if(isset($_POST['submit'])){
         }
 
         $poi_id = (isset($_POST["poi_id"][$i])) ? $_POST["poi_id"][$i] : '';
-        $poi_table = (isset($_POST["poi_table"][$i])) ? $_POST["poi_table"][$i] : '';
-        if($poi_id != '' && $poi_table != ''){
-          $sql = "UPDATE ".$poi_table." SET status=1 WHERE id='".$poi_id."'";
+        if($poi_id != ''){
+          $sql = "UPDATE orders SET status=0 WHERE id='".$poi_id."'";
           mysqli_query($conn,$sql);
         }
 
@@ -810,7 +809,6 @@ if(isset($_POST['submit'])){
                 <input type="hidden" name="f_cgst[]" class="f_cgst">
                 <input type="hidden" name="f_sgst[]" class="f_sgst">
                 <input type="hidden" name="poi_id[]" class="f_poi_id">
-                <input type="hidden" name="poi_table[]" class="f_poi_table">
               </td>
               <td><a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a><a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product"><i class="fa fa-close mr-0 ml-0"></i></a></td>
           </tr><!-- End Row --> 
@@ -903,7 +901,6 @@ if(isset($_POST['submit'])){
           <td class="poi-qty">##QTY##</td>
           <input type="hidden" class="poi-pid" value="##PRODUCTID##">
           <input type="hidden" class="poi-id" value="##POIID##">
-          <input type="hidden" class="poi-table" value="##TABLE##">
         </tr>
       </table>
   </div>

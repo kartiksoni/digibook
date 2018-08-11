@@ -62,6 +62,106 @@ if($_REQUEST['action'] == "getproduct"){
   exit;
 }
 
+if($_REQUEST['action'] == "getproduct_purchase"){
+      $getproduct_self = array();
+      $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']."%'";
+      
+      $result = mysqli_query($conn,$query);
+      $num = mysqli_num_rows($result);
+
+      while($row = mysqli_fetch_array($result)){
+
+        $query1 = "SELECT * from (SELECT expiry,mrp,SUM(f_cgst+f_cgst)as gst,SUM(qty*qty_ratio+free_qty)as total_qty,batch,product_id,id FROM `purchase_details` GROUP BY batch) as t WHERE t.product_id='".$row['id']."' ORDER BY t.expiry ASC ";
+        $result1 = mysqli_query($conn,$query1);
+        $rowcount=mysqli_num_rows($result1);
+        if($rowcount > 0){
+          while($row1 = mysqli_fetch_array($result1)){
+            $query2 = "SELECT SUM(consumption) As c_total FROM `self_consumption` WHERE product_id ='".$row['id']."' AND batch='".$row1['batch']."' GROUP BY purchase_id";
+            $result2 = mysqli_query($conn,$query2);
+            $row2 = mysqli_fetch_array($result2);
+            $query3 = "SELECT SUM(qty)as a_total FROM `adjustment` WHERE product_id='".$row['id']."'AND batch_no='".$row1['batch']."' AND type='inward'  GROUP BY qty";
+            $result3 = mysqli_query($conn,$query3);
+            $row3 = mysqli_fetch_array($result3);
+            $query4 = "SELECT SUM(qty)as a_total FROM `adjustment` WHERE product_id='".$row['id']."' AND batch_no='".$row1['batch']."' AND type='outward'  GROUP BY qty";
+            $result4 = mysqli_query($conn,$query4);
+            $row4 = mysqli_fetch_array($result4);
+            $c_total = $row1['total_qty'] - $row2['c_total'] + $row3['a_total'] - $row4['a_total'];
+            $count_per = $row1['mrp'] / $row['ratio'];
+            if(empty($row['igst'])){
+              $igst = "0";
+            }else{
+              $igst = $row['igst'];
+            }
+
+            if(empty($row['cgst'])){
+              $cgst = "0";
+            }else{
+              $cgst = $row['cgst'];
+            }
+
+            if(empty($row['sgst'])){
+              $sgst = "0";
+            }else{
+              $sgst = $row['sgst'];
+            }
+            $getproduct_self[] = array(
+              'id' => $row['id'],
+              'name' => $row['product_name'],
+              'purchase_id' => $row1['id'],
+              'batch' => $row1['batch'],
+              'expiry' => $row1['expiry'],
+              'total_qty' => $c_total,
+              'unit' => $row['unit'],
+              'mrp' => $row['give_mrp'],
+              'generic_name' => $row['generic_name'],
+              'gst' => $row['igst'],
+              'count_per' => $count_per,
+              'ratio' => $row['ratio'],
+              'igst'=> $igst,
+              'cgst' => $cgst,
+              'sgst' => $sgst
+            );
+          }
+        }else{
+          if(empty($row['igst'])){
+              $igst = "0";
+            }else{
+              $igst = $row['igst'];
+            }
+
+            if(empty($row['cgst'])){
+              $cgst = "0";
+            }else{
+              $cgst = $row['cgst'];
+            }
+
+            if(empty($row['sgst'])){
+              $sgst = "0";
+            }else{
+              $sgst = $row['sgst'];
+            }
+          $getproduct_self[] = array(
+              'id' => $row['id'],
+              'name' => $row['product_name'],
+              'purchase_id' => '',
+              'batch' => '-',
+              'expiry' => '-',
+              'total_qty' => 0,
+              'unit' => $row['unit'],
+              'mrp' => $row['give_mrp'],
+              'generic_name' => $row['generic_name'],
+              'gst' => $row['igst'],
+              'ratio' => $row['ratio'],
+              'igst'=> $igst,
+              'cgst' => $cgst,
+              'sgst' => $sgst
+            );
+        }
+      }
+      echo json_encode($getproduct_self);
+      exit;
+}
+
 if($_REQUEST['action'] == "getproduct_self"){
       $getproduct_self = array();
       $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']."%'";
@@ -507,7 +607,7 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
         $length = count($data['vendor_id']);
         if($length > 0){
           for ($i=0; $i < $length; $i++) { 
-            $query = "INSERT INTO byvendor SET vendor_id = '".$data['vendor_id'][$i]."', product_id = '".$data['product_id'][$i]."', purchase_price = '".$data['purchase_price'][$i]."', gst = '".$data['gst'][$i]."', unit = '".$data['unit'][$i]."', qty = '".$data['qty'][$i]."', created = '".date('Y-m-d H:i:s')."', createdby = '".$_SESSION['auth']['id']."'";
+            $query = "INSERT INTO byvendor SET order_no = '".mt_rand(100000,999999)."', vendor_id = '".$data['vendor_id'][$i]."', product_id = '".$data['product_id'][$i]."', purchase_price = '".$data['purchase_price'][$i]."', gst = '".$data['gst'][$i]."', unit = '".$data['unit'][$i]."', qty = '".$data['qty'][$i]."', created = '".date('Y-m-d H:i:s')."', createdby = '".$_SESSION['auth']['id']."'";
             $res = mysqli_query($conn, $query);
           }
           $result = array('status' => true, 'message' => 'Data Save successfully.', 'result' => '');
@@ -616,23 +716,57 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
     if($_REQUEST['action'] == "getPoiByVendor"){
       $vendor_id = (isset($_REQUEST['vendor_id'])) ? $_REQUEST['vendor_id'] : '';
       if($vendor_id != ''){
-        $query = "SELECT poi.id, poi.purchase_price, poi.gst, poi.unit, poi.qty, poi.created, pm.id as product_id, pm.product_name as product_name, pm.generic_name as generic_name, pm.mfg_company as mfg_company  FROM byvendor poi INNER JOIN product_master pm ON poi.product_id = pm.id WHERE poi.vendor_id = '".$vendor_id."' AND poi.status = 0";
-        $res = mysqli_query($conn, $query);
-        if($res && mysqli_num_rows($res)){
-          $data = [];
-            while ($row = mysqli_fetch_array($res)) {
-              $arr['id'] = $row['id'];
-              $arr['purchase_price'] = $row['purchase_price'];
-              $arr['gst'] = $row['gst'];
-              $arr['unit'] = $row['unit'];
-              $arr['qty'] = $row['qty'];
-              $arr['date'] = (isset($row['created']) && $row['created'] != '') ? date('d/m/Y',strtotime($row['created'])) : '';
-              $arr['product_id'] = (isset($row['product_id'])) ? $row['product_id'] : '';
-              $arr['product_name'] = (isset($row['product_name'])) ? $row['product_name'] : '';
-              $arr['generic_name'] = (isset($row['generic_name'])) ? $row['generic_name'] : '';
-              $arr['mfg_company'] = (isset($row['mfg_company'])) ? $row['mfg_company'] : '';
-              array_push($data, $arr);
-            }
+        $data = [];
+
+          /* FOR GET DATA IN BYVENDOR TABLE START */
+          $query = "SELECT poi.id, poi.order_no, poi.purchase_price, poi.gst, poi.unit, poi.qty, poi.created, pm.id as product_id, pm.product_name as product_name, pm.generic_name as generic_name, pm.mfg_company as mfg_company  FROM byvendor poi INNER JOIN product_master pm ON poi.product_id = pm.id WHERE poi.vendor_id = '".$vendor_id."' AND poi.status = 0";
+          $res = mysqli_query($conn, $query);
+          if($res && mysqli_num_rows($res)){
+              while ($row = mysqli_fetch_array($res)) {
+                $arr['id'] = $row['id'];
+                $arr['order_no'] = (isset($row['order_no']) && $row['order_no'] != '') ? $row['order_no'] : '';
+                $arr['purchase_price'] = $row['purchase_price'];
+                $arr['gst'] = $row['gst'];
+                $arr['unit'] = $row['unit'];
+                $arr['qty'] = $row['qty'];
+                $arr['date'] = (isset($row['created']) && $row['created'] != '') ? date('d/m/Y',strtotime($row['created'])) : '';
+                $arr['product_id'] = (isset($row['product_id'])) ? $row['product_id'] : '';
+                $arr['product_name'] = (isset($row['product_name'])) ? $row['product_name'] : '';
+                $arr['generic_name'] = (isset($row['generic_name'])) ? $row['generic_name'] : '';
+                $arr['mfg_company'] = (isset($row['mfg_company'])) ? $row['mfg_company'] : '';
+                $arr['table'] = 'byvendor';
+                array_push($data, $arr);
+              }
+          }
+          /* FOR GET DATA IN BYVENDOR TABLE END */
+
+          /* FOR GET DATA IN BYPRODUCT TABLE START */
+          $query1 = "SELECT bp.id, bp.order_no, bp.created,pm.id as product_id, pm.product_name as product_name, pm.generic_name as generic_name, pm.mfg_company as mfg_company FROM byproduct bp INNER JOIN product_master pm ON bp.product_id = pm.id WHERE bp.vendor_id = '".$vendor_id."' AND bp.status = 0";
+          $res1 = mysqli_query($conn, $query1);
+          if($res1 && mysqli_num_rows($res1)){
+              while ($row1 = mysqli_fetch_array($res1)) {
+                $arr1['id'] = $row1['id'];
+                $arr1['order_no'] = (isset($row1['order_no']) && $row1['order_no'] != '') ? $row1['order_no'] : '';
+                $arr1['purchase_price'] = '';
+                $arr1['gst'] = '';
+                $arr1['unit'] = '';
+                $arr1['qty'] = '';
+                $arr1['date'] = (isset($row1['created']) && $row1['created'] != '') ? date('d/m/Y',strtotime($row1['created'])) : '';
+                $arr1['product_id'] = (isset($row1['product_id'])) ? $row1['product_id'] : '';
+                $arr1['product_name'] = (isset($row1['product_name'])) ? $row1['product_name'] : '';
+                $arr1['generic_name'] = (isset($row1['generic_name'])) ? $row1['generic_name'] : '';
+                $arr1['mfg_company'] = (isset($row1['mfg_company'])) ? $row1['mfg_company'] : '';
+                $arr1['table'] = 'byproduct';
+                array_push($data, $arr1);
+              }
+          }
+          /* FOR GET DATA IN BYPRODUCT TABLE END */
+
+        if(!empty($data)){
+          foreach ($data as $key => $part) {
+               $sort[$key] = strtotime($part['date']);
+          }
+          array_multisort($sort, SORT_DESC, $data);
           $result = array('status' => true, 'message' => 'Data Not Success.', 'result' => $data);
         }else{
           $result = array('status' => false, 'message' => 'Data Not Found!', 'result' => '');
@@ -686,7 +820,7 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
     if($_REQUEST['action'] == 'getVendorDetailByVendorId'){
       $id = (isset($_REQUEST['id'])) ? $_REQUEST['id'] : '';
         if($id != ''){
-          $query = "SELECT id, name, email, mobile FROM ledger_master WHERE id = '".$id."' ORDER BY name LIMIT 1";
+          $query = "SELECT lgr.id, lgr.name, lgr.email, lgr.mobile, st.state_code_gst as statecode FROM ledger_master lgr LEFT JOIN own_states st ON lgr.state = st.id WHERE lgr.id = '".$id."' LIMIT 1";
           $res = mysqli_query($conn, $query);
           if($res && mysqli_num_rows($res) > 0){
               $row = mysqli_fetch_array($res);
@@ -695,6 +829,7 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
               $data['name'] = isset($row['name']) ? $row['name'] : '';
               $data['email'] = (isset($row['email'])) ? $row['email'] : '';
               $data['mobile'] = (isset($row['mobile'])) ? $row['mobile'] : '';
+              $data['statecode'] = (isset($row['statecode']) && $row['statecode'] != '') ? $row['statecode'] : '';
 
               $result = array('status' => true, 'message' => 'Data found success', 'result' => $data);
           }
@@ -779,7 +914,7 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
       echo json_encode($result);
       exit;
     }
-
+    
     // 10-08-2018 - GAUTAM MAKWANA
     if($_REQUEST['action'] == "getCompanyCode"){
       $searchquery = (isset($_REQUEST['query']['term'])) ? $_REQUEST['query']['term'] : '';
@@ -821,6 +956,121 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
         }
       }else{
         $result = array('status' => false, 'message' => 'All fields is required!', 'result' => '');
+      }
+      echo json_encode($result);
+      exit;
+    }
+    
+    // 08-08-2018 - GAUTAM MAKWANA
+    if($_REQUEST['action'] == "addOrder"){
+      $data = [];
+      $type = (isset($_REQUEST['type'])) ? $_REQUEST['type'] : '';
+      parse_str($_REQUEST['data'], $data);
+      if(!empty($data)){
+        $length = count($data['product_id']);
+        if($length > 0){
+          for ($i=0; $i < $length; $i++) {
+              $product_id = (isset($data['product_id'][$i])) ? $data['product_id'][$i] : '';
+              $vendor_id = '';
+              if(isset($data['vendor_id'][$i]) && is_numeric($data['vendor_id'][$i])){
+                $vendor_id = $data['vendor_id'][$i];
+              }elseif(isset($data['vendor_id'][$i])){
+                $addVendorQuery = "INSERT INTO ledger_master SET account_type = 1, name = '".$data['vendor_id'][$i]."', mobile = '".$data['mobile'][$i]."', email = '".$data['email'][$i]."', group_id = 14, opening_balance_type = 'DB',status = 1, created = '".date('Y-m-d H:i:s')."', createdby = '".$_SESSION['auth']['id']."'";
+                mysqli_query($conn, $addVendorQuery);
+                $vendor_id = mysqli_insert_id($conn);
+              }
+            $query = "INSERT INTO orders SET order_no = '".mt_rand(100000,999999)."', vendor_id = '".$vendor_id."', product_id = '".$product_id."', purchase_price = '".$data['purchase_price'][$i]."', gst = '".$data['gst'][$i]."', unit = '".$data['unit'][$i]."', qty = '".$data['qty'][$i]."', type = '".$type."', status = 1, created = '".date('Y-m-d H:i:s')."', createdby = '".$_SESSION['auth']['id']."'";
+            $res = mysqli_query($conn, $query);
+          }
+          $result = array('status' => true, 'message' => 'Data Save successfully.', 'result' => '');
+        }else{
+          $result = array('status' => false, 'message' => 'Data Save Failed! Try Again.', 'result' => '');
+        }
+      }else{
+        $result = array('status' => false, 'message' => 'Data Save Failed! Try Again.', 'result' => '');
+      }
+      echo json_encode($result);
+      exit;
+    }
+
+    // 08-08-2018 - GAUTAM MAKWANA
+    if($_REQUEST['action'] == 'getOrder'){
+      $type = (isset($_REQUEST['type'])) ? $_REQUEST['type'] : '';
+      $data = [];
+        $query = "SELECT ord.id, ord.order_no, ord.purchase_price, ord.gst, ord.unit, ord.unit, ord.qty, ord.created, pm.product_name, lgr.name as vendor_name FROM orders ord LEFT JOIN product_master pm ON ord.product_id = pm.id LEFT JOIN ledger_master lgr ON ord.vendor_id = lgr.id WHERE ord.status = 1 AND ord.type = '".$type."' ORDER BY ord.id DESC";
+        $res = mysqli_query($conn, $query);
+        if($res && mysqli_num_rows($res) > 0){
+          $i = 1;
+          while ($row = mysqli_fetch_array($res)) {
+            $arr['id'] = $row['id'];
+            $arr['no'] = $i;
+            $arr['vendor_name'] = (isset($row['vendor_name'])) ? $row['vendor_name'] : '';
+            $arr['product_name'] = (isset($row['product_name'])) ? $row['product_name'] : '';
+            $arr['purchase_price'] = (isset($row['purchase_price'])) ? $row['purchase_price'] : '';
+            $arr['gst'] = (isset($row['gst'])) ? $row['gst'] : '';
+            $arr['unit'] = (isset($row['unit'])) ? $row['unit'] : '';
+            $arr['qty'] = (isset($row['qty'])) ? $row['qty'] : '';
+            $arr['date'] = (isset($row['created']) && $row['created'] != '') ? date('d/m/Y',strtotime($row['created'])) : '';
+            array_push($data, $arr);
+            $i++;
+          }
+        }
+        
+      $finaldata['data'] = $data;
+      echo json_encode($finaldata);
+      exit;
+    }
+
+    // 10-08-2018 - GAUTAM MAKWANA
+    if($_REQUEST['action'] == "deleteOrder"){
+      if(isset($_REQUEST['id']) && $_REQUEST['id'] != ''){
+        $query = "DELETE FROM orders WHERE id = '".$_REQUEST['id']."'";
+        $res = mysqli_query($conn, $query);
+        if($res){
+          $result = array('status' => true, 'message' => 'Record deleted successfully.', 'result' => '');
+        }else{
+          $result = array('status' => false, 'message' => 'Record delete fail! Try again.', 'result' => '');
+        }
+      }else{
+        $result = array('status' => false, 'message' => 'Record delete fail! Try again.', 'result' => '');
+      }
+      echo json_encode($result);
+      exit;
+    }
+
+    // 10-08-2018 - GAUTAM MAKWANA
+    if($_REQUEST['action'] == "getAllOrdersByVendorID"){
+      $vendor_id = (isset($_REQUEST['vendor_id'])) ? $_REQUEST['vendor_id'] : '';
+      if($vendor_id != ''){
+        $data = [];
+
+          /* FOR GET DATA IN ORDER TABLE START */
+          $query = "SELECT ord.id, ord.order_no, ord.purchase_price, ord.gst, ord.unit, ord.qty, ord.created, pm.id as product_id, pm.product_name as product_name, pm.generic_name as generic_name, pm.mfg_company as mfg_company  FROM orders ord LEFT JOIN product_master pm ON ord.product_id = pm.id WHERE ord.vendor_id = '".$vendor_id."' AND ord.status = 1 ORDER BY ord.id DESC";
+          $res = mysqli_query($conn, $query);
+          if($res && mysqli_num_rows($res)){
+              while ($row = mysqli_fetch_array($res)) {
+                $arr['id'] = $row['id'];
+                $arr['order_no'] = (isset($row['order_no']) && $row['order_no'] != '') ? $row['order_no'] : '';
+                $arr['purchase_price'] = $row['purchase_price'];
+                $arr['gst'] = $row['gst'];
+                $arr['unit'] = $row['unit'];
+                $arr['qty'] = $row['qty'];
+                $arr['date'] = (isset($row['created']) && $row['created'] != '') ? date('d/m/Y',strtotime($row['created'])) : '';
+                $arr['product_id'] = (isset($row['product_id'])) ? $row['product_id'] : '';
+                $arr['product_name'] = (isset($row['product_name'])) ? $row['product_name'] : '';
+                $arr['generic_name'] = (isset($row['generic_name'])) ? $row['generic_name'] : '';
+                $arr['mfg_company'] = (isset($row['mfg_company'])) ? $row['mfg_company'] : '';
+                array_push($data, $arr);
+              }
+          }
+          /* FOR GET DATA IN ORDER TABLE END */
+        if(!empty($data)){
+          $result = array('status' => true, 'message' => 'Data Not Success.', 'result' => $data);
+        }else{
+          $result = array('status' => false, 'message' => 'Data Not Found!', 'result' => '');
+        }
+      }else{
+          $result = array('status' => false, 'message' => 'Vendor ID Not Found!', 'result' => '');
       }
       echo json_encode($result);
       exit;

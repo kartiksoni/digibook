@@ -321,8 +321,6 @@
 <script src="js/jquery-ui.js"></script>
 <script src="js/custom/order_by_vendor.js"></script>
 <script src="js/custom/onlynumber.js"></script>
-  
-  
   <!-- End custom js for this page-->
 </body>
 
