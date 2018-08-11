@@ -1076,4 +1076,35 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
       exit;
     }
 
+
+
+    // Author : Viragbhai
+    if($_REQUEST['action'] == "getAutoSearchOrderList"){
+      $search = (isset($_REQUEST['query']['term'])) ? $_REQUEST['query']['term'] : '';
+      $type = (isset($_REQUEST['type'])) ? $_REQUEST['type'] : '';
+      $data = [];
+        if($type != '' && $type != ''){
+          if(isset($type) && ($type == 'mobile' || $type == 'email')){
+            $field = ($type == 'email') ? 'email' : 'mobile';
+            $query = "SELECT DISTINCT lgr.".$field." as name, lgr.id as id  FROM orders ord INNER JOIN ledger_master lgr ON ord.vendor_id = lgr.id WHERE ord.status = 1 AND lgr.".$field." LIKE '%".$search."%' ORDER BY ".$field;
+          }elseif(isset($type) && $type == 'orderno'){
+            $query = "SELECT id, order_no as name FROM orders WHERE status = 1 AND order_no LIKE '%".$search."%' ORDER BY order_no";
+          }
+
+          if(isset($query) && $query != ''){
+            $res = mysqli_query($conn, $query);
+            if($res && mysqli_num_rows($res) > 0){
+              while($row = mysqli_fetch_array($res)){
+                $arr['id'] = (isset($row['id'])) ? $row['id'] : '';
+                $arr['name'] = (isset($row['name'])) ? $row['name'] : '';
+                array_push($data, $arr);
+              }
+            }
+          }
+        }
+        echo json_encode($data);
+        exit; 
+    }
+
+
 ?>
