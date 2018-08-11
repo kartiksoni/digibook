@@ -1,4 +1,88 @@
-<?php include('include/usertypecheck.php'); ?>
+<?php include('include/usertypecheck.php'); 
+
+if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
+{  
+  $id = $_REQUEST['id'];
+
+  $sql_email = "SELECT orders.id, orders.order_no as orderno, orders.created as orderdate, product_master.product_name as productname,               product_master.generic_name as genericname, product_master.mfg_company as manufacturername, orders.purchase_price as                 purchaseprice, orders.gst as gst, orders.unit as unit, orders.qty as quantity, ledger_master.name as vendorname,                     ledger_master.mobile as mobile, ledger_master.email as email from((orders INNER JOIN product_master ON                               orders.product_id = product_master.id) INNER JOIN ledger_master ON orders.vendor_id = ledger_master.id) WHERE                        orders.status = '0' AND orders.id='".$id."'";
+  /*if($_REQUEST['type'] == '0'){
+    $sql_email = "SELECT byvendor.id, byvendor.order_no as orderno, byvendor.created as orderdate, product_master.product_name as productname, product_master.generic_name as genericname, product_master.mfg_company as manufacturername, byvendor.purchase_price as purchaseprice, byvendor.gst as gst, byvendor.unit as unit, byvendor.qty as quantity, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((byvendor INNER JOIN product_master ON byvendor.product_id = product_master.id) INNER JOIN ledger_master ON byvendor.vendor_id = ledger_master.id) WHERE byvendor.status = '0' AND byvendor.id='".$id."' ";
+  }
+
+  if($_REQUEST['type'] == "1"){
+    $sql_email = "SELECT byproduct.id, byproduct.order_no as orderno, byproduct.created as orderdate, product_master.product_name as productname, product_master.generic_name as genericname, product_master.mfg_company as manufacturername, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((byproduct INNER JOIN product_master ON byproduct.product_id = product_master.id) INNER JOIN ledger_master ON byproduct.vendor_id = ledger_master.id) WHERE byproduct.status = '0' AND byproduct.id = '".$id."'";
+  }*/
+  $sqlqryrun_email = mysqli_query($conn, $sql_email);
+  $sqldata = mysqli_fetch_assoc($sqlqryrun_email);
+  $email = $sqldata['email'];
+
+  require_once "PHPMailer/PHPMailer/PHPMailerAutoload.php";
+  $message = " Hello ".ucwords($sqldata['vendorname'])."<br>";
+  $message .= ucwords("Your Order Summary")."<br>";
+  $message .= ucwords("All Summary Description");
+  
+    $mail = new PHPMailer;
+    //Tell PHPMailer to use SMTP
+    $mail->isSMTP();
+    //Enable SMTP debugging
+    // 0 = off (for production use)
+    // 1 = client messages
+    // 2 = client and server messages
+    $mail->SMTPDebug = 2;
+    //Set the hostname of the mail server
+    $mail->Host = 'smtp.gmail.com';
+    // use
+    // $mail->Host = gethostbyname('smtp.gmail.com');
+    // if your network does not support SMTP over IPv6
+    //Set the SMTP port number - 587 for authenticated TLS, a.k.a. RFC4409 SMTP submission
+    $mail->Port = 587;
+    //Set the encryption system to use - ssl (deprecated) or tls
+    $mail->SMTPSecure = 'tls';
+    //Whether to use SMTP authentication
+    $mail->SMTPAuth = true;
+    //Username to use for SMTP authentication - use full email address for gmail
+    $mail->Username = "viragrakholiya95@gmail.com";
+    //Password to use for SMTP authentication
+    $mail->Password = "virag123";
+    //Set who the message is to be sent from
+    $mail->setFrom('viragrakholiya95@gmail.com', 'Digiwallet');
+    //Set an alternative reply-to address
+    //$mail->addReplyTo('replyto@example.com', 'First Last');
+    //Set who the message is to be sent to
+    $mail->addAddress($email, 'Digibook');
+    //Set the subject line
+    $mail->Subject = 'Digibook Order Summary';
+    //Read an HTML message body from an external file, convert referenced images to embedded,
+    //convert HTML into a basic plain-text alternative body
+    $mail->msgHTML($message, __DIR__);
+    //Replace the plain text body with one created manually
+    $mail->AltBody = 'This is a plain-text message body';
+    //Attach an image file
+    //$mail->addAttachment('images/phpmailer_mini.png');
+    //send the message, check for errors
+    if (!$mail->send()) {
+        echo "Mailer Error: " . $mail->ErrorInfo;
+    } else {
+        echo "Message sent!";
+    }
+  
+}
+
+/*if(isset($_REQUEST['mobile']))
+	{
+	 $return_arr = array();
+	    
+	    $sql = "select mobile from ledger_master where mobile like '".$_REQUEST['mobile']."%'";
+	    $run = mysqli_query($conn, $sql);
+	    
+	    while($row = mysqli_fetch_assoc($run)) {
+	        $return_arr[] =  $row['mobile'];
+		}
+		
+    /* Toss back results as json encoded array. */
+   //  json_encode($return_arr);
+	//}	 
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,6 +96,7 @@
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
   <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
   <link rel="stylesheet" href="vendors/css/vendor.bundle.addons.css">
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/minified/jquery-ui.min.css" type="text/css" />
   <!-- endinject -->
   
    <!-- plugin css for this page -->
@@ -86,9 +171,9 @@
                     <div class="row">
                     <div class="col-12">
                         <div class="enventory">
-                            <a href="order.php" class="btn btn-dark">Order</a>
-                            <a href="order-list-tab.php" class="btn btn-dark  active">List</a>
-                            <a href="#" class="btn btn-dark">Missed Sales Order</a>
+                            <a href="order.php" class="btn btn-dark btn-fw active">Order</a>
+                            <a href="order-list-tab.php" class="btn btn-dark btn-fw">List</a>
+                            <a href="#" class="btn btn-dark btn-fw">Missed Sales Order</a>
                             <a href="#" class="btn btn-dark btn-fw">Settings</a>
                         </div>  
                     </div> 
@@ -112,11 +197,15 @@
                     <div class="row no-gutters">
                         <div  class="col-md-10">
                             <label class="col-12 row">Select Vendor</label>
-                            <select class="js-example-basic-single" style="width:100%"> 
+                            <select class="js-example-basic-single" name="vender_id" style="width:100%"> 
                             <option value="Regular">Please select</option>
-                            <option value="Unregistered">MRP</option>
-                            <option value="Composition">Product Name </option>
-                            <option value="Composition">Generic Name</option>
+                            <?php 
+                            $sql = "SELECT id, name FROM ledger_master WHERE status=1 AND group_id=14 order by name";
+                            $re_sql = mysqli_query($conn, $sql);
+                            while($vender_data = mysqli_fetch_assoc($re_sql)){
+                            ?>
+                            <option value="<?php echo $vender_data['id']; ?>"><?php echo $vender_data['name']; ?></option>
+                            <?php } ?>
                             </select>
                        </div>     
                     </div>    
@@ -128,7 +217,8 @@
                     <div class="row no-gutters">
                         <div  class="col-md-10">
                             <label class="col-12 row">Mobile</label>
-                            <input type="text" class="form-control" id="exampleInputName1" placeholder="Mobile" name="mobile" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['mobile']; }?>">
+                            <input type="text" class="form-control auto" id="mobile" data-name = "mobile" placeholder="Mobile" name="mobile" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['mobile']; }?>">
+                            <small class="empty-message text-danger"></small>
                        </div>     
                     </div>    
                     </div>
@@ -138,7 +228,8 @@
                     <div class="row no-gutters">
                         <div  class="col-md-10">
                             <label class="col-12 row">Order No.</label>
-                            <input type="text" class="form-control" id="exampleInputName1" placeholder="Order No." name="orderno" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['orderno']; }?>">
+                            <input type="text" class="form-control auto"  placeholder="Order No." data-name="orderno" name="orderno" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['orderno']; }?>">
+                            <small class="empty-message text-danger" id="empty-message"></small>
                        </div>     
                        </div>    
                     </div>
@@ -148,7 +239,8 @@
                     <div class="row no-gutters">
                         <div  class="col-md-10">
                             <label class="col-12 row">Email ID</label>
-                            <input type="text" class="form-control" id="exampleInputName1" placeholder="Email ID" name="email" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['email']; }?>">
+                            <input type="text" class="form-control auto"  placeholder="Email ID" data-name = "email" name="email" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['email']; }?>">
+                            <small class="empty-message text-danger"></small>
                        </div>     
                     </div>    
                     </div>
@@ -214,63 +306,73 @@
 
                         $data = [];
                         /// by vender ///
-                        $sqlqry = "SELECT byvendor.order_no as orderno, byvendor.created as orderdate, product_master.product_name as productname, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((byvendor INNER JOIN product_master ON byvendor.product_id = product_master.id) INNER JOIN ledger_master ON byvendor.vendor_id = ledger_master.id) WHERE byvendor.status = '0' ";
-
-                        $sql = "SELECT byproduct.order_no as orderno, byproduct.created as orderdate, product_master.product_name as productname, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((byproduct INNER JOIN product_master ON byproduct.product_id = product_master.id) INNER JOIN ledger_master ON byproduct.vendor_id = ledger_master.id) WHERE byproduct.status = '0'";
+                        $sqlqry = "SELECT orders.id, orders.order_no as orderno, orders.created as orderdate, product_master.product_name as productname, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((orders INNER JOIN product_master ON orders.product_id = product_master.id) INNER JOIN ledger_master ON orders.vendor_id = ledger_master.id) WHERE orders.status = '0'";
+                        /// by product ///
+                        /*$sql = "SELECT byproduct.id, byproduct.order_no as orderno, byproduct.created as orderdate, product_master.product_name as productname, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((byproduct INNER JOIN product_master ON byproduct.product_id = product_master.id) INNER JOIN ledger_master ON byproduct.vendor_id = ledger_master.id) WHERE byproduct.status = '0'"; 
                         
-                        $productqry = "";
+                        $productqry = ""; */
+
+                        if(isset($_REQUEST['vender_id']) && $_REQUEST['vender_id']){
+                          $sqlqry .= "AND (ledger_master.id = '".$_REQUEST['vender_id']."')";
+                        }
+                        
                     
                         if(isset($_REQUEST['mobile']) && $_REQUEST['mobile'] != ''){
                          $sqlqry .= "AND (ledger_master.mobile = '".$_REQUEST['mobile']."') ";
-                         $sql .= "AND (ledger_master.mobile = '".$_REQUEST['mobile']."') ";
+                         //$sql .= "AND (ledger_master.mobile = '".$_REQUEST['mobile']."') ";
                         }
 
                         if(isset($_REQUEST['orderno']) && $_REQUEST['orderno'] != '')
                         {
-                          $sqlqry .= "AND (byvendor.order_no = '".$_REQUEST['orderno']."') ";
-                          $sql .= "AND (byproduct.order_no = '".$_REQUEST['orderno']."') ";
+                          $sqlqry .= "AND (orders.order_no = '".$_REQUEST['orderno']."') ";
+                          //$sql .= "AND (byproduct.order_no = '".$_REQUEST['orderno']."') ";
                         }
 
                         if(isset($_REQUEST['email']) && $_REQUEST['email'] != '')
                         {
                           $sqlqry .= "AND (ledger_master.email = '".$_REQUEST['email']."') ";
-                          $sql .= "AND (ledger_master.email = '".$_REQUEST['email']."') ";
+                          //$sql .= "AND (ledger_master.email = '".$_REQUEST['email']."') ";
                         }
 
                         if((isset($_REQUEST['fromdate']) && $_REQUEST['fromdate'] != '') && (isset($_REQUEST['todate']) && $_REQUEST['todate'] != ''))  
                         {
                           $from = date('Y-m-d',strtotime($_REQUEST['fromdate']));
                           $to = date('Y-m-d',strtotime($_REQUEST['todate']));
-                          $sqlqry .= "AND DATE_FORMAT(byvendor.created,'%Y-%m-%d') >= '".$from."' AND DATE_FORMAT(byvendor.created,'%Y-%m-%d') <= '".$to."' ";
-                          $sql .= "AND DATE_FORMAT(byproduct.created,'%Y-%m-%d') >= '".$from."' AND DATE_FORMAT(byproduct.created,'%Y-%m-%d') <= '".$to."' ";
+                          $sqlqry .= "AND DATE_FORMAT(orders.created,'%Y-%m-%d') >= '".$from."' AND DATE_FORMAT(orders.created,'%Y-%m-%d') <= '".$to."' ";
+                          //$sql .= "AND DATE_FORMAT(byproduct.created,'%Y-%m-%d') >= '".$from."' AND DATE_FORMAT(byproduct.created,'%Y-%m-%d') <= '".$to."' ";
                         }
                         $sqlqryrun = mysqli_query($conn, $sqlqry);
-
+                         //// type = 0 => by vender  ////
+                         ///  type = 1 => by product ///
                         if($sqlqryrun){
-                          while($sqldata = mysqli_fetch_assoc($sqlqryrun)){
+                          /*while($sqldata = mysqli_fetch_assoc($sqlqryrun)){
+                            $arr['id'] = $sqldata['id'];
                             $arr['orderno'] = $sqldata['orderno'];
                             $arr['orderdate'] = $sqldata['orderdate'];
                             $arr['productname'] = $sqldata['productname'];
                             $arr['vendorname'] = $sqldata['vendorname'];
                             $arr['mobile'] = $sqldata['mobile'];
                             $arr['email'] = $sqldata['email'];
+                            $arr['type'] = '0';
                             array_push($data, $arr);
-                          }
-                        }
+                          }*/
+                        
 
-                        $insql = mysqli_query($conn, $sql);
+                        /*$insql = mysqli_query($conn, $sql);
 
                         if($insql){
                           while($sqldata1 = mysqli_fetch_assoc($insql)){
+                            $arr1['id'] = $sqldata1['id'];
                             $arr1['orderno'] = $sqldata1['orderno'];
                             $arr1['orderdate'] = $sqldata1['orderdate'];
                             $arr1['productname'] = $sqldata1['productname'];
                             $arr1['vendorname'] = $sqldata1['vendorname'];
                             $arr1['mobile'] = $sqldata1['mobile'];
                             $arr1['email'] = $sqldata1['email'];
+                            $arr1['type'] = '1';
                             array_push($data, $arr1);
                           }
-                        }                      
+                        } */                     
                 
                     ?>
 
@@ -292,17 +394,17 @@
                                 </thead>
                                 <tbody>
                                   <!-- Row Starts --> 
-                                  <?php if(isset($data) && !empty($data)){ ?>
-                                    <?php foreach ($data as $key => $value){ ?>
+                                    
+                                    <?php  while($sqldata = mysqli_fetch_assoc($sqlqryrun)){ ?>
                                       <tr>
-                                          <td><?php echo $value['orderno'];?></td>
-                                          <td><?php echo date('d/m/Y',strtotime($value['orderdate']));?></td>
-                                          <td><?php echo $value['productname'];?></td>
-                                          <td><?php echo $value['vendorname']?></td>
-                                          <td><?php echo $value['mobile'];?></td>
-                                          <td><?php echo $value['email']?></td>
+                                          <td><?php echo $sqldata['orderno'];?></td>
+                                          <td><?php echo date('d/m/Y',strtotime($sqldata['orderdate']));?></td>
+                                          <td><?php echo $sqldata['productname'];?></td>
+                                          <td><?php echo $sqldata['vendorname']?></td>
+                                          <td><?php echo $sqldata['mobile'];?></td>
+                                          <td><?php echo $sqldata['email']?></td>
                                           <td>
-                                            <a href="email_send.php?email=<?php echo $value['email'];?>" class="btn btn-warning p-2" title="Email">
+                                            <a href="order-list-tab.php?id=<?php echo $sqldata['id']; ?>" class="btn btn-warning p-2" title="Email">
                                               <i class="fa fa-envelope mr-0"></i>
                                             </a>
                                           </td>
@@ -316,27 +418,18 @@
                                           </td>
                                       </tr><!-- End Row -->
                                       <?php } ?>
-                                  <?php } ?>
                                  
                                 </tbody>
                               </table>
+                              <?php } ?>
                             </div>
                           </div>
                     </div>
                     <hr>
-                    
-                    
-                    
-                
                 </div>
                 </div>
                 </div>  
-            
-            
-            
-            
-      
-            
+                
           </div>
         </div>
         <!-- content-wrapper ends -->
@@ -353,10 +446,6 @@
     <!-- page-body-wrapper ends -->
   </div>
   <!-- container-scroller -->
-  
-  
-
-  
   
   
 
@@ -386,6 +475,9 @@
   <script src="js/jquery-file-upload.js"></script>
   <script src="js/formpickers.js"></script>
   <script src="js/form-repeater.js"></script>
+  <script src="js/custom/order_list_tab.js"></script>
+  <script src="js/jquery-ui.js"></script>
+
   
   <!-- Custom js for this page Modal Box-->
   <script src="js/modal-demo.js"></script>
