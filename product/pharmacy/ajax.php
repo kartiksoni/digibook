@@ -445,6 +445,7 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
           $res['opening_qty'] = (isset($data['opening_qty']) && $data['opening_qty'] != '') ? $data['opening_qty'] : 0;
           $res['opening_qty_godown'] = (isset($data['opening_qty_godown']) && $data['opening_qty_godown'] != '') ? $data['opening_qty_godown'] : 0;
           $res['give_mrp'] = (isset($data['give_mrp']) && $data['give_mrp'] != '') ? $data['give_mrp'] : 0;
+          $res['mrp'] = (isset($data['mrp']) && $data['mrp'] != '') ? $data['mrp'] : 0;
           $res['serial_no'] = (isset($data['serial_no']) && $data['serial_no'] != '') ? $data['serial_no'] : NULL;
           $res['igst'] = (isset($data['igst']) && $data['igst'] != '') ? $data['igst'] : 0;
           $res['cgst'] = (isset($data['cgst']) && $data['cgst'] != '') ? $data['cgst'] : 0;
@@ -555,11 +556,11 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
       $type = (isset($_REQUEST['type'])) ? $_REQUEST['type'] : '';
 
       if($searchquery != '' && $type != ''){
-        $query = "SELECT id,product_name, generic_name, mfg_company, give_mrp, igst, cgst, sgst, unit FROM product_master ";
+        $query = "SELECT id,product_name, generic_name, mfg_company, give_mrp, mrp,igst, cgst, sgst, unit FROM product_master ";
         if($type == 'product'){
           $query .="WHERE product_name like '%".$searchquery."%' AND product_name IS NOT NULL";
         }elseif($type == 'mrp'){
-          $query .="WHERE give_mrp like '%".$searchquery."%' AND give_mrp IS NOT NULL";
+          $query .="WHERE mrp like '%".$searchquery."%' AND mrp IS NOT NULL";
         }else{
           $query .="WHERE generic_name like '%".$searchquery."%' AND generic_name IS NOT NULL";
         }
@@ -576,11 +577,11 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
               $arr['cgst'] = ($row['cgst'] != '') ? $row['cgst'] : 0;
               $arr['sgst'] = ($row['sgst'] != '') ? $row['sgst'] : 0;
               $arr['unit'] = ($row['unit'] != '') ? $row['unit'] : 0;
-              $arr['mrp'] = ($row['give_mrp'] != '') ? $row['give_mrp'] : 0;
+              $arr['mrp'] = ($row['mrp'] != '') ? $row['mrp'] : 0;
               if($type == 'product'){
                 $arr['name'] = $row['product_name'];
               }elseif ($type == 'mrp') {
-                $arr['name'] = $row['give_mrp'];
+                $arr['name'] = $row['mrp'];
               }else{
                 $arr['name'] = $row['generic_name'];
               }
@@ -668,11 +669,11 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
       $vendor_id = (isset($_REQUEST['vendor_id'])) ? $_REQUEST['vendor_id'] : '';
 
       if($searchquery != '' && $type != '' && $vendor_id != ''){
-        $query = "SELECT pm.id, pm.product_name, pm.generic_name, pm.mfg_company, pm.give_mrp, pm.igst, pm.cgst, pm.sgst, pm.unit FROM product_master pm INNER JOIN purchase_details pd ON pm.id = pd.product_id INNER JOIN purchase prc ON prc.id = pd.purchase_id WHERE prc.vendor = '".$vendor_id."' ";
+        $query = "SELECT DISTINCT pm.id, pm.product_name, pm.generic_name, pm.mfg_company, pm.give_mrp, pm.mrp, pm.igst, pm.cgst, pm.sgst, pm.unit FROM product_master pm INNER JOIN purchase_details pd ON pm.id = pd.product_id INNER JOIN purchase prc ON prc.id = pd.purchase_id WHERE prc.vendor = '".$vendor_id."' ";
         if($type == 'product'){
           $query .="AND pm.product_name like '%".$searchquery."%' AND pm.product_name IS NOT NULL";
         }elseif($type == 'mrp'){
-          $query .="AND pm.give_mrp like '%".$searchquery."%' AND pm.give_mrp IS NOT NULL";
+          $query .="AND pm.mrp like '%".$searchquery."%' AND pm.mrp IS NOT NULL";
         }else{
           $query .="AND pm.generic_name like '%".$searchquery."%' AND pm.generic_name IS NOT NULL";
         }
@@ -689,11 +690,11 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
               $arr['cgst'] = ($row['cgst'] != '') ? $row['cgst'] : 0;
               $arr['sgst'] = ($row['sgst'] != '') ? $row['sgst'] : 0;
               $arr['unit'] = ($row['unit'] != '') ? $row['unit'] : 0;
-              $arr['mrp'] = ($row['give_mrp'] != '') ? $row['give_mrp'] : 0;
+              $arr['mrp'] = ($row['mrp'] != '') ? $row['mrp'] : 0;
               if($type == 'product'){
                 $arr['name'] = $row['product_name'];
               }elseif ($type == 'mrp') {
-                $arr['name'] = $row['give_mrp'];
+                $arr['name'] = $row['mrp'];
               }else{
                 $arr['name'] = $row['generic_name'];
               }
@@ -1077,18 +1078,27 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
     }
 
 
-
-    // Author : Viragbhai
+    // Author : viragbhai
+    // Date   : 11-08-18
     if($_REQUEST['action'] == "getAutoSearchOrderList"){
       $search = (isset($_REQUEST['query']['term'])) ? $_REQUEST['query']['term'] : '';
       $type = (isset($_REQUEST['type'])) ? $_REQUEST['type'] : '';
+      $vender_id = (isset($_REQUEST['vender_id'])) ? $_REQUEST['vender_id'] : '';
       $data = [];
         if($type != '' && $type != ''){
           if(isset($type) && ($type == 'mobile' || $type == 'email')){
             $field = ($type == 'email') ? 'email' : 'mobile';
-            $query = "SELECT DISTINCT lgr.".$field." as name, lgr.id as id  FROM orders ord INNER JOIN ledger_master lgr ON ord.vendor_id = lgr.id WHERE ord.status = 1 AND lgr.".$field." LIKE '%".$search."%' ORDER BY ".$field;
+            if($_REQUEST['vender_id'] == ''){
+              $query = "SELECT DISTINCT lgr.".$field." as name, lgr.id as id  FROM orders ord INNER JOIN ledger_master lgr ON ord.vendor_id = lgr.id WHERE ord.status = 1 AND lgr.".$field." LIKE '%".$search."%' ORDER BY ".$field;
+            }else{
+              $query = "SELECT DISTINCT lgr.".$field." as name, lgr.id as id  FROM orders ord INNER JOIN ledger_master lgr ON ord.vendor_id = lgr.id WHERE ord.status = 1 AND lgr.id='".$vender_id."' AND lgr.".$field." LIKE '%".$search."%' ORDER BY ".$field;
+            }
           }elseif(isset($type) && $type == 'orderno'){
-            $query = "SELECT id, order_no as name FROM orders WHERE status = 1 AND order_no LIKE '%".$search."%' ORDER BY order_no";
+            if($_REQUEST['vender_id'] == ''){
+              $query = "SELECT id, order_no as name FROM orders WHERE status = 1 AND order_no LIKE '%".$search."%' ORDER BY order_no";
+            }else{
+              $query = "SELECT id, order_no as name FROM orders WHERE status = 1 AND vendor_id='".$vender_id."' AND order_no LIKE '%".$search."%' ORDER BY order_no";
+            }
           }
 
           if(isset($query) && $query != ''){
@@ -1105,6 +1115,5 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
         echo json_encode($data);
         exit; 
     }
-
 
 ?>

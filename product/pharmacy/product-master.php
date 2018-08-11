@@ -24,6 +24,7 @@ if(isset($_POST['submit'])){
   $opening_qty = $_POST['opening_qty'];
   $opening_qty_godown = $_POST['opening_qty_godown'];
   $give_mrp = $_POST['give_mrp'];
+  $mrp = (isset($_POST['mrp']) && $_POST['mrp'] != '') ? $_POST['mrp'] : 0;
   $serial_no = $_POST['serial_no'];
   $igst = $_POST['igst'];
   $cgst = $_POST['cgst'];
@@ -43,7 +44,7 @@ if(isset($_POST['submit'])){
   $ratio = $_POST['ratio'];
   $status = $_POST['status'];
 
-  $insQry = "INSERT INTO `product_master` (`user_id`, `finance_year_id`, `product_name`, `generic_name`, `mfg_company`, `schedule_cat`, `product_type`, `product_cat`, `sub_cat`, `hsn_code`, `batch_no`, `ex_date`, `opening_qty`, `opening_qty_godown`, `give_mrp`, `serial_no`, `igst`, `cgst`, `sgst`, `inward_rate`, `distributor_rate`, `sale_rate_local`, `sale_rate_out`, `rack_no`, `self_no`, `box_no`, `company_code`, `opening_stock`, `unit`, `min_qty`, `max_qty`,`ratio`,`status`, `created_at`, `created_by`) VALUES ('".$user_id."', '".$financial_year_id."', '".$product_name."', '".$generic_name."', '".$mfg_company."', '".$schedule_cat."', '".$product_type."', '".$product_cat."', '".$sub_cat."', '".$hsn_code."', '".$batch_no."', '".$ex_date."', '".$opening_qty."', '".$opening_qty_godown."', '".$give_mrp."', '".$serial_no."', '".$igst."', '".$cgst."', '".$sgst."', '".$inward_rate."', '".$distributor_rate."', '".$sale_rate_local."', '".$sale_rate_out."', '".$rack_no."', '".$self_no."', '".$box_no."', '".$company_code."', '".$opening_stock."', '".$unit."', '".$min_qty."', '".$max_qty."','".$status."','".$ratio."', '".date('Y-m-d H:i:s')."', '".$user_id."')";
+  $insQry = "INSERT INTO `product_master` (`user_id`, `finance_year_id`, `product_name`, `generic_name`, `mfg_company`, `schedule_cat`, `product_type`, `product_cat`, `sub_cat`, `hsn_code`, `batch_no`, `ex_date`, `opening_qty`, `opening_qty_godown`, `give_mrp`, `mrp`,`serial_no`, `igst`, `cgst`, `sgst`, `inward_rate`, `distributor_rate`, `sale_rate_local`, `sale_rate_out`, `rack_no`, `self_no`, `box_no`, `company_code`, `opening_stock`, `unit`, `min_qty`, `max_qty`,`ratio`,`status`, `created_at`, `created_by`) VALUES ('".$user_id."', '".$financial_year_id."', '".$product_name."', '".$generic_name."', '".$mfg_company."', '".$schedule_cat."', '".$product_type."', '".$product_cat."', '".$sub_cat."', '".$hsn_code."', '".$batch_no."', '".$ex_date."', '".$opening_qty."', '".$opening_qty_godown."', '".$give_mrp."', '".$mrp."','".$serial_no."', '".$igst."', '".$cgst."', '".$sgst."', '".$inward_rate."', '".$distributor_rate."', '".$sale_rate_local."', '".$sale_rate_out."', '".$rack_no."', '".$self_no."', '".$box_no."', '".$company_code."', '".$opening_stock."', '".$unit."', '".$min_qty."', '".$max_qty."','".$ratio."','".$status."', '".date('Y-m-d H:i:s')."', '".$user_id."')";
   $queryInsert = mysqli_query($conn,$insQry);
   if($queryInsert){
 
@@ -75,6 +76,7 @@ if(isset($_POST['update'])){
   $opening_qty = $_POST['opening_qty'];
   $opening_qty_godown = $_POST['opening_qty_godown'];
   $give_mrp = $_POST['give_mrp'];
+  $mrp = (isset($_POST['mrp']) && $_POST['mrp'] != '') ? $_POST['mrp'] : 0;
   $serial_no = $_POST['serial_no'];
   $igst = $_POST['igst'];
   $cgst = $_POST['cgst'];
@@ -99,7 +101,7 @@ if(isset($_POST['update'])){
   $data = mysqli_fetch_array($result);
   
   if($data['give_mrp'] == $give_mrp){
-    $updateQry = "UPDATE `product_master` SET `product_name`='".$product_name."',`generic_name`='".$generic_name."',`mfg_company`='".$mfg_company."',`schedule_cat`='".$schedule_cat."',`product_type`='".$product_type."',`product_cat`='".$product_cat."',`sub_cat`='".$sub_cat."',`hsn_code`='".$hsn_code."',`batch_no`='".$batch_no."',`ex_date`='".$ex_date."',`opening_qty`='".$opening_qty."',`opening_qty_godown`='".$opening_qty_godown."',`give_mrp`='".$give_mrp."',`serial_no`='".$serial_no."',`igst`='".$igst."',`cgst`='".$cgst."',`sgst`='".$sgst."',`inward_rate`='".$inward_rate."',`distributor_rate`='".$distributor_rate."',`sale_rate_local`='".$sale_rate_local."',`sale_rate_out`='".$sale_rate_out."',`rack_no`='".$rack_no."',`self_no`='".$self_no."',`box_no`='".$box_no."',`company_code`='".$company_code."',`opening_stock`='".$opening_stock."',`unit`='".$unit."',`min_qty`='".$min_qty."',`max_qty`='".$max_qty."',`ratio`='".$ratio."',`status`='".$status."',`updated_at`='".date('Y-m-d H:i:s')."',`updated_by`='".$user_id."' WHERE id='".$_GET['id']."'";
+    $updateQry = "UPDATE `product_master` SET `product_name`='".$product_name."',`generic_name`='".$generic_name."',`mfg_company`='".$mfg_company."',`schedule_cat`='".$schedule_cat."',`product_type`='".$product_type."',`product_cat`='".$product_cat."',`sub_cat`='".$sub_cat."',`hsn_code`='".$hsn_code."',`batch_no`='".$batch_no."',`ex_date`='".$ex_date."',`opening_qty`='".$opening_qty."',`opening_qty_godown`='".$opening_qty_godown."',`give_mrp`='".$give_mrp."', `mrp` = '".$mrp."' ,`serial_no`='".$serial_no."',`igst`='".$igst."',`cgst`='".$cgst."',`sgst`='".$sgst."',`inward_rate`='".$inward_rate."',`distributor_rate`='".$distributor_rate."',`sale_rate_local`='".$sale_rate_local."',`sale_rate_out`='".$sale_rate_out."',`rack_no`='".$rack_no."',`self_no`='".$self_no."',`box_no`='".$box_no."',`company_code`='".$company_code."',`opening_stock`='".$opening_stock."',`unit`='".$unit."',`min_qty`='".$min_qty."',`max_qty`='".$max_qty."',`ratio`='".$ratio."',`status`='".$status."',`updated_at`='".date('Y-m-d H:i:s')."',`updated_by`='".$user_id."' WHERE id='".$_GET['id']."'";
     $queryUpdate = mysqli_query($conn,$updateQry);
     if($queryUpdate){
         $_SESSION['msg']['success'] = "Product Updated Successfully.";
@@ -110,7 +112,7 @@ if(isset($_POST['update'])){
         header('Location: view-product-master.php');exit;
       }
   }else{
-    $insQry = "INSERT INTO `product_master` (`user_id`, `finance_year_id`, `product_name`, `generic_name`, `mfg_company`, `schedule_cat`, `product_type`, `product_cat`, `sub_cat`, `hsn_code`, `opening_qty`, `opening_qty_godown`, `give_mrp`, `serial_no`, `igst`, `cgst`, `sgst`, `inward_rate`, `distributor_rate`, `sale_rate_local`, `sale_rate_out`, `rack_no`, `self_no`, `box_no`, `company_code`, `opening_stock`, `unit`, `min_qty`, `max_qty`,`ratio`, `created_at`, `created_by`) VALUES ('".$user_id."', '".$financial_year_id."', '".$product_name."', '".$generic_name."', '".$mfg_company."', '".$schedule_cat."', '".$product_type."', '".$product_cat."', '".$sub_cat."', '".$hsn_code."','".$opening_qty."', '".$opening_qty_godown."', '".$give_mrp."', '".$serial_no."', '".$igst."', '".$cgst."', '".$sgst."', '".$inward_rate."', '".$distributor_rate."', '".$sale_rate_local."', '".$sale_rate_out."', '".$rack_no."', '".$self_no."', '".$box_no."', '".$company_code."', '".$opening_stock."', '".$unit."', '".$min_qty."', '".$max_qty."','".$ratio."', '".date('Y-m-d H:i:s')."', '".$user_id."')";
+    $insQry = "INSERT INTO `product_master` (`user_id`, `finance_year_id`, `product_name`, `generic_name`, `mfg_company`, `schedule_cat`, `product_type`, `product_cat`, `sub_cat`, `hsn_code`, `opening_qty`, `opening_qty_godown`, `give_mrp`, `mrp`,`serial_no`, `igst`, `cgst`, `sgst`, `inward_rate`, `distributor_rate`, `sale_rate_local`, `sale_rate_out`, `rack_no`, `self_no`, `box_no`, `company_code`, `opening_stock`, `unit`, `min_qty`, `max_qty`,`ratio`, `created_at`, `created_by`) VALUES ('".$user_id."', '".$financial_year_id."', '".$product_name."', '".$generic_name."', '".$mfg_company."', '".$schedule_cat."', '".$product_type."', '".$product_cat."', '".$sub_cat."', '".$hsn_code."','".$opening_qty."', '".$opening_qty_godown."', '".$give_mrp."', '".$mrp."','".$serial_no."', '".$igst."', '".$cgst."', '".$sgst."', '".$inward_rate."', '".$distributor_rate."', '".$sale_rate_local."', '".$sale_rate_out."', '".$rack_no."', '".$self_no."', '".$box_no."', '".$company_code."', '".$opening_stock."', '".$unit."', '".$min_qty."', '".$max_qty."','".$ratio."', '".date('Y-m-d H:i:s')."', '".$user_id."')";
       $queryInsert = mysqli_query($conn,$insQry);
       if($queryInsert){
         $_SESSION['msg']['success'] = "Duplicate Product Added Successfully.";
