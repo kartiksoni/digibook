@@ -1037,7 +1037,7 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
       echo json_encode($result);
       exit;
     }
-
+    
     // 10-08-2018 - GAUTAM MAKWANA
     if($_REQUEST['action'] == "getAllOrdersByVendorID"){
       $vendor_id = (isset($_REQUEST['vendor_id'])) ? $_REQUEST['vendor_id'] : '';
