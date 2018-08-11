@@ -188,7 +188,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                     </div>
 
                     
-                    <form class="forms-sample" method="post" action="">
+                    <form class="forms-sample" method="post" action="" autocomplete="off">
                     
                     
                     <div class="form-group row">
