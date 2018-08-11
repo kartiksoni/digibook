@@ -121,11 +121,19 @@
                       </div>
                       
                       <div class="col-12 col-md-3">
-                      <label for="exampleInputName1">Select Vendor</label>
-                        <select class="js-example-basic-single" style="width:100%"> 
-                                <option value="Regular">Alaska</option>
-                                <option value="Unregistered">Alaska</option>
-                            </select>
+                      <label>Select Vendor</label>
+                          <select class="js-example-basic-single" style="width:100%" name="vendor_id" id="vendor_id" data-parsley-errors-container="#error-vendor" required> 
+                              <option value="">Please select</option>
+                              <?php 
+                                $getAllVendorQuery = "SELECT id, name FROM ledger_master WHERE status=1 AND group_id=14 order by name";
+                                $getAllVendorRes = mysqli_query($conn, $getAllVendorQuery);
+                              ?>
+                              <?php if($getAllVendorRes && mysqli_num_rows($getAllVendorRes) > 0){ ?>
+                                <?php while ($getAllVendorRow = mysqli_fetch_array($getAllVendorRes)) { ?>
+                                  <option value="<?php echo $getAllVendorRow['id']; ?>"><?php echo $getAllVendorRow['name']; ?></option>
+                                <?php } ?>
+                              <?php } ?>
+                          </select>
                       
                       </div>
                       
@@ -148,27 +156,26 @@
                                           <th>&nbsp;</th>
                                       </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="product-tbody">
                                       <!-- Row Starts --> 	
-                                      <tr>
+                                      <tr class="product-tr">
                                           <td>O133</td>
                                           <td>
                                           	<input type="text" placeholder="Product" class="tags form-control" required="" name="product[]">
-	                                      <input type="hidden" class="product-id" name="product_id[]">
-
-	                                      <small class="text-danger empty-message0"></small>
+	                                          <input type="hidden" class="product-id" name="product_id[]">
+                                            <small class="text-danger empty-message0"></small>
                                           </td>
-                                            <td><input type="text" class="form-control" id="exampleInputName1" placeholder="MRP"></td>
-                                            <td><input type="text" class="form-control" id="exampleInputName1" placeholder="MFG. Co."></td>
-                                            <td><input type="text" class="form-control" id="exampleInputName1" placeholder="Batch No."></td>
-                                            <td><input type="text" class="form-control" id="exampleInputName1" placeholder="Expiry"></td>
-                                            <td><input type="text" class="form-control" id="exampleInputName1" placeholder="Qty."></td>
-                                            <td><input type="text" class="form-control" id="exampleInputName1" placeholder="Free Qty"></td>
-                                            <td><input type="text" class="form-control" id="exampleInputName1" placeholder="Rate"></td>
-                                            <td><input type="text" class="form-control" id="exampleInputName1" placeholder="Discount"></td>
-                                            <td><input type="text" class="form-control" id="exampleInputName1" placeholder="GST"></td>
-                                            <td><input type="text" class="form-control" id="exampleInputName1" placeholder="Ammount"></td>
-                                            <td><a href="#" class="btn btn-primary btn-xs pt-2 pb-2"><i class="fa fa-plus mr-0 ml-0"></i></a></td>
+                                            <td><input name="mrp[]" type="text" class="form-control" id="exampleInputName1" placeholder="MRP"></td>
+                                            <td><input name="mfg_no[]" type="text" class="form-control" id="exampleInputName1" placeholder="MFG. Co."></td>
+                                            <td><input name="batch_no[]" type="text" class="form-control" id="exampleInputName1" placeholder="Batch No."></td>
+                                            <td><input name="expiry[]" type="text" class="form-control" id="exampleInputName1" placeholder="Expiry"></td>
+                                            <td><input name="qty[]" type="text" class="form-control" id="exampleInputName1" placeholder="Qty."></td>
+                                            <td><input name="free_qty[]" type="text" class="form-control" id="exampleInputName1" placeholder="Free Qty"></td>
+                                            <td><input name="rate[]" type="text" class="form-control" id="exampleInputName1" placeholder="Rate"></td>
+                                            <td><input name="discount[]" type="text" class="form-control" id="exampleInputName1" placeholder="Discount"></td>
+                                            <td><input name="gst[]" type="text" class="form-control" id="exampleInputName1" placeholder="GST"></td>
+                                            <td><input name="ammount[]" type="text" class="form-control" id="exampleInputName1" placeholder="Ammount"></td>
+                                            <td><a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a><a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product remove_last" style="display: none;"><i class="fa fa-close mr-0 ml-0"></i></a></td>
                                       </tr><!-- End Row --> 	
                                       
                                    
@@ -230,6 +237,29 @@
                    
                    
                   </form>
+                  <div id="html-copy" style="display: none;">
+                    <table>
+                      <tr class="product-tr">
+                            <td>O133</td>
+                            <td>
+                              <input type="text" placeholder="Product" class="tags form-control" required="" name="product[]">
+                              <input type="hidden" class="product-id" name="product_id[]">
+                              <small class="text-danger empty-message##PRODUCTCOUNT##"></small>
+                            </td>
+                              <td><input name="mrp[]" type="text" class="form-control" id="exampleInputName1" placeholder="MRP"></td>
+                              <td><input name="mfg_no[]" type="text" class="form-control" id="exampleInputName1" placeholder="MFG. Co."></td>
+                              <td><input name="batch_no[]" type="text" class="form-control" id="exampleInputName1" placeholder="Batch No."></td>
+                              <td><input name="expiry[]" type="text" class="form-control" id="exampleInputName1" placeholder="Expiry"></td>
+                              <td><input name="qty[]" type="text" class="form-control" id="exampleInputName1" placeholder="Qty."></td>
+                              <td><input name="free_qty[]" type="text" class="form-control" id="exampleInputName1" placeholder="Free Qty"></td>
+                              <td><input name="rate[]" type="text" class="form-control" id="exampleInputName1" placeholder="Rate"></td>
+                              <td><input name="discount[]" type="text" class="form-control" id="exampleInputName1" placeholder="Discount"></td>
+                              <td><input name="gst[]" type="text" class="form-control" id="exampleInputName1" placeholder="GST"></td>
+                              <td><input name="ammount[]" type="text" class="form-control" id="exampleInputName1" placeholder="Ammount"></td>
+                              <td><a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a><a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product "><i class="fa fa-close mr-0 ml-0"></i></a></td>
+                        </tr><!-- End Row -->   
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -339,7 +369,7 @@
   <script src="js/jquery-ui.js"></script>
   <!-- Custom js for this page Datatables-->
   <script src="js/data-table.js"></script>
-  <script src="js/custom/purchase.js"></script>
+  <script src="js/custom/purchase-return.js"></script>
   
   <!-- script for custom validation -->
 <script src="js/parsley.min.js"></script>
