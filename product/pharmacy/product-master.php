@@ -24,7 +24,7 @@ if(isset($_POST['submit'])){
   $opening_qty = $_POST['opening_qty'];
   $opening_qty_godown = $_POST['opening_qty_godown'];
   $give_mrp = $_POST['give_mrp'];
-  $ex_duty = $_POST['ex_duty'];
+  $serial_no = $_POST['serial_no'];
   $igst = $_POST['igst'];
   $cgst = $_POST['cgst'];
   $sgst = $_POST['sgst'];
@@ -43,7 +43,7 @@ if(isset($_POST['submit'])){
   $ratio = $_POST['ratio'];
   $status = $_POST['status'];
 
-  $insQry = "INSERT INTO `product_master` (`user_id`, `finance_year_id`, `product_name`, `generic_name`, `mfg_company`, `schedule_cat`, `product_type`, `product_cat`, `sub_cat`, `hsn_code`, `batch_no`, `ex_date`, `opening_qty`, `opening_qty_godown`, `give_mrp`, `ex_duty`, `igst`, `cgst`, `sgst`, `inward_rate`, `distributor_rate`, `sale_rate_local`, `sale_rate_out`, `rack_no`, `self_no`, `box_no`, `company_code`, `opening_stock`, `unit`, `min_qty`, `max_qty`,`ratio`,`status`, `created_at`, `created_by`) VALUES ('".$user_id."', '".$financial_year_id."', '".$product_name."', '".$generic_name."', '".$mfg_company."', '".$schedule_cat."', '".$product_type."', '".$product_cat."', '".$sub_cat."', '".$hsn_code."', '".$batch_no."', '".$ex_date."', '".$opening_qty."', '".$opening_qty_godown."', '".$give_mrp."', '".$ex_duty."', '".$igst."', '".$cgst."', '".$sgst."', '".$inward_rate."', '".$distributor_rate."', '".$sale_rate_local."', '".$sale_rate_out."', '".$rack_no."', '".$self_no."', '".$box_no."', '".$company_code."', '".$opening_stock."', '".$unit."', '".$min_qty."', '".$max_qty."','".$status."','".$ratio."', '".date('Y-m-d H:i:s')."', '".$user_id."')";
+  $insQry = "INSERT INTO `product_master` (`user_id`, `finance_year_id`, `product_name`, `generic_name`, `mfg_company`, `schedule_cat`, `product_type`, `product_cat`, `sub_cat`, `hsn_code`, `batch_no`, `ex_date`, `opening_qty`, `opening_qty_godown`, `give_mrp`, `serial_no`, `igst`, `cgst`, `sgst`, `inward_rate`, `distributor_rate`, `sale_rate_local`, `sale_rate_out`, `rack_no`, `self_no`, `box_no`, `company_code`, `opening_stock`, `unit`, `min_qty`, `max_qty`,`ratio`,`status`, `created_at`, `created_by`) VALUES ('".$user_id."', '".$financial_year_id."', '".$product_name."', '".$generic_name."', '".$mfg_company."', '".$schedule_cat."', '".$product_type."', '".$product_cat."', '".$sub_cat."', '".$hsn_code."', '".$batch_no."', '".$ex_date."', '".$opening_qty."', '".$opening_qty_godown."', '".$give_mrp."', '".$serial_no."', '".$igst."', '".$cgst."', '".$sgst."', '".$inward_rate."', '".$distributor_rate."', '".$sale_rate_local."', '".$sale_rate_out."', '".$rack_no."', '".$self_no."', '".$box_no."', '".$company_code."', '".$opening_stock."', '".$unit."', '".$min_qty."', '".$max_qty."','".$status."','".$ratio."', '".date('Y-m-d H:i:s')."', '".$user_id."')";
   $queryInsert = mysqli_query($conn,$insQry);
   if($queryInsert){
 
@@ -75,7 +75,7 @@ if(isset($_POST['update'])){
   $opening_qty = $_POST['opening_qty'];
   $opening_qty_godown = $_POST['opening_qty_godown'];
   $give_mrp = $_POST['give_mrp'];
-  $ex_duty = $_POST['ex_duty'];
+  $serial_no = $_POST['serial_no'];
   $igst = $_POST['igst'];
   $cgst = $_POST['cgst'];
   $sgst = $_POST['sgst'];
@@ -99,7 +99,7 @@ if(isset($_POST['update'])){
   $data = mysqli_fetch_array($result);
   
   if($data['give_mrp'] == $give_mrp){
-    $updateQry = "UPDATE `product_master` SET `product_name`='".$product_name."',`generic_name`='".$generic_name."',`mfg_company`='".$mfg_company."',`schedule_cat`='".$schedule_cat."',`product_type`='".$product_type."',`product_cat`='".$product_cat."',`sub_cat`='".$sub_cat."',`hsn_code`='".$hsn_code."',`batch_no`='".$batch_no."',`ex_date`='".$ex_date."',`opening_qty`='".$opening_qty."',`opening_qty_godown`='".$opening_qty_godown."',`give_mrp`='".$give_mrp."',`ex_duty`='".$ex_duty."',`igst`='".$igst."',`cgst`='".$cgst."',`sgst`='".$sgst."',`inward_rate`='".$inward_rate."',`distributor_rate`='".$distributor_rate."',`sale_rate_local`='".$sale_rate_local."',`sale_rate_out`='".$sale_rate_out."',`rack_no`='".$rack_no."',`self_no`='".$self_no."',`box_no`='".$box_no."',`company_code`='".$company_code."',`opening_stock`='".$opening_stock."',`unit`='".$unit."',`min_qty`='".$min_qty."',`max_qty`='".$max_qty."',`ratio`='".$ratio."',`status`='".$status."',`updated_at`='".date('Y-m-d H:i:s')."',`updated_by`='".$user_id."' WHERE id='".$_GET['id']."'";
+    $updateQry = "UPDATE `product_master` SET `product_name`='".$product_name."',`generic_name`='".$generic_name."',`mfg_company`='".$mfg_company."',`schedule_cat`='".$schedule_cat."',`product_type`='".$product_type."',`product_cat`='".$product_cat."',`sub_cat`='".$sub_cat."',`hsn_code`='".$hsn_code."',`batch_no`='".$batch_no."',`ex_date`='".$ex_date."',`opening_qty`='".$opening_qty."',`opening_qty_godown`='".$opening_qty_godown."',`give_mrp`='".$give_mrp."',`serial_no`='".$serial_no."',`igst`='".$igst."',`cgst`='".$cgst."',`sgst`='".$sgst."',`inward_rate`='".$inward_rate."',`distributor_rate`='".$distributor_rate."',`sale_rate_local`='".$sale_rate_local."',`sale_rate_out`='".$sale_rate_out."',`rack_no`='".$rack_no."',`self_no`='".$self_no."',`box_no`='".$box_no."',`company_code`='".$company_code."',`opening_stock`='".$opening_stock."',`unit`='".$unit."',`min_qty`='".$min_qty."',`max_qty`='".$max_qty."',`ratio`='".$ratio."',`status`='".$status."',`updated_at`='".date('Y-m-d H:i:s')."',`updated_by`='".$user_id."' WHERE id='".$_GET['id']."'";
     $queryUpdate = mysqli_query($conn,$updateQry);
     if($queryUpdate){
         $_SESSION['msg']['success'] = "Product Updated Successfully.";
@@ -110,7 +110,7 @@ if(isset($_POST['update'])){
         header('Location: view-product-master.php');exit;
       }
   }else{
-    $insQry = "INSERT INTO `product_master` (`user_id`, `finance_year_id`, `product_name`, `generic_name`, `mfg_company`, `schedule_cat`, `product_type`, `product_cat`, `sub_cat`, `hsn_code`, `opening_qty`, `opening_qty_godown`, `give_mrp`, `ex_duty`, `igst`, `cgst`, `sgst`, `inward_rate`, `distributor_rate`, `sale_rate_local`, `sale_rate_out`, `rack_no`, `self_no`, `box_no`, `company_code`, `opening_stock`, `unit`, `min_qty`, `max_qty`,`ratio`, `created_at`, `created_by`) VALUES ('".$user_id."', '".$financial_year_id."', '".$product_name."', '".$generic_name."', '".$mfg_company."', '".$schedule_cat."', '".$product_type."', '".$product_cat."', '".$sub_cat."', '".$hsn_code."','".$opening_qty."', '".$opening_qty_godown."', '".$give_mrp."', '".$ex_duty."', '".$igst."', '".$cgst."', '".$sgst."', '".$inward_rate."', '".$distributor_rate."', '".$sale_rate_local."', '".$sale_rate_out."', '".$rack_no."', '".$self_no."', '".$box_no."', '".$company_code."', '".$opening_stock."', '".$unit."', '".$min_qty."', '".$max_qty."','".$ratio."', '".date('Y-m-d H:i:s')."', '".$user_id."')";
+    $insQry = "INSERT INTO `product_master` (`user_id`, `finance_year_id`, `product_name`, `generic_name`, `mfg_company`, `schedule_cat`, `product_type`, `product_cat`, `sub_cat`, `hsn_code`, `opening_qty`, `opening_qty_godown`, `give_mrp`, `serial_no`, `igst`, `cgst`, `sgst`, `inward_rate`, `distributor_rate`, `sale_rate_local`, `sale_rate_out`, `rack_no`, `self_no`, `box_no`, `company_code`, `opening_stock`, `unit`, `min_qty`, `max_qty`,`ratio`, `created_at`, `created_by`) VALUES ('".$user_id."', '".$financial_year_id."', '".$product_name."', '".$generic_name."', '".$mfg_company."', '".$schedule_cat."', '".$product_type."', '".$product_cat."', '".$sub_cat."', '".$hsn_code."','".$opening_qty."', '".$opening_qty_godown."', '".$give_mrp."', '".$serial_no."', '".$igst."', '".$cgst."', '".$sgst."', '".$inward_rate."', '".$distributor_rate."', '".$sale_rate_local."', '".$sale_rate_out."', '".$rack_no."', '".$self_no."', '".$box_no."', '".$company_code."', '".$opening_stock."', '".$unit."', '".$min_qty."', '".$max_qty."','".$ratio."', '".date('Y-m-d H:i:s')."', '".$user_id."')";
       $queryInsert = mysqli_query($conn,$insQry);
       if($queryInsert){
         $_SESSION['msg']['success'] = "Duplicate Product Added Successfully.";
@@ -275,8 +275,12 @@ if(isset($_POST['update'])){
                     </div>
                     
                     <div class="form-group row">
-                    
-                       
+                        
+                        
+                        <div class="col-12 col-md-4">
+                          <label for="serial_no">Serial No</label>
+                          <input type="text" value="<?php echo (isset($data['serial_no'])) ? $data['serial_no'] : '';?>" name="serial_no" class="form-control" id="serial_no" placeholder="Serial No">
+                        </div>
                         
                         <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Expiry Date</label>
@@ -293,39 +297,36 @@ if(isset($_POST['update'])){
                         <input type="text" required="" value="<?php echo (isset($data['opening_qty'])) ? $data['opening_qty'] : '';?>" name="opening_qty" class="form-control" id="exampleInputName1" placeholder="Opening Qty">
                         </div>
                         
-                         <div class="col-12 col-md-4">
-                        <label for="exampleInputName1">Opening Qty in Godown<span class="text-danger">*</span></label>
-                        <input type="text" required="" name="opening_qty_godown" value="<?php echo (isset($data['opening_qty_godown'])) ? $data['opening_qty_godown'] : '';?>" class="form-control" id="exampleInputName1" placeholder="Opening Qty in Godown">
-                        </div>
+                         
                     
                     </div>
                     
                     <div class="form-group row">
+                        
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Opening Qty in Godown<span class="text-danger">*</span></label>
+                        <input type="text" required="" name="opening_qty_godown" value="<?php echo (isset($data['opening_qty_godown'])) ? $data['opening_qty_godown'] : '';?>" class="form-control" id="exampleInputName1" placeholder="Opening Qty in Godown">
+                        </div>
+                        
                        
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Give a New MRP</label>
                         <input type="text" value="<?php echo (isset($data['give_mrp'])) ? $data['give_mrp'] : '';?>" name="give_mrp" class="form-control onlynumber" id="exampleInputName1" placeholder="Give a New MRP">
                         </div>
-                        
+
                         <div class="col-12 col-md-4">
-                        <label for="exampleInputName1">Ex. Duty</label>
-                        <div class="input-group">
-                          <div class="input-group-prepend bg-dark">
-                            <span class="input-group-text bg-transparent"><i class="mdi mdi-percent text-white"></i></span>
-                          </div>
-                          <input type="text" value="<?php echo (isset($data['ex_duty'])) ? $data['ex_duty'] : '';?>" name="ex_duty" class="form-control" placeholder="Ex. Duty" aria-label="Ex. Duty">
+                        <label for="mrp">MRP</label>
+                        <input type="text" value="<?php echo (isset($data['mrp'])) ? $data['mrp'] : '';?>" name="mrp" class="form-control onlynumber" id="mrp" placeholder="MRP">
                         </div>
-                        </div>
-                        
-                         <div class="col-12 col-md-4">
-                        <label for="exampleInputName1">IGST</label>
-                        <input type="text" name="igst"  value="<?php echo (isset($data['igst'])) ? $data['igst'] : '';?>" class="form-control onlynumber" id="exampleInputName1" placeholder="IGST">
-                        </div>
-                        
                     
                     </div>
                     
                     <div class="form-group row">
+                      <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">IGST</label>
+                        <input type="text" name="igst"  value="<?php echo (isset($data['igst'])) ? $data['igst'] : '';?>" class="form-control onlynumber" id="exampleInputName1" placeholder="IGST">
+                        </div>
+
                       <div class="col-12 col-md-4">
                         <label for="exampleInputName1">CGST</label>
                         <input type="text"  name="cgst" value="<?php echo (isset($data['cgst'])) ? $data['cgst'] : '';?>" class="form-control onlynumber" id="exampleInputName1" placeholder="CGST">
@@ -334,51 +335,52 @@ if(isset($_POST['update'])){
                         <label for="exampleInputName1">SGST</label>
                       <input type="text"  name="sgst" value="<?php echo (isset($data['sgst'])) ? $data['sgst'] : '';?>" class="form-control onlynumber" id="exampleInputName1" placeholder="SGST">
                       </div>
-                      
-                      <div class="col-12 col-md-4">
-                        <label for="exampleInputName1">Inward Rate<span class="text-danger">*</span></label>
-                      <input type="text" required="" name="inward_rate" value="<?php echo (isset($data['inward_rate'])) ? $data['inward_rate'] : '';?>" class="form-control onlynumber" id="exampleInputName1" placeholder="INWARD Rate">
-                      </div>
-                      
                     </div>
                     
                     
                     <div class="form-group row">
+
+                        <div class="col-12 col-md-4">
+                          <label for="exampleInputName1">Inward Rate<span class="text-danger">*</span></label>
+                        <input type="text" required="" name="inward_rate" value="<?php echo (isset($data['inward_rate'])) ? $data['inward_rate'] : '';?>" class="form-control onlynumber" id="exampleInputName1" placeholder="INWARD Rate">
+                        </div>
                       
-                          <div class="col-12 col-md-4">
-                            <label for="exampleInputName1">Distributor Rate<span class="text-danger">*</span></label>
-                            <input type="text" required="" value="<?php echo (isset($data['distributor_rate'])) ? $data['distributor_rate'] : '';?>" name="distributor_rate" class="form-control onlynumber" id="exampleInputName1" placeholder="Distributor Rate">
-                          </div>
-                          <div class="col-12 col-md-4">
-                            <label for="exampleInputName1">Sales Rate<span class="text-danger">*</span></label>
-                              <div class="row no-gutters">
-                                  <div class="col-12 col-md-6">
-                                 <input type="text" value="<?php echo (isset($data['sale_rate_local'])) ? $data['sale_rate_local'] : '';?>" name="sale_rate_local" required="" class="form-control onlynumber" id="exampleInputName1" placeholder="Local">
-                                    </div>
-                                   <div class="col-12 col-md-6">
-                                    <input type="text" value="<?php echo (isset($data['sale_rate_out'])) ? $data['sale_rate_out'] : '';?>" name="sale_rate_out" required="" class="form-control onlynumber" id="exampleInputName1" placeholder="Out">
-                                   </div>
-                                </div>
-                          </div>
-                          
-                          <div class="col-12 col-md-4">
-                            <label for="exampleInputName1">Rack No<span class="text-danger">*</span></label>
-                          <input type="text" required="" name="rack_no" value="<?php echo (isset($data['rack_no'])) ? $data['rack_no'] : '';?>" class="form-control" id="exampleInputName1" placeholder="Rack No">
-                          </div>
-                      
+                        <div class="col-12 col-md-4">
+                          <label for="exampleInputName1">Distributor Rate<span class="text-danger">*</span></label>
+                          <input type="text" required="" value="<?php echo (isset($data['distributor_rate'])) ? $data['distributor_rate'] : '';?>" name="distributor_rate" class="form-control onlynumber" id="exampleInputName1" placeholder="Distributor Rate">
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <label for="exampleInputName1">Sales Rate<span class="text-danger">*</span></label>
+                            <div class="row no-gutters">
+                                <div class="col-12 col-md-6">
+                               <input type="text" value="<?php echo (isset($data['sale_rate_local'])) ? $data['sale_rate_local'] : '';?>" name="sale_rate_local" required="" class="form-control onlynumber" id="exampleInputName1" placeholder="Local">
+                                  </div>
+                                 <div class="col-12 col-md-6">
+                                  <input type="text" value="<?php echo (isset($data['sale_rate_out'])) ? $data['sale_rate_out'] : '';?>" name="sale_rate_out" required="" class="form-control onlynumber" id="exampleInputName1" placeholder="Out">
+                                 </div>
+                              </div>
+                        </div>
                      
                     </div>
                     
                     <div class="form-group row">
-                    <div class="col-12 col-md-4">
-                    <label for="exampleInputName1">Self No<span class="text-danger">*</span></label>
-                    <input type="text" name="self_no" required="" value="<?php echo (isset($data['self_no'])) ? $data['self_no'] : '';?>" class="form-control" id="exampleInputName1" placeholder="Self No">
-                    </div>
-                    <div class="col-12 col-md-4">
-                    <label for="exampleInputName1">Box No<span class="text-danger">*</span></label>
-                    <input type="text" name="box_no" required="" value="<?php echo (isset($data['box_no'])) ? $data['box_no'] : '';?>" class="form-control" id="exampleInputName1" placeholder="Box No">
+                      <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Rack No<span class="text-danger">*</span></label>
+                        <input type="text" required="" name="rack_no" value="<?php echo (isset($data['rack_no'])) ? $data['rack_no'] : '';?>" class="form-control" id="exampleInputName1" placeholder="Rack No">
+                      </div>
+
+                      <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Self No<span class="text-danger">*</span></label>
+                        <input type="text" name="self_no" required="" value="<?php echo (isset($data['self_no'])) ? $data['self_no'] : '';?>" class="form-control" id="exampleInputName1" placeholder="Self No">
+                      </div>
+
+                      <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Box No<span class="text-danger">*</span></label>
+                        <input type="text" name="box_no" required="" value="<?php echo (isset($data['box_no'])) ? $data['box_no'] : '';?>" class="form-control" id="exampleInputName1" placeholder="Box No">
+                      </div>
                     </div>
                     
+                    <div class="form-group row">
                       <div class="col-12 col-md-3">
                         <label for="exampleInputName1">Company Code</label>
                         <input type="text" name="company_code" value="<?php echo (isset($data['company_code'])) ? $data['company_code'] : '';?>" class="form-control" id="company_code" placeholder="Company Code">
@@ -387,65 +389,64 @@ if(isset($_POST['update'])){
                       <div class="col-12 col-md-1">
                         <button type="button" data-target="#addcompany-model" data-toggle="modal" class="btn btn-outline-primary btn-sm pull-right" style="margin-top: 30px;"><i class="mdi mdi-plus"></i></button>
                       </div>
+                            
+                      <div class="col-12 col-md-4">
+                          <label for="exampleInputName1">Opening Stock Rs</label>
+                          <input type="text" value="<?php echo (isset($data['opening_stock'])) ? $data['opening_stock'] : '';?>" name="opening_stock" class="form-control onlynumber" id="exampleInputName1" placeholder="Opening Stock Rs">
+                      </div>
+                            
+                      <div class="col-12 col-md-4">
+                          <label for="exampleInputName1">Unit / Strip / Pack</label>
+                          <input type="text" value="<?php echo (isset($data['unit'])) ? $data['unit'] : '';?>" name="unit" class="form-control" id="exampleInputName1" placeholder="Opening Stock Rs">
+                      </div>
                     </div>
                     
                     <div class="form-group row">
-                            
-                            <div class="col-12 col-md-4">
-                                <label for="exampleInputName1">Opening Stock Rs</label>
-                                <input type="text" value="<?php echo (isset($data['opening_stock'])) ? $data['opening_stock'] : '';?>" name="opening_stock" class="form-control onlynumber" id="exampleInputName1" placeholder="Opening Stock Rs">
-                            </div>
-                            
-                            <div class="col-12 col-md-4">
-                                <label for="exampleInputName1">Unit / Strip / Pack</label>
-                                <input type="text" value="<?php echo (isset($data['unit'])) ? $data['unit'] : '';?>" name="unit" class="form-control" id="exampleInputName1" placeholder="Opening Stock Rs">
-                            </div>
-                            
-                            <div class="col-12 col-md-4">
-                            <label for="exampleInputName1">Min Qty.<span class="text-danger">*</span></label>
-                            <input type="text" required="" value="<?php echo (isset($data['min_qty'])) ? $data['min_qty'] : '';?>" name="min_qty" class="form-control onlynumber" id="exampleInputName1" placeholder="Min Qty.">
-                            </div>
 
-                    </div>
-                    
-                    <div class="form-group row">
+                      <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Min Qty.<span class="text-danger">*</span></label>
+                        <input type="text" required="" value="<?php echo (isset($data['min_qty'])) ? $data['min_qty'] : '';?>" name="min_qty" class="form-control onlynumber" id="exampleInputName1" placeholder="Min Qty.">
+                      </div>
                         
-                        <div class="col-12 col-md-4">
-                            <label for="exampleInputName1">Ratio<span class="text-danger">*</span></label>
-                            <input type="text" required="" value="<?php echo (isset($data['ratio'])) ? $data['ratio'] : '';?>" name="ratio" class="form-control onlynumber" id="Ratio" placeholder="Ratio.">
-                        </div>
+                      <div class="col-12 col-md-4">
+                          <label for="exampleInputName1">Ratio<span class="text-danger">*</span></label>
+                          <input type="text" required="" value="<?php echo (isset($data['ratio'])) ? $data['ratio'] : '';?>" name="ratio" class="form-control onlynumber" id="Ratio" placeholder="Ratio.">
+                      </div>
                        
-                        <div class="col-12 col-md-4">
-                          <label for="exampleInputName1">Max Qty.<span class="text-danger">*</span></label>
+                      <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Max Qty.<span class="text-danger">*</span></label>
                         <input type="text" required="" value="<?php echo (isset($data['max_qty'])) ? $data['max_qty'] : '';?>" name="max_qty" class="form-control onlynumber" id="exampleInputName1" placeholder="Max Qty.">
-                        </div>
-                        <div class="col-12 col-md-4">
-                                  <label for="exampleInputName1">Status</label>
-                                  <?php $data['status'] = (isset($data['status'])) ? $data['status'] : '';?>
-                                  
-                                  <div class="row no-gutters">
-                                  
-                                      <div class="col">
-                                          <div class="form-radio">
-                                          <label class="form-check-label">
-                                          <input type="radio" class="form-check-input" name="status" id="optionsRadios1" value="1" <?php if(isset($_GET['id'])){if($data['status'] == "1"){echo "checked";}  }else{echo"checked";} ?>>
-                                          Active
-                                          </label>
-                                          </div>
-                                      </div>
-                                      
-                                      <div class="col">
-                                          <div class="form-radio">
-                                          <label class="form-check-label">
-                                          <input type="radio" <?php if($data['status'] == "0"){echo "checked";} ?> class="form-check-input" name="status" id="optionsRadios2" value="0">
-                                          Deactive
-                                          </label>
-                                          </div>
-                                      </div>
-                                  
-                                  </div>
                       </div>
                          
+                    </div>
+
+                    <div class="form-group row">
+                      <div class="col-12 col-md-4">
+                          <label for="exampleInputName1">Status</label>
+                          <?php $data['status'] = (isset($data['status'])) ? $data['status'] : '';?>
+                        
+                          <div class="row no-gutters">
+                          
+                              <div class="col">
+                                <div class="form-radio">
+                                <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="status" id="optionsRadios1" value="1" <?php if(isset($_GET['id'])){if($data['status'] == "1"){echo "checked";}  }else{echo"checked";} ?>>
+                                Active
+                                </label>
+                                </div>
+                              </div>
+                              
+                              <div class="col">
+                                <div class="form-radio">
+                                <label class="form-check-label">
+                                <input type="radio" <?php if($data['status'] == "0"){echo "checked";} ?> class="form-check-input" name="status" id="optionsRadios2" value="0">
+                                Deactive
+                                </label>
+                                </div>
+                              </div>
+                          
+                          </div>
+                        </div>
                     </div>
                     
                     <br>

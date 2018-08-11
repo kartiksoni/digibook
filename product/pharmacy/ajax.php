@@ -445,7 +445,7 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
           $res['opening_qty'] = (isset($data['opening_qty']) && $data['opening_qty'] != '') ? $data['opening_qty'] : 0;
           $res['opening_qty_godown'] = (isset($data['opening_qty_godown']) && $data['opening_qty_godown'] != '') ? $data['opening_qty_godown'] : 0;
           $res['give_mrp'] = (isset($data['give_mrp']) && $data['give_mrp'] != '') ? $data['give_mrp'] : 0;
-          $res['ex_duty'] = (isset($data['ex_duty']) && $data['ex_duty'] != '') ? $data['ex_duty'] : NULL;
+          $res['serial_no'] = (isset($data['serial_no']) && $data['serial_no'] != '') ? $data['serial_no'] : NULL;
           $res['igst'] = (isset($data['igst']) && $data['igst'] != '') ? $data['igst'] : 0;
           $res['cgst'] = (isset($data['cgst']) && $data['cgst'] != '') ? $data['cgst'] : 0;
           $res['sgst'] = (isset($data['sgst']) && $data['sgst'] != '') ? $data['sgst'] : 0;

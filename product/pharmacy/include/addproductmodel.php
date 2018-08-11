@@ -90,6 +90,11 @@
                 </div>
 
                 <div class="col-12 col-md-4">
+                  <label for="serial_no">Serial No</label>
+                  <input type="text" name="serial_no" class="form-control" placeholder="Serial No">
+                </div>
+
+                <div class="col-12 col-md-4">
                     <label for="ex_date">Expiry Date</label>
                     <div id="datepicker-popup1" class="input-group date datepicker">
                     <input name="ex_date" type="text" class="form-control border" placeholder="dd/mm/yyyy" autocomplete="off">
@@ -112,16 +117,6 @@
                 <div class="col-12 col-md-4">
                   <label for="give_mrp">Give a New MRP</label>
                   <input type="text" name="give_mrp" class="form-control" placeholder="Give a New MRP" data-parsley-type="number">
-                </div>
-              
-                <div class="col-12 col-md-4">
-                  <label for="ex_duty">Ex. Duty</label>
-                  <div class="input-group">
-                    <div class="input-group-prepend bg-dark">
-                      <span class="input-group-text bg-transparent"><i class="mdi mdi-percent text-white"></i></span>
-                    </div>
-                    <input type="text" name="ex_duty" class="form-control" placeholder="Ex. Duty" aria-label="Ex. Duty">
-                  </div>
                 </div>
               
                 <div class="col-12 col-md-4">

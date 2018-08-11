@@ -128,7 +128,7 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle nav-profile" id="profileDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
               <img src="images/faces/face1.jpg" alt="image">
-              <span class="d-none d-lg-inline">Daniel Russiel</span>
+              <span class="d-none d-lg-inline"><?php echo (isset($_SESSION['auth']['name'])) ? $_SESSION['auth']['name'] : 'Unknow'; ?></span>
             </a>
             <div class="dropdown-menu navbar-dropdown w-100" aria-labelledby="profileDropdown">
               <a class="dropdown-item" href="#">

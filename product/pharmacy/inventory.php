@@ -1,4 +1,11 @@
 <?php include('include/usertypecheck.php');
+
+  $getExpiryMonthQuery = "SELECT near_by FROM general_settings ORDER BY id DESC LIMIT 1";
+  $getExpiryMonthRes = mysqli_query($conn, $getExpiryMonthQuery);
+  if($getExpiryMonthRes){
+    $fetchMonth = mysqli_fetch_array($getExpiryMonthRes);
+    $nearExpiryMonth = ($fetchMonth['near_by']) ? $fetchMonth['near_by'] : '';
+  }
     /* SET SESSION START */
 
         // set alphabet in session
@@ -240,14 +247,26 @@
                         ?>
                         <a href="?product=available" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'available') ? 'btn-success' : 'btn-outline-success'; ?>">Available (<?php echo $product_available; ?>)</a>
 
-                        <a href="?product=nearexpiry" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'nearexpiry') ? 'btn-success' : 'btn-outline-success'; ?>">Near Expiry (0)</a>
+                        <?php
+                          $nearExpiry = 0;
+                          if(isset($nearExpiryMonth) && $nearExpiryMonth != '' && is_numeric($nearExpiryMonth)){
+                            $nearExpiryMonthC = '-'.$nearExpiryMonth.' months';
+                            $nearExpiryDate = date('Y-m-d', strtotime($nearExpiryMonthC));
+                            $nearExpiryCountQuery = "SELECT * FROM product_master WHERE ex_date >= '".$nearExpiryDate."' AND ex_date <= '".date('Y-m-d')."'";
+                            $nearExpiryCountRes = mysqli_query($conn, $nearExpiryCountQuery);
+                            $nearExpiry = ($nearExpiryCountRes) ? mysqli_num_rows($nearExpiryCountRes) : 0;
+                          }
+                        ?>
+
+                        <a href="?product=nearexpiry" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'nearexpiry') ? 'btn-success' : 'btn-outline-success'; ?>">Near Expiry (<?php echo $nearExpiry; ?>)</a>
 
                         <?php
+
                           $expiryQuery = "SELECT id FROM product_master WHERE status = 1 AND ex_date < '".date('Y-m-d')."'";
                           $expiryRes = mysqli_query($conn, $expiryQuery);
                           $product_expiry = ($expiryRes) ? mysqli_num_rows($expiryRes) : 0;
                         ?> 
-                        <a href="?product=expiry" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'expiry') ? 'btn-success' : 'btn-outline-success'; ?>">Expired (<?php echo $product_expiry; ?>)</a>
+                        <a href="?product=expired" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'expired') ? 'btn-success' : 'btn-outline-success'; ?>">Expired (<?php echo $product_expiry; ?>)</a>
 
                         <a href="?product=zerostock" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'zerostock') ? 'btn-success' : 'btn-outline-success'; ?>">Zero Stock (0)</a>   
                         <a href="?product=overstock" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'overstock') ? 'btn-success' : 'btn-outline-success'; ?>">Over Stock (0)</a>
@@ -255,54 +274,6 @@
                         <a href="?product=reorder" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'reorder') ? 'btn-success' : 'btn-outline-success'; ?>">Reorder</a>
                     </div>
                     <hr>
-                    
-                    <!-- NON Moving Filter Extra Section -->
-                      <!-- Show hide on non-moving filter btn -->
-                    <!-- <div class="col">
-                        <form method="GET">
-                          <div class="form-group row">
-                            <div class="col-12 col-md-4">
-                              <label>Select anyone</label>
-                              <select class="js-example-basic-single" name="month" style="width:100%"> 
-                                  <option value="">Please select</option>
-                                  <?php 
-                                    for ($i=1; $i < 13; $i++) { 
-                                  ?>
-                                    <option value="<?php echo $i; ?>" <?php echo ($_SESSION['month'] && $_SESSION['month'] == $i) ? 'selected' : ''; ?> ><?php echo $i; ?></option>
-                                  <?php } ?>
-                              </select>
-                            </div>
-                            <div class="col-6 col-md-4 mt-4">
-                              <button type="submit" class="btn btn-success mt-1">Search</button>
-                            </div>
-                          </div>
-                        </form> 
-                    </div> --><!-- End NON Moving Filter Extra Section -->
-                    <!-- <hr> -->
-                    
-                    <!-- OVER STOCK Filter Extra Section -->
-                      <!-- Show hide on OVER STOCK  filter btn -->
-                    <!-- <div class="col">
-                        <form method="GET">
-                          <div class="form-group row">
-                            <div class="col-12 col-md-4">
-                              <label>Sales Percentage wise</label>
-                              <select class="js-example-basic-single" name="percentage" style="width:100%"> 
-                                  <option value="">Please select</option>
-                                  <option value="60" <?php echo ($_SESSION['percentage'] && $_SESSION['percentage'] == 60) ? 'selected' : ''; ?> >60</option>
-                                  <option value="75" <?php echo ($_SESSION['percentage'] && $_SESSION['percentage'] == 75) ? 'selected' : ''; ?> >75</option>
-                                  <option value="90" <?php echo ($_SESSION['percentage'] && $_SESSION['percentage'] == 90) ? 'selected' : ''; ?> >90</option>
-                              </select>
-                            </div>
-                            <div class="col-6 col-md-4 mt-4">
-                              <button type="submit" class="btn btn-success mt-1">Search</button>
-                            </div>
-                          </div>
-                        </form> 
-                    </div> --><!-- End OVER STOCK  Filter Extra Section -->
-                    <!-- <hr> -->
-                    
-                    
                     
                     <!-- INVENTORY TABLE STARTS -->
                     <div class="col mt-3">
@@ -338,8 +309,15 @@
                                       if(isset($_SESSION['product']) && $_SESSION['product'] == 'available'){
                                         $where[] = "ex_date >= '".date('Y-m-d')."'";
                                       }
-                                      if(isset($_SESSION['product']) && $_SESSION['product'] == 'expiry'){
+                                      if(isset($_SESSION['product']) && $_SESSION['product'] == 'expired'){
                                         $where[] = "ex_date < '".date('Y-m-d')."'";
+                                      }
+                                      if(isset($_SESSION['product']) && $_SESSION['product'] == 'nearexpiry'){
+                                        if(isset($nearExpiryMonth) && $nearExpiryMonth != '' && is_numeric($nearExpiryMonth)){
+                                          $nearExpiryMonthList = '-'.$nearExpiryMonth.' months';
+                                          $nearExpiryDateList = date('Y-m-d', strtotime($nearExpiryMonthList));
+                                          $where[] = "ex_date >= '".$nearExpiryDateList."' AND ex_date <= '".date('Y-m-d')."'";
+                                        }
                                       }
                                       $where[] = "status = 1";
 
@@ -375,57 +353,6 @@
                           </div>
                         </div>
                     </div>
-                    
-                    <!-- <hr> -->
-                     <!-- OVER STOCK TABLE STARTS -->
-                    <!-- <div class="col mt-3">
-                      <h4 class="card-title">Over stock Table</h4>
-                      <hr class="alert-dark">
-                      <div class="row">
-                        <div class="col-12">
-                          <table class="table datatable">
-                            <thead>
-                              <tr>
-                                  <th>Sr No</th>
-                                  <th>Product</th>
-                                  <th>MRP</th>
-                                  <th>MFG. Co.</th>
-                                  <th>Batch</th>
-                                  <th>Expiry</th>
-                                  <th>Qty.</th>
-                                  <th>Rack No.</th>
-                                  <th>Self No.</th>
-                                  <th>Box No.</th>
-                                  <th>Min Qty.</th>
-                                  <th>Reorder</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                  <td>1267</td>
-                                  <td>501 SOAP 300gm</td>
-                                  <td>94.40</td>
-                                  <td>&nbsp;</td>
-                                  <td>456</td>
-                                  <td>1/21</td>
-                                  <td>2</td>
-                                  <td>
-                                    5
-                                  </td>
-                                  <td>
-                                    3
-                                  </td>
-                                  <td>
-                                    6
-                                  </td>
-                                  <td>2</td>
-                                  <td>2</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div> -->
                 </div>
               </div>
             </div>
