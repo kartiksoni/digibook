@@ -149,14 +149,14 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                     <div class="row no-gutters">
                         <div  class="col-md-10">
                             <label class="col-12 row">Select Vendor</label>
-                            <select class="js-example-basic-single" name="vender_id" style="width:100%"> 
+                            <select class="js-example-basic-single" name="vender_id" id="vender_id" style="width:100%"> 
                             <option value="">Please select</option>
                             <?php 
                             $sql = "SELECT id, name FROM ledger_master WHERE status=1 AND group_id=14 order by name";
                             $re_sql = mysqli_query($conn, $sql);
                             while($vender_data = mysqli_fetch_assoc($re_sql)){
                             ?>
-                            <option value="<?php echo $vender_data['id']; ?>"><?php echo $vender_data['name']; ?></option>
+                            <option value="<?php echo $vender_data['id']; ?>" <?php echo (isset($_REQUEST['vender_id']) && $_REQUEST['vender_id'] == $vender_data['id']) ? 'selected' : '';?>><?php echo $vender_data['name']; ?></option>
                             <?php } ?>
                             </select>
                        </div>     
@@ -405,6 +405,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
       enableOnReadonly: true,
       todayHighlight: true,
       autoclose: true,
+      dateFormat: "dd/mm/yyyy"
     });
  </script>
  

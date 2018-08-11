@@ -1,11 +1,13 @@
 $(document).ready(function(){
+
 $(document).on('keydown', '.auto', function() {
+    var vender_id = $("#vender_id").val();
     var message = $(this).closest("div").find('.empty-message');
     $(this).autocomplete({
         source: function (query, result) {
             $.ajax({
                 url: "ajax.php",
-                data: {'query': query, 'type':  this.element.attr('data-name'),'action': 'getAutoSearchOrderList'},            
+                data: {'query': query, 'type':  this.element.attr('data-name'),'vender_id':vender_id,'action': 'getAutoSearchOrderList'},            
                 dataType: "json",
                 type: "POST",
                 success: function (data) {
