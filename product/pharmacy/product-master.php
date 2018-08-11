@@ -185,7 +185,7 @@ if(isset($_POST['update'])){
                     <!-- <a style="margin-top: -40px;" class="btn btn-info btn-rounded btn-fw pull-right" href="view-product-master.php">View</a> -->
                   <hr class="alert-dark">
                   <br>
-                  <form class="forms-sample" method="post" action="">
+                  <form class="forms-sample" method="post" autocomplete="off">
                   
                   <div class="form-group row">
                       <div class="col-12 col-md-4">

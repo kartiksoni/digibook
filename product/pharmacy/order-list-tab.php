@@ -4,14 +4,8 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
 {  
   $id = $_REQUEST['id'];
 
-  $sql_email = "SELECT orders.id, orders.order_no as orderno, orders.created as orderdate, product_master.product_name as productname,               product_master.generic_name as genericname, product_master.mfg_company as manufacturername, orders.purchase_price as                 purchaseprice, orders.gst as gst, orders.unit as unit, orders.qty as quantity, ledger_master.name as vendorname,                     ledger_master.mobile as mobile, ledger_master.email as email from((orders INNER JOIN product_master ON                               orders.product_id = product_master.id) INNER JOIN ledger_master ON orders.vendor_id = ledger_master.id) WHERE                        orders.status = '0' AND orders.id='".$id."'";
-  /*if($_REQUEST['type'] == '0'){
-    $sql_email = "SELECT byvendor.id, byvendor.order_no as orderno, byvendor.created as orderdate, product_master.product_name as productname, product_master.generic_name as genericname, product_master.mfg_company as manufacturername, byvendor.purchase_price as purchaseprice, byvendor.gst as gst, byvendor.unit as unit, byvendor.qty as quantity, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((byvendor INNER JOIN product_master ON byvendor.product_id = product_master.id) INNER JOIN ledger_master ON byvendor.vendor_id = ledger_master.id) WHERE byvendor.status = '0' AND byvendor.id='".$id."' ";
-  }
+  $sql_email = "SELECT orders.id, orders.order_no as orderno, orders.created as orderdate, product_master.product_name as productname,               product_master.generic_name as genericname, product_master.mfg_company as manufacturername, orders.purchase_price as                 purchaseprice, orders.gst as gst, orders.unit as unit, orders.qty as quantity, ledger_master.name as vendorname,ledger_master.mobile as mobile, ledger_master.email as email from((orders INNER JOIN product_master ON orders.product_id = product_master.id) INNER JOIN ledger_master ON orders.vendor_id = ledger_master.id) WHERE orders.status = '1' AND orders.id='".$id."'";
 
-  if($_REQUEST['type'] == "1"){
-    $sql_email = "SELECT byproduct.id, byproduct.order_no as orderno, byproduct.created as orderdate, product_master.product_name as productname, product_master.generic_name as genericname, product_master.mfg_company as manufacturername, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((byproduct INNER JOIN product_master ON byproduct.product_id = product_master.id) INNER JOIN ledger_master ON byproduct.vendor_id = ledger_master.id) WHERE byproduct.status = '0' AND byproduct.id = '".$id."'";
-  }*/
   $sqlqryrun_email = mysqli_query($conn, $sql_email);
   $sqldata = mysqli_fetch_assoc($sqlqryrun_email);
   $email = $sqldata['email'];
@@ -67,21 +61,6 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
     }
   
 }
-
-/*if(isset($_REQUEST['mobile']))
-	{
-	 $return_arr = array();
-	    
-	    $sql = "select mobile from ledger_master where mobile like '".$_REQUEST['mobile']."%'";
-	    $run = mysqli_query($conn, $sql);
-	    
-	    while($row = mysqli_fetch_assoc($run)) {
-	        $return_arr[] =  $row['mobile'];
-		}
-		
-    /* Toss back results as json encoded array. */
-   //  json_encode($return_arr);
-	//}	 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -119,33 +98,6 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
     
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
-    
-        
-        
-        <!-- partial:partials/_settings-panel.html -->
-        
-        <!--<div class="theme-setting-wrapper">
-        <div id="settings-trigger"><i class="mdi mdi-settings"></i></div>
-        <div id="theme-settings" class="settings-panel">
-        <i class="settings-close mdi mdi-close"></i>
-        <p class="settings-heading">SIDEBAR SKINS</p>
-        <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
-        <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
-        <p class="settings-heading mt-2">HEADER SKINS</p>
-        <div class="color-tiles mx-0 px-4">
-          <div class="tiles primary"></div>
-          <div class="tiles success"></div>
-          <div class="tiles warning"></div>
-          <div class="tiles danger"></div>
-          <div class="tiles pink"></div>
-          <div class="tiles info"></div>
-          <div class="tiles dark"></div>
-          <div class="tiles default"></div>
-        </div>
-        </div>
-        </div>-->
-        
-        
         <!-- Right Sidebar -->
         <?php include "include/sidebar-right.php" ?>
         
@@ -198,7 +150,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                         <div  class="col-md-10">
                             <label class="col-12 row">Select Vendor</label>
                             <select class="js-example-basic-single" name="vender_id" style="width:100%"> 
-                            <option value="Regular">Please select</option>
+                            <option value="">Please select</option>
                             <?php 
                             $sql = "SELECT id, name FROM ledger_master WHERE status=1 AND group_id=14 order by name";
                             $re_sql = mysqli_query($conn, $sql);
@@ -306,13 +258,9 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
 
                         $data = [];
                         /// by vender ///
-                        $sqlqry = "SELECT orders.id, orders.order_no as orderno, orders.created as orderdate, product_master.product_name as productname, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((orders INNER JOIN product_master ON orders.product_id = product_master.id) INNER JOIN ledger_master ON orders.vendor_id = ledger_master.id) WHERE orders.status = '0'";
-                        /// by product ///
-                        /*$sql = "SELECT byproduct.id, byproduct.order_no as orderno, byproduct.created as orderdate, product_master.product_name as productname, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((byproduct INNER JOIN product_master ON byproduct.product_id = product_master.id) INNER JOIN ledger_master ON byproduct.vendor_id = ledger_master.id) WHERE byproduct.status = '0'"; 
+                        $sqlqry = "SELECT orders.id, orders.order_no as orderno, orders.created as orderdate, product_master.product_name as productname, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((orders INNER JOIN product_master ON orders.product_id = product_master.id) INNER JOIN ledger_master ON orders.vendor_id = ledger_master.id) WHERE orders.status = '1'";
                         
-                        $productqry = ""; */
-
-                        if(isset($_REQUEST['vender_id']) && $_REQUEST['vender_id']){
+                        if(isset($_REQUEST['vender_id']) && $_REQUEST['vender_id'] != ''){
                           $sqlqry .= "AND (ledger_master.id = '".$_REQUEST['vender_id']."')";
                         }
                         
@@ -339,43 +287,10 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                           $from = date('Y-m-d',strtotime($_REQUEST['fromdate']));
                           $to = date('Y-m-d',strtotime($_REQUEST['todate']));
                           $sqlqry .= "AND DATE_FORMAT(orders.created,'%Y-%m-%d') >= '".$from."' AND DATE_FORMAT(orders.created,'%Y-%m-%d') <= '".$to."' ";
-                          //$sql .= "AND DATE_FORMAT(byproduct.created,'%Y-%m-%d') >= '".$from."' AND DATE_FORMAT(byproduct.created,'%Y-%m-%d') <= '".$to."' ";
                         }
+
                         $sqlqryrun = mysqli_query($conn, $sqlqry);
-                         //// type = 0 => by vender  ////
-                         ///  type = 1 => by product ///
-                        if($sqlqryrun){
-                          /*while($sqldata = mysqli_fetch_assoc($sqlqryrun)){
-                            $arr['id'] = $sqldata['id'];
-                            $arr['orderno'] = $sqldata['orderno'];
-                            $arr['orderdate'] = $sqldata['orderdate'];
-                            $arr['productname'] = $sqldata['productname'];
-                            $arr['vendorname'] = $sqldata['vendorname'];
-                            $arr['mobile'] = $sqldata['mobile'];
-                            $arr['email'] = $sqldata['email'];
-                            $arr['type'] = '0';
-                            array_push($data, $arr);
-                          }*/
-                        
-
-                        /*$insql = mysqli_query($conn, $sql);
-
-                        if($insql){
-                          while($sqldata1 = mysqli_fetch_assoc($insql)){
-                            $arr1['id'] = $sqldata1['id'];
-                            $arr1['orderno'] = $sqldata1['orderno'];
-                            $arr1['orderdate'] = $sqldata1['orderdate'];
-                            $arr1['productname'] = $sqldata1['productname'];
-                            $arr1['vendorname'] = $sqldata1['vendorname'];
-                            $arr1['mobile'] = $sqldata1['mobile'];
-                            $arr1['email'] = $sqldata1['email'];
-                            $arr1['type'] = '1';
-                            array_push($data, $arr1);
-                          }
-                        } */                     
-                
                     ?>
-
                     <div class="col mt-3">
                     	 <div class="row">
                             <div class="col-12">
@@ -395,7 +310,9 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                                 <tbody>
                                   <!-- Row Starts --> 
                                     
-                                    <?php  while($sqldata = mysqli_fetch_assoc($sqlqryrun)){ ?>
+                                    <?php
+                                      if($sqlqryrun){ 
+                                        while($sqldata = mysqli_fetch_assoc($sqlqryrun)){ ?>
                                       <tr>
                                           <td><?php echo $sqldata['orderno'];?></td>
                                           <td><?php echo date('d/m/Y',strtotime($sqldata['orderdate']));?></td>
@@ -417,11 +334,10 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                                             </a>
                                           </td>
                                       </tr><!-- End Row -->
-                                      <?php } ?>
+                                      <?php } } ?>
                                  
                                 </tbody>
                               </table>
-                              <?php } ?>
                             </div>
                           </div>
                     </div>
