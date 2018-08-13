@@ -332,4 +332,81 @@ $( document ).ready(function() {
         
   });
 
+  // SAVE DB TO ADD NEW PRODUCT
+  $("#add-product").on("submit", function(event){
+        event.preventDefault();
+        var data = $(this).serialize();
+        var htmlsuccess = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+        var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+        var dataarr = JSON.parse('{"' + decodeURI(data).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+
+        $.ajax({
+            type: "POST",
+            url: 'ajax.php',
+            data: {'action':'addproduct', 'data': data},
+            dataType: "json",
+            beforeSend: function() {
+              $('#btn-addproduct').html('Wait.. <i class="fa fa-spin fa-refresh"></i>');
+              $('#btn-addproduct').prop('disabled', true);
+            },
+            success: function (data) {
+              if(data.status == true){
+                htmlsuccess = htmlsuccess.replace("##MSG##", data.message);
+                $('#errormsg').html(htmlsuccess);
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                $('#purchase-addproductmodel').modal('toggle');
+                $('#add-product')[0].reset();
+
+                $('#product_id').val(data.result);
+                $('#search').val(dataarr.product_name);
+                $('#product_name').val(dataarr.product_name);
+                $('#purchase_price').val(dataarr.mrp);
+                $('#unit').val(dataarr.unit);
+                $('#generic-name').html(dataarr.generic_name);
+                $('#generic-name-input').val(dataarr.generic_name);
+                $('#menufacturer-name').html(dataarr.mfg_company);
+                $('#menufacturer-name-input').val(dataarr.mfg_company);
+
+                var gst = 0;
+                  if($('#statecode').val() == 24){
+                    gst = parseFloat(dataarr.cgst)+parseFloat(dataarr.sgst);
+                  }else{
+                    gst = parseFloat(dataarr.igst);
+                  }
+                $('#gst').val(gst);
+
+                $('#btn-addtop').prop('disabled', false);
+              }else{
+                htmlerror =  htmlerror.replace("##MSG##", data.message);
+                $('#addproduct-errormsg').html(htmlerror);
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+              }
+              $('#btn-addproduct').html('Save');
+              $('#btn-addproduct').prop('disabled', false);
+            },
+            error: function () {
+              htmlerror =  htmlerror.replace("##MSG##", 'Somthing Want Wrong!');
+              $('#addvendor-errormsg').html(htmlerror);
+              $("html, body").animate({ scrollTop: 0 }, "slow");
+
+              $('#btn-addproduct').html('Save');
+              $('#btn-addproduct').prop('disabled', false);
+            }
+        });
+
+  });
+
+  $("#add-newproduct").on("click", function(){
+    var vendor_id = $('#vendor_id').val();
+    if(vendor_id !== ''){
+      return true;
+    }else{
+      var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+      htmlerror =  htmlerror.replace("##MSG##", 'Please select vendor!');
+      $('#errormsg').html(htmlerror);
+      $("html, body").animate({ scrollTop: 0 }, "slow");
+      return false;
+    }
+  });
+
 });

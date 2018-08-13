@@ -108,6 +108,9 @@
                             <input type="hidden" name="product_name" id="product_name">
                             <small class="empty-message text-danger"></small>
                         </div>
+                        <div class="col-12 col-md-2">
+                          <button type="button" id="add-newproduct" class="btn btn-primary" data-toggle="modal" data-target="#purchase-addproductmodel" style="margin-top:30px;"><i class="fa fa-plus"></i> Add New Product</button>
+                        </div>
                       </div>
                       <div class="form-group row">
                         <div class="col-12 col-md-2">
@@ -219,6 +222,10 @@
           <!-- partial:partials/_footer.php -->
           <?php include "include/footer.php" ?>
           <!-- partial -->
+
+          <!-- Add new Product Model -->
+          <?php include("include/addproductmodel.php");?>
+
         </div>
         <!-- main-panel ends -->
       </div>

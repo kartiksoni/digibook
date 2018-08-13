@@ -118,6 +118,11 @@
                   <label for="give_mrp">Give a New MRP</label>
                   <input type="text" name="give_mrp" class="form-control" placeholder="Give a New MRP" data-parsley-type="number">
                 </div>
+                
+                <div class="col-12 col-md-4">
+                  <label for="mrp">MRP</label>
+                  <input type="text" name="mrp" class="form-control" placeholder="MRP" data-parsley-type="number">
+                </div>
               
                 <div class="col-12 col-md-4">
                   <label for="igst">IGST</label>
