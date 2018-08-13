@@ -187,7 +187,8 @@ if($_REQUEST['action'] == "getproduct_purchase_return"){
               'ratio' => $row['ratio'],
               'igst'=> $row['igst'],
               'cgst' => $row['cgst'],
-              'sgst' => $row['sgst']
+              'sgst' => $row['sgst'],
+              'mfg_company' => $row['mfg_company']
             );
     }
     echo json_encode($getproduct_self);

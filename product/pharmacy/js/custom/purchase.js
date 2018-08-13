@@ -97,6 +97,7 @@ $(document).ready(function(){
                 $(this).closest('tr').find('.batch').val(ui.item.batch);
                 $(this).closest('tr').find('.expiry').val(ui.item.expiry);
                 $(this).closest('tr').find('.qty').val(ui.item.total_qty);
+                $(this).closest('tr').find('.mfg_co').val(ui.item.mfg_company);
                 return false;
             },
 
@@ -227,6 +228,7 @@ $(document).ready(function(){
             $(this).closest('tr').find('.batch').val(ui.item.batch);
             $(this).closest('tr').find('.expiry').val(ui.item.expiry);
             $(this).closest('tr').find('.qty').val(ui.item.total_qty);
+             $(this).closest('tr').find('.mfg_co').val(ui.item.mfg_company);
             return false;
         },
 
