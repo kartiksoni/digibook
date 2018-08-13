@@ -284,6 +284,8 @@ if(isset($_POST['edit'])){
                                   $i = 1;
                                   $financialQry = "SELECT * FROM `self_consumption` ORDER BY id DESC";
                                   $financial = mysqli_query($conn,$financialQry);
+                                  if($financial && mysqli_num_rows($financial) > 0){
+
                                   while($row = mysqli_fetch_assoc($financial)){
                                   ?>
                                   <tr>
@@ -305,6 +307,7 @@ if(isset($_POST['edit'])){
                                   <?php 
                                   $i++;
                                   }
+                                }
                                   ?>  
                                 </tbody>
                               </table>
