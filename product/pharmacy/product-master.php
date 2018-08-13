@@ -295,8 +295,8 @@ if(isset($_POST['update'])){
                         </div>
                         
                         <div class="col-12 col-md-4">
-                        <label for="exampleInputName1">Opening Qty<span class="text-danger">*</span></label>
-                        <input type="text" required="" value="<?php echo (isset($data['opening_qty'])) ? $data['opening_qty'] : '';?>" name="opening_qty" class="form-control" id="exampleInputName1" placeholder="Opening Qty">
+                        <label for="opening_qty">Opening Qty<span class="text-danger">*</span></label>
+                        <input type="text" required="" value="<?php echo (isset($data['opening_qty'])) ? $data['opening_qty'] : '';?>" name="opening_qty" class="form-control opening_qty" id="opening_qty" placeholder="Opening Qty">
                         </div>
                         
                          
@@ -343,8 +343,8 @@ if(isset($_POST['update'])){
                     <div class="form-group row">
 
                         <div class="col-12 col-md-4">
-                          <label for="exampleInputName1">Inward Rate<span class="text-danger">*</span></label>
-                        <input type="text" required="" name="inward_rate" value="<?php echo (isset($data['inward_rate'])) ? $data['inward_rate'] : '';?>" class="form-control onlynumber" id="exampleInputName1" placeholder="INWARD Rate">
+                          <label for="inward_rate">Inward Rate<span class="text-danger">*</span></label>
+                          <input type="text" required="" name="inward_rate" value="<?php echo (isset($data['inward_rate'])) ? $data['inward_rate'] : '';?>" class="form-control onlynumber inward_rate" id="inward_rate" placeholder="INWARD Rate">
                         </div>
                       
                         <div class="col-12 col-md-4">
@@ -393,8 +393,8 @@ if(isset($_POST['update'])){
                       </div>
                             
                       <div class="col-12 col-md-4">
-                          <label for="exampleInputName1">Opening Stock Rs</label>
-                          <input type="text" value="<?php echo (isset($data['opening_stock'])) ? $data['opening_stock'] : '';?>" name="opening_stock" class="form-control onlynumber" id="exampleInputName1" placeholder="Opening Stock Rs">
+                          <label for="opening_stock">Opening Stock Rs</label>
+                          <input type="text" value="<?php echo (isset($data['opening_stock'])) ? $data['opening_stock'] : '';?>" name="opening_stock" readonly="" class="form-control onlynumber opening_stock" id="opening_stock" placeholder="Opening Stock Rs">
                       </div>
                             
                       <div class="col-12 col-md-4">

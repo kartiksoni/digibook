@@ -30,11 +30,11 @@ $( document ).ready(function() {
         select: function( query, result ) {
             return false;
         }
-    });
+  });
 
 
-    $("#add-company-form").on("submit", function(event){
-		event.preventDefault();
+  $("#add-company-form").on("submit", function(event){
+		  event.preventDefault();
 	    var data = $(this).serialize();
 	    var htmlsuccess = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
 	    var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
@@ -76,8 +76,25 @@ $( document ).ready(function() {
               $('#btn-addcompany').prop('disabled', false);
             }
         });
-
 	});
+
+  $('body').on('change keyup focusout', '.inward_rate,.opening_qty', function() {
+    var inward_rate = $('.inward_rate').val();
+    var opening_qty = $('.opening_qty').val();
+    if(inward_rate !== ''&& inward_rate !== NaN && inward_rate !== "undifined" && opening_qty !=='' && opening_qty !== NaN && opening_qty !== "undifined"){
+
+      inward_rate = (typeof inward_rate !== "undifined" && inward_rate !== '' && inward_rate !== NaN) ? inward_rate : 0;
+      opening_qty = (typeof opening_qty !== "undifined" && opening_qty !== '' && opening_qty !== NaN) ? opening_qty : 0;
+      var total = (parseInt(inward_rate)*parseInt(opening_qty));
+
+    }else{
+      var total ="0";
+    }
+    //$('.opening_stock').val(parseFloat(total).toFixed(2));
+    $('.opening_stock').val(parseFloat(total).toFixed(2));
+  });
+
+
 
 
 
