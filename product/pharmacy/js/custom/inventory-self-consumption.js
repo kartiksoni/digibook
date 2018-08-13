@@ -94,7 +94,7 @@ $( document ).ready(function() {
             type: "POST",
             data: {
                 query: request.term,
-                action: "getproduct_self"
+                action: "getproduct_self_changes"
             },
             // The success event handler will display "No match found" if no items are returned.
             success: function (data) {
@@ -258,7 +258,7 @@ $( document ).ready(function() {
             type: "POST",
             data: {
                 query: request.term,
-                action: "getproduct_self"
+                action: "getproduct_self_changes"
             },
             // The success event handler will display "No match found" if no items are returned.
             success: function (data) {

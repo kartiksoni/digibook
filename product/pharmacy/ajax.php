@@ -263,6 +263,38 @@ if($_REQUEST['action'] == "getproduct_self"){
       exit;
 }
 
+if($_REQUEST['action'] == "getproduct_self_changes"){
+      $getproduct_self = array();
+      $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']."%'";
+      
+      $result = mysqli_query($conn,$query);
+      $num = mysqli_num_rows($result);
+
+      while($row = mysqli_fetch_array($result)){
+        $c_total = total_qty($row['id'],$row['batch_no']);
+        $count_per = $row['mrp'] / $row['ratio'];
+        $getproduct_self[] = array(
+              'id' => $row['id'],
+              'name' => $row['product_name'],
+              'batch' => $row['batch_no'],
+              'expiry' => $row['ex_date'],
+              'total_qty' => $c_total,
+              'unit' => $row['unit'],
+              'mrp' => $row['mrp'],
+              'generic_name' => $row['generic_name'],
+              'gst' => $row['igst'],
+              'count_per' => $count_per
+            );
+       /* $getproduct_self[] =array(
+          'id' => $row['id'],
+          'name' => $row['product_name'].'-'.$row['batch_no'],
+          'batch' => $row['batch_no']
+        );*/
+      }
+      echo json_encode($getproduct_self);
+      exit;
+}
+
 if($_REQUEST['action'] == "getproduct_adjustment"){
       $getproduct_self = array();
       $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']."%'";
