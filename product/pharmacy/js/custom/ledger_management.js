@@ -1,52 +1,6 @@
 // author : Gautam Makwana
 // date   : 25-07-2018
 $(document).ready(function(){
-	$("#group").change(function(){
-	    var group_id = $(this).val();
-	    if(group_id == 10){
-	    	// Sundry Debtors[customer]
-	    	$('.hidden-field').hide();
-
-	    	/*$('.panno-div').show();
-	    	$('.gstno-div').show();
-	    	$('.bankname-div').show();
-	    	$('.bankacno-div').show();
-	    	$('.branchname-div').show();
-	    	$('.ifsccode-div').show();
-	    	$('.dlno1-div').show();
-	    	$('.dlno2-div').show();*/
-	    	$('.customertype-div').show();
-	    	/*$('.adharno-div').show();*/
-	    	$('.customerrole-div').show();
-	    	$('.crdays-div').show();
-
-	    }else if(group_id == 14){
-	    	// Sundry Creditors[vendor]
-	    	$('.hidden-field').hide();
-
-	    	$('.panno-div').show();
-	    	$('.gstno-div').show();
-	    	$('.bankname-div').show();
-	    	$('.bankacno-div').show();
-	    	$('.branchname-div').show();
-	    	$('.ifsccode-div').show();
-	    	$('.dlno1-div').show();
-	    	$('.dlno2-div').show();
-	    	$('.vendortype-div').show();
-	    	$('.crdays-div').show();
-	    }else if(group_id == 5 || group_id == 22){
-	    	// Bank Accounts
-	    	$('.hidden-field').hide();
-
-
-	    	$('.bankname-div').show();
-	    	$('.bankacno-div').show();
-	    	$('.branchname-div').show();
-	    	$('.ifsccode-div').show();
-	    }else{
-	    	$('.hidden-field').hide();
-	    }
-	});
 
 	$("#customer_role").change(function(){
 		var role = $(this).val();
@@ -138,6 +92,38 @@ $(document).ready(function(){
           	});
 		}else{
 			$('#city').children('option:not(:first)').remove();
+		}
+	});
+
+	// for get group by account type
+	$("#type").change(function(){
+		var type = $(this).val();
+
+		if(type !== ''){
+			$.ajax({
+              type: "POST",
+              url: 'ajax.php',
+              data: {'type':type, 'action':'getGroupByAccountType'},
+              dataType: "json",
+              success: function (data) {console.log(data);
+              	if(data.status == true){
+              		$('#subtype').children('option:not(:first)').remove();
+              		$.each(data.result, function (i, item) {
+					    $('#subtype').append($('<option>', { 
+					        value: item.id,
+					        text : item.name 
+					    }));
+					});
+              	}else{
+              		$('#subtype').children('option:not(:first)').remove();
+              	}
+              },
+              error: function () {
+              	$('#subtype').children('option:not(:first)').remove();
+              }
+          	});
+		}else{
+			$('#subtype').children('option:not(:first)').remove();
 		}
 	});
 });

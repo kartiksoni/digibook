@@ -3,6 +3,7 @@
 <?php
   /* START CODE FOR DATA INSERT AND UPDATE  */
   if(isset($_POST['submit'])){
+    
     $data['account_type'] = (isset($_POST['account_type'])) ? $_POST['account_type'] : '';
     $data['companyname'] = (isset($_POST['companyname'])) ? $_POST['companyname'] : '';
     $data['name'] = (isset($_POST['name'])) ? $_POST['name'] : '';
@@ -21,7 +22,7 @@
     $data['faxno'] = (isset($_POST['faxno'])) ? $_POST['faxno'] : '';
     $data['opening_balance'] = (isset($_POST['opening_balance']) && $_POST['opening_balance'] != '') ? $_POST['opening_balance'] : 0;
     $data['opening_balance_type'] = (isset($_POST['opening_balance_type'])) ? $_POST['opening_balance_type'] : 'DR';
-    $data['group_id'] = (isset($_POST['group_id'])) ? $_POST['group_id'] : '';
+    $data['group_id'] = (isset($_GET['subtype'])) ? $_GET['subtype'] : '';
     $data['panno'] = (isset($_POST['panno'])) ? $_POST['panno'] : '';
     $data['gstno'] = (isset($_POST['gstno'])) ? $_POST['gstno'] : '';
     $data['bank_name'] = (isset($_POST['bank_name'])) ? $_POST['bank_name'] : '';
@@ -185,8 +186,17 @@
                         $type = (isset($fetchgroupmaster['name']) && $fetchgroupmaster['name'] != '') ? ' - '.ucwords(strtolower($fetchgroupmaster['name'])) : '';
                       }
                     }
+                    $subtype = '';
+                    if(isset($_GET['subtype']) && $_GET['subtype'] != ''){
+                      $getSubtypeQ = "SELECT name from `group` where id = '".$_GET['subtype']."'";
+                      $getSubtypeR = mysqli_query($conn, $getSubtypeQ);
+                      if($getSubtypeR){
+                        $fetchgetSubtype = mysqli_fetch_array($getSubtypeR);
+                        $subtype = (isset($fetchgetSubtype['name']) && $fetchgetSubtype['name'] != '') ? ' - '.ucwords(strtolower($fetchgetSubtype['name'])) : '';
+                      }
+                    }
                   ?>
-                  <h4 class="card-title">Ledger Management <?php echo (isset($type)) ? $type : ''; ?></h4>
+                  <h4 class="card-title">Ledger Management <?php echo (isset($type)) ? $type : ''; ?> <?php echo (isset($subtype)) ? $subtype : ''; ?></h4>
                  <hr class="alert-dark">
                  <br>
                   <form action="" method="POST">
@@ -320,16 +330,12 @@
                         </select>
                       </div>
                       <div class="col-12 col-md-4">
-                        <label for="group_id">Group <span class="text-danger">*</span></label>
-                        <select class="js-example-basic-single" name="group_id" id="group" style="width:100%" required> 
-                            <option value="">Select Group</option>
-                            <?php 
-                            $selectQry = "SELECT * FROM `group` WHERE type='".$_GET['type']."'";
-                            $select = mysqli_query($conn,$selectQry);
-                            while($row = mysqli_fetch_assoc($select)){
-                            ?>
-                              <option value="<?php echo $row['id']; ?>" <?php echo (isset($ledgerdata['group_id']) && $ledgerdata['group_id'] == $row['id']) ? 'selected' : ''; ?> ><?php echo $row['name']; ?></option>
-                            <?php } ?>
+                        <label for="under">Under</label>
+                        <select class="form-control" name="under" style="width:100%" required>
+                          <option value="">Select Under Group</option>
+                          <option value="1" <?php echo (isset($ledgerdata['under']) && $ledgerdata['under'] == '1') ? 'selected' : ''; ?>>Trading A/C</option>
+                          <option value="2" <?php echo (isset($ledgerdata['under']) && $ledgerdata['under'] == '2') ? 'selected' : ''; ?>>P & L A/C</option>
+                          <option value="3" <?php echo (isset($ledgerdata['under']) && $ledgerdata['under'] == '3') ? 'selected' : ''; ?>>Balance Sheet</option>
                         </select>
                       </div>
                     </div>
@@ -337,7 +343,8 @@
                     
                     <div class="form-group row" style="margin-top: -25px;">
 
-                      <div class="col-12 col-md-4 m-t-20 customertype-div hidden-field <?php echo (isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [10])) ? 'display-block' : 'display-none'; ?>">
+                      
+                      <div class="col-12 col-md-4 m-t-20 <?php echo (isset($_GET['subtype']) && in_array($_GET['subtype'], [10])) ? 'display-block' : 'display-none'; ?>">
                         <label for="customer_type">Customer Type</label>
                         <select class="form-control" name="customer_type" style="width:100%"> 
                           <option value="Regular" <?php echo (isset($ledgerdata['customer_type']) && $ledgerdata['customer_type'] == 'Regular') ? 'selected' : ''; ?>>Regular</option>
@@ -345,8 +352,10 @@
                           <option value="Composition" <?php echo (isset($ledgerdata['customer_type']) && $ledgerdata['customer_type'] == 'Composition') ? 'selected' : ''; ?>>Composition</option>
                         </select>
                       </div>
+                      
 
-                      <div class="col-12 col-md-4 m-t-20 customerrole-div hidden-field <?php echo (isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [10])) ? 'display-block' : 'display-none'; ?>">
+                      
+                      <div class="col-12 col-md-4 m-t-20 <?php echo (isset($_GET['subtype']) && in_array($_GET['subtype'], [10])) ? 'display-block' : 'display-none'; ?>">
                         <label for="customer_role">Customer Role</label>
                         <select class="form-control" name="customer_role" id="customer_role" style="width:100%">
                           <option value="Enduser" <?php echo (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Enduser') ? 'selected' : ''; ?>>End User</option>
@@ -354,57 +363,76 @@
                         </select>
                       </div>
 
-                      <div class="col-12 col-md-4 m-t-20 crdays-div hidden-field <?php echo (isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [10,14])) ? 'display-block' : 'display-none'; ?> ">
+                      
+                      <div class="col-12 col-md-4 m-t-20 <?php echo (isset($_GET['subtype']) && in_array($_GET['subtype'], [10,14])) ? 'display-block' : 'display-none'; ?>">
                         <label for="crdays">Cr Days</label>
                         <input type="text" class="form-control" name="crdays" placeholder="Cr Days" data-parsley-type="number" value="<?php echo (isset($ledgerdata['crdays'])) ? $ledgerdata['crdays'] : ''; ?>">
                       </div>
+                      
 
-                      <div class="col-12 col-md-4 m-t-20 adharno-div hidden-field <?php echo (isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [10]) && (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller')) ? 'display-block' : 'display-none'; ?> ">
+                      <div class="col-12 col-md-4 m-t-20 adharno-div <?php echo (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller') ? 'display-block' : 'display-none'; ?>">
                         <label for="adharno">Aadhar Card No</label>
                         <input type="text" class="form-control" name="adharno" placeholder="Aadhar Card No" value="<?php echo (isset($ledgerdata['adharno'])) ? $ledgerdata['adharno'] : ''; ?>">
                       </div>
+
                       
-                      <div class="col-12 col-md-4 m-t-20 panno-div hidden-field <?php echo ((isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [14])) || (isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [10]) && (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller'))) ? 'display-block' : 'display-none'; ?> ">
+                      <div class="col-12 col-md-4 m-t-20 panno-div <?php echo (isset($_GET['subtype']) && in_array($_GET['subtype'], [14]) || (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller')) ? 'display-block' : 'display-none'; ?>">
                         <label for="panno">Pan No</label>
                         <input type="text" class="form-control" name="panno" placeholder="Pan No" value="<?php echo (isset($ledgerdata['panno'])) ? $ledgerdata['panno'] : ''; ?>">
                       </div>
                       
-                      <div class="col-12 col-md-4 m-t-20 gstno-div hidden-field <?php echo ((isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [14])) || (isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [10]) && (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller'))) ? 'display-block' : 'display-none'; ?>">
+
+                      
+                      <div class="col-12 col-md-4 m-t-20 gstno-div <?php echo (isset($_GET['subtype']) && in_array($_GET['subtype'], [14]) || (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller')) ? 'display-block' : 'display-none'; ?>">
                         <label for="gstno">GST No</label>
                         <input type="text" class="form-control" name="gstno" placeholder="GST No" value="<?php echo (isset($ledgerdata['gstno'])) ? $ledgerdata['gstno'] : ''; ?>">
                       </div>
+                      
 
-                      <div class="col-12 col-md-4 m-t-20 bankname-div hidden-field <?php echo ((isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [14])) || (isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [10]) && (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller'))) ? 'display-block' : 'display-none'; ?>">
+                      
+                      <div class="col-12 col-md-4 m-t-20 bankname-div <?php echo (isset($_GET['subtype']) && in_array($_GET['subtype'], [14,5,22]) || (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller')) ? 'display-block' : 'display-none'; ?>">
                         <label for="bank_name">Bank Name</label>
                         <input type="text" class="form-control" name="bank_name" placeholder="Bank Name" value="<?php echo (isset($ledgerdata['bank_name'])) ? $ledgerdata['bank_name'] : ''; ?>">
                       </div>
+                      
 
-                      <div class="col-12 col-md-4 m-t-20 bankacno-div hidden-field <?php echo ((isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [14])) || (isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [10]) && (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller'))) ? 'display-block' : 'display-none'; ?>">
+                      
+                      <div class="col-12 col-md-4 m-t-20 bankacno-div <?php echo (isset($_GET['subtype']) && in_array($_GET['subtype'], [14,5,22]) || (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller')) ? 'display-block' : 'display-none'; ?>">
                         <label for="bank_ac_no">Bank A/c No</label>
                         <input type="text" class="form-control" name="bank_ac_no" placeholder="Bank A/c No" value="<?php echo (isset($ledgerdata['bank_ac_no'])) ? $ledgerdata['bank_ac_no'] : ''; ?>">
                       </div>
                       
-                      <div class="col-12 col-md-4 m-t-20 branchname-div hidden-field <?php echo ((isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [14])) || (isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [10]) && (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller'))) ? 'display-block' : 'display-none'; ?>">
+
+                                        
+                      <div class="col-12 col-md-4 m-t-20 branchname-div <?php echo (isset($_GET['subtype']) && in_array($_GET['subtype'], [14,5,22]) || (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller')) ? 'display-block' : 'display-none'; ?>">
                         <label for="branch_name">Branch Name</label>
                         <input type="text" class="form-control" name="branch_name" placeholder="Branch Name" value="<?php echo (isset($ledgerdata['branch_name'])) ? $ledgerdata['branch_name'] : ''; ?>">
                       </div>
+                      
 
-                      <div class="col-12 col-md-4 m-t-20 ifsccode-div hidden-field <?php echo ((isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [14])) || (isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [10]) && (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller'))) ? 'display-block' : 'display-none'; ?>">
+                      
+                      <div class="col-12 col-md-4 m-t-20 ifsccode-div <?php echo (isset($_GET['subtype']) && in_array($_GET['subtype'], [14,5,22]) || (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller')) ? 'display-block' : 'display-none'; ?>">
                         <label for="ifsc_code">IFSC Code</label>
                         <input type="text" class="form-control" name="ifsc_code" placeholder="IFSC Code" value="<?php echo (isset($ledgerdata['ifsc_code'])) ? $ledgerdata['ifsc_code'] : ''; ?>">
                       </div>
+                      
 
-                      <div class="col-12 col-md-4 m-t-20 dlno1-div hidden-field <?php echo ((isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [14])) || (isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [10]) && (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller'))) ? 'display-block' : 'display-none'; ?>">
+                      
+                      <div class="col-12 col-md-4 m-t-20 dlno1-div <?php echo (isset($_GET['subtype']) && in_array($_GET['subtype'], [14]) || (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller')) ? 'display-block' : 'display-none'; ?>">
                         <label for="dl_no1">DL No 1</label>
                         <input type="text" name="dl_no1" class="form-control" placeholder="DL No 1" value="<?php echo (isset($ledgerdata['dl_no1'])) ? $ledgerdata['dl_no1'] : ''; ?>">
                       </div>
+                      
 
-                      <div class="col-12 col-md-4 m-t-20 dlno2-div hidden-field <?php echo ((isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [14])) || (isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [10]) && (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller'))) ? 'display-block' : 'display-none'; ?>">
+                      
+                      <div class="col-12 col-md-4 m-t-20 dlno2-div <?php echo (isset($_GET['subtype']) && in_array($_GET['subtype'], [14]) || (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller')) ? 'display-block' : 'display-none'; ?>">
                         <label for="dl_no2">DL No 2</label>
                         <input type="text" name="dl_no2" class="form-control" placeholder="DL No 2" value="<?php echo (isset($ledgerdata['dl_no2'])) ? $ledgerdata['dl_no2'] : ''; ?>">
                       </div>
+                      
 
-                      <div class="col-12 col-md-4 m-t-20 vendortype-div hidden-field <?php echo (isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [14])) ? 'display-block' : 'display-none'; ?>">
+                      
+                      <div class="col-12 col-md-4 m-t-20 <?php echo (isset($_GET['subtype']) && in_array($_GET['subtype'], [14])) ? 'display-block' : 'display-none'; ?>">
                         <label for="vendor_type">Vender Type</label>
                         <select class="form-control" name="vendor_type" style="width:100%"> 
                           <option value="Regular" <?php echo (isset($ledgerdata['vendor_type']) && $ledgerdata['vendor_type'] == 'Regular') ? 'selected' : ''; ?>>Regular</option>
@@ -413,7 +441,7 @@
                         </select>
                       </div>
 
-                      <div class="col-12 col-md-4 m-t-20 hidden-field resellerprice-div <?php echo (isset($ledgerdata['group_id']) && in_array($ledgerdata['group_id'], [10]) && (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller')) ? 'display-block' : 'display-none'; ?>">
+                      <div class="col-12 col-md-4 m-t-20 resellerprice-div <?php echo (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller') ? 'display-block' : 'display-none'; ?>">
                         <label for="reseller_price_local">Reseller Price</label>
                           <div class="row no-gutters">
                               <div class="col-12 col-md-6">
@@ -427,15 +455,6 @@
 
                     </div>
                     <div class="form-group row">
-                      <div class="col-12 col-md-4">
-                        <label for="under">Under</label>
-                        <select class="form-control" name="under" style="width:100%" required>
-                          <option value="">Select Under Group</option>
-                          <option value="1" <?php echo (isset($ledgerdata['under']) && $ledgerdata['under'] == '1') ? 'selected' : ''; ?>>Trading A/C</option>
-                          <option value="2" <?php echo (isset($ledgerdata['under']) && $ledgerdata['under'] == '2') ? 'selected' : ''; ?>>P & L A/C</option>
-                          <option value="3" <?php echo (isset($ledgerdata['under']) && $ledgerdata['under'] == '3') ? 'selected' : ''; ?>>Balance Sheet</option>
-                        </select>
-                      </div>
 
                       <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Status</label>
@@ -486,15 +505,12 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="ModalLabel">Select Account Type</h5>
-                  <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button> -->
                 </div>
                 <form method="get">
                   <div class="modal-body">
                       <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Select Account:</label>
-                          <select class="js-example-basic-single" name="type" style="width:100%" required>
+                        <label for="recipient-name" class="col-form-label">Select Account</label>
+                          <select class="js-example-basic-single" name="type" style="width:100%" id="type" required>
                               <option value="">Select Account</option>
                               <?php 
                                 $selectQry = "SELECT * FROM `group_master`";
@@ -505,8 +521,14 @@
                               <?php } ?>
                           </select>
                       </div>
+                      <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Select Group</label>
+                          <select class="js-example-basic-single" name="subtype" style="width:100%" id="subtype" required>
+                              <option value="">Select Group</option>
+                          </select>
+                      </div>
                   </div>
-                  <div class="modal-footer row">
+                  <div class="modal-footer">
                       <div class="col-md-12">
                             <a href="view-ledger-management.php" type="button" class="btn btn-light pull-left">Back</a>
                             <button type="submit" class="btn btn-success pull-right">Submit</button>
@@ -583,7 +605,7 @@
 
   <script type="text/javascript">
     <?php 
-    if(!isset($_GET['type']) || !in_array($_GET['type'], [1,2,3,4,5])){
+    if(!isset($_GET['type']) || !in_array($_GET['type'], [1,2,3,4,5]) || !isset($_GET['subtype']) || $_GET['subtype'] == ''){
     ?>
     $(window).on('load',function(){
         $('#ledger-accounttype-model').modal({

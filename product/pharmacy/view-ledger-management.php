@@ -79,7 +79,7 @@
                                   </thead>
                                   <tbody>
                                     <?php
-                                      $qry = "SELECT lgr.id, lgr.account_type,lgr.name,lgr.companyname,lgr.status,lgr.created,grp.name as groupname FROM  `ledger_master` lgr LEFT JOIN `group` grp ON lgr.group_id = grp.id order by lgr.id DESC";
+                                      $qry = "SELECT lgr.id, lgr.account_type, lgr.group_id, lgr.name,lgr.companyname,lgr.status,lgr.created,grp.name as groupname FROM  `ledger_master` lgr LEFT JOIN `group` grp ON lgr.group_id = grp.id order by lgr.id DESC";
                                       $res = mysqli_query($conn, $qry);
                                       if($res){
                                         $i = 1;
@@ -96,7 +96,7 @@
                                             </button>
                                           </td>
                                           <td>
-                                            <a class="btn  btn-behance p-2" href="ledger-management.php?type=<?php echo $row['account_type']; ?>&id=<?php echo $row['id']; ?>" title="edit"><i class="fa fa-pencil mr-0"></i></a>
+                                            <a class="btn  btn-behance p-2" href="ledger-management.php?type=<?php echo $row['account_type']; ?>&subtype=<?php echo $row['group_id']; ?>&id=<?php echo $row['id']; ?>" title="edit"><i class="fa fa-pencil mr-0"></i></a>
                                           </td>
                                       </tr>
                                     <?php
@@ -171,7 +171,7 @@
   <script src="js/data-table.js"></script> 
   
   <script>
-  	 $('.datatable').DataTable();
+     $('.datatable').DataTable();
   </script>
   <!-- End custom js for this page-->
   
