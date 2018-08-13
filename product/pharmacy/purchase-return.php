@@ -159,7 +159,7 @@
                                     <tbody id="product-tbody">
                                       <!-- Row Starts --> 	
                                       <tr class="product-tr">
-                                          <td>O133</td>
+                                          <td>1</td>
                                           <td>
                                           	<input type="text" placeholder="Product" class="tags form-control" required="" name="product[]">
 	                                          <input type="hidden" class="product-id" name="product_id[]">
@@ -240,7 +240,7 @@
                   <div id="html-copy" style="display: none;">
                     <table>
                       <tr class="product-tr">
-                            <td>O133</td>
+                            <td>##SRPRODUCT##</td>
                             <td>
                               <input type="text" placeholder="Product" class="tags form-control" required="" name="product[]">
                               <input type="hidden" class="product-id" name="product_id[]">

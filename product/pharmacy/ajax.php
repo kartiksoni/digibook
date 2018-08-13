@@ -162,6 +162,38 @@ if($_REQUEST['action'] == "getproduct_purchase"){
       exit;
 }
 
+if($_REQUEST['action'] == "getproduct_purchase_return"){
+    $getproduct_self = array();
+    $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']."%'";
+    $result = mysqli_query($conn,$query);
+    $num = mysqli_num_rows($result);
+    
+    while($row = mysqli_fetch_array($result)){
+      if(empty($row['batch_no'])){
+        $batch_no = "-";
+      }else{
+        $batch_no = $row['batch_no'];
+      }
+      $getproduct_self[] = array(
+              'id' => $row['id'],
+              'name' => $row['product_name'],
+              'batch' => $batch_no,
+              'expiry' => $row['ex_date'],
+              'total_qty' =>$row['opening_qty'],
+              'unit' => $row['unit'],
+              'mrp' => $row['mrp'],
+              'generic_name' => $row['generic_name'],
+              'gst' => $row['igst'],
+              'ratio' => $row['ratio'],
+              'igst'=> $row['igst'],
+              'cgst' => $row['cgst'],
+              'sgst' => $row['sgst']
+            );
+    }
+    echo json_encode($getproduct_self);
+      exit;
+}
+
 if($_REQUEST['action'] == "getproduct_self"){
       $getproduct_self = array();
       $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']."%'";

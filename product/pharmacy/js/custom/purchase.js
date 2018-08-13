@@ -71,7 +71,7 @@ $(document).ready(function(){
                 valueField: 'batch'
             }, {
                 name: 'Generic Name',
-                width: '100px',
+                width: '250px',
                 valueField: 'generic_name'
             }, {
                 name: 'MRP',
@@ -87,12 +87,16 @@ $(document).ready(function(){
             select: function (event, ui) {
                 this.value = (ui.item ? ui.item.name : '');
                 //$('#results').text(ui.item ? 'Selected: ' + ui.item.name + ', ' + ui.item.purchase_id + ', ' + ui.item.batch : 'Nothing selected, input was ' + this.value);
-                console.log(ui);
+                
                 $(this).closest('tr').find('.product-id').val(ui.item.id);
                 $(this).closest('tr').find('.qty-value').val(ui.item.ratio);
                 $(this).closest('tr').find('.f_igst').val(ui.item.igst);
                 $(this).closest('tr').find('.f_cgst').val(ui.item.cgst);
                 $(this).closest('tr').find('.f_sgst').val(ui.item.sgst);
+                $(this).closest('tr').find('.mrp').val(ui.item.mrp);
+                $(this).closest('tr').find('.batch').val(ui.item.batch);
+                $(this).closest('tr').find('.expiry').val(ui.item.expiry);
+                $(this).closest('tr').find('.qty').val(ui.item.total_qty);
                 return false;
             },
 
@@ -105,7 +109,7 @@ $(document).ready(function(){
                     type: "POST",
                     data: {
                         query: request.term,
-                        action: "getproduct_purchase"
+                        action: "getproduct_purchase_return"
                     },
                     // The success event handler will display "No match found" if no items are returned.
                     success: function (data) {
@@ -197,7 +201,7 @@ $(document).ready(function(){
             valueField: 'batch'
         }, {
             name: 'Generic Name',
-            width: '100px',
+            width: '250px;',
             valueField: 'generic_name'
         }, {
             name: 'MRP',
@@ -213,12 +217,16 @@ $(document).ready(function(){
         select: function (event, ui) {
             this.value = (ui.item ? ui.item.name : '');
             //$('#results').text(ui.item ? 'Selected: ' + ui.item.name + ', ' + ui.item.purchase_id + ', ' + ui.item.batch : 'Nothing selected, input was ' + this.value);
-            console.log(ui);
+            
             $(this).closest('tr').find('.product-id').val(ui.item.id);
             $(this).closest('tr').find('.qty-value').val(ui.item.ratio);
             $(this).closest('tr').find('.f_igst').val(ui.item.igst);
             $(this).closest('tr').find('.f_cgst').val(ui.item.cgst);
             $(this).closest('tr').find('.f_sgst').val(ui.item.sgst);
+            $(this).closest('tr').find('.mrp').val(ui.item.mrp);
+            $(this).closest('tr').find('.batch').val(ui.item.batch);
+            $(this).closest('tr').find('.expiry').val(ui.item.expiry);
+            $(this).closest('tr').find('.qty').val(ui.item.total_qty);
             return false;
         },
 
@@ -572,7 +580,6 @@ $(document).ready(function(){
         var type = $('input[name=minimal-radio]:checked').val();
         if(type == "per"){
           //var g1_total = 0;
-          console.log(k_total);
           if(k_total !='' && k_total != 0){
             var f_discount = $('.f_discount').val();
             if(f_discount != '' && f_discount != 0){
@@ -588,7 +595,6 @@ $(document).ready(function(){
           //var k_total = 0;
           if(k_total !=='' && k_total !== '0'){
             var f_discount = $('#rs_dis').val();
-            console.log("f_discount"+f_discount);
             if(f_discount !== '' && f_discount !== '0'){
                k_total = (parseFloat(k_total)-parseFloat(f_discount));
             }
@@ -656,7 +662,7 @@ $( document ).ready(function() {
                 url: 'ajax.php',
                 data: {'city_id':city_id, 'action':'getCityByVendor'},
                 dataType: "json",
-                success: function (data) {console.log(data);
+                success: function (data) {
                   if(data.status == true){
                     $('#vendor').children('option:not(:first)').remove();
                     $.each(data.result, function (i, item) {
@@ -688,7 +694,7 @@ $( document ).ready(function() {
               url: 'ajax.php',
               data: {'country_id':country_id, 'action':'getCountryByState'},
               dataType: "json",
-              success: function (data) {console.log(data);
+              success: function (data) {
                 if(data.status == true){
                   $('#state').children('option:not(:first)').remove();
                       $.each(data.result, function (i, item) {
@@ -772,7 +778,7 @@ $( document ).ready(function() {
                   url: 'ajax.php',
                   data: {'action':'getAllVendorCity'},
                   dataType: "json",
-                  success: function (data) {console.log(data);
+                  success: function (data) {
                     if(data.status == true){
                         $('#city').children('option:not(:first)').remove();
                         $.each(data.result, function (i, item) {
@@ -965,7 +971,6 @@ $( document ).ready(function() {
 
         $('#product-tbody').empty();
           var state_code = $('#statecode').val();
-          console.log('state_code - '+state_code);
           $.each(data, function (i, item) {
               tmphtml = html;
               tmphtml = tmphtml.replace("##SRNO##",i+1);
