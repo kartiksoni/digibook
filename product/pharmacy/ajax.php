@@ -15,7 +15,7 @@
       $query4 = "SELECT SUM(qty)as a_total FROM `adjustment` WHERE product_id='".$product_id."' AND batch_no='".$product_batch."' AND type='outward'  GROUP BY qty";
       $result4 = mysqli_query($conn,$query4);
       $row4 = mysqli_fetch_array($result4);
-      $c_total = $row1['opening_qty'] - $row2['c_total'] + $row3['a_total'] - $row4['a_total'];
+      $c_total = ($row1['opening_qty']*$row1['ratio']) - $row2['c_total'] + $row3['a_total'] - $row4['a_total'];
       return $c_total;
     }
 
@@ -334,6 +334,30 @@ if($_REQUEST['action'] == "getproduct_adjustment"){
           'name' => $row['product_name'].'-'.$row['batch_no'],
           'batch' => $row['batch_no']
         );*/
+      }
+      echo json_encode($getproduct_self);
+      exit;
+}
+
+if($_REQUEST['action'] == "getproduct_adjustment_changes"){
+      $getproduct_self = array();
+      $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']."%'";
+      
+      $result = mysqli_query($conn,$query);
+      $num = mysqli_num_rows($result);
+
+      while($row = mysqli_fetch_array($result)){
+        $c_total = total_qty($row['id'],$row['batch_no']);
+        $getproduct_self[] = array(
+              'id' => $row['id'],
+              'name' => $row['product_name'],
+              'mrp' => $row['mrp'],
+              'generic_name' => $row['generic_name'],
+              'mfg_company' => $row['mfg_company'],
+              'batch' => $row['batch_no'],
+              'expiry' => $row['ex_date'],
+              'total_qty' => $c_total
+            );
       }
       echo json_encode($getproduct_self);
       exit;
