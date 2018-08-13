@@ -1,6 +1,25 @@
 <?php include('include/config.php');?>
 <?php 
     /// kartik ///
+    function total_qty($product_id,$product_batch){
+      global $conn;
+      $query1 = "SELECT * FROM `product_master` WHERE id='".$product_id."' AND batch_no='".$product_batch."'";
+      $result1 = mysqli_query($conn,$query1);
+      $row1 = mysqli_fetch_array($result1);
+      $query2 = "SELECT SUM(consumption) As c_total FROM `self_consumption` WHERE product_id ='".$product_id."' AND batch='".$product_batch."' GROUP BY purchase_id";
+      $result2 = mysqli_query($conn,$query2);
+      $row2 = mysqli_fetch_array($result2);
+      $query3 = "SELECT SUM(qty)as a_total FROM `adjustment` WHERE product_id='".$product_id."'AND batch_no='".$product_batch."' AND type='inward'  GROUP BY qty";
+      $result3 = mysqli_query($conn,$query3);
+      $row3 = mysqli_fetch_array($result3);
+      $query4 = "SELECT SUM(qty)as a_total FROM `adjustment` WHERE product_id='".$product_id."' AND batch_no='".$product_batch."' AND type='outward'  GROUP BY qty";
+      $result4 = mysqli_query($conn,$query4);
+      $row4 = mysqli_fetch_array($result4);
+      $c_total = $row1['opening_qty'] - $row2['c_total'] + $row3['a_total'] - $row4['a_total'];
+      return $c_total;
+    }
+
+
     if($_REQUEST['action'] == "ownergetStateDetails"){
       $id = $_REQUEST['id'];
       $query = 'SELECT * FROM own_states WHERE country_id = '.$id.' AND status=1 order by name ';
@@ -169,6 +188,8 @@ if($_REQUEST['action'] == "getproduct_purchase_return"){
     $num = mysqli_num_rows($result);
     
     while($row = mysqli_fetch_array($result)){
+      $c_total = total_qty($row['id'],$row['batch_no']);
+      //echo total_qty($row['id'],$row['batch_no']);exit;
       if(empty($row['batch_no'])){
         $batch_no = "-";
       }else{
@@ -179,7 +200,7 @@ if($_REQUEST['action'] == "getproduct_purchase_return"){
               'name' => $row['product_name'],
               'batch' => $batch_no,
               'expiry' => $row['ex_date'],
-              'total_qty' =>$row['opening_qty'],
+              'total_qty' =>$c_total,
               'unit' => $row['unit'],
               'mrp' => $row['mrp'],
               'generic_name' => $row['generic_name'],
