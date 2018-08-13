@@ -5,7 +5,7 @@ $(document).ready(function(){
   $('body').on('click', '.btn-addmore-product', function() {
         var totalproduct = $('.product-tr').length;//for product length
         var html = $('#html-copy').html();
-        
+        html = html.replace('##SRPRODUCT##',totalproduct);
        /* html = html.replace('##SRNO##',totalproduct);
         html = html.replace('##SRPRODUCT##',totalproduct);
         html = html.replace('##PRODUCTCOUNT##',totalproduct);*/
