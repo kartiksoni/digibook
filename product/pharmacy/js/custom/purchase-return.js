@@ -246,6 +246,65 @@ $(document).ready(function(){
             });
         }
   }); 
+
+  $('body').on('propertychange change keyup focusout past', '.qty', function() {
+      var f_rate = $(this).closest('tr').find('.f_rate').val();
+      var qty = $(this).val();
+       if(f_rate !== ''&& f_rate !== NaN && f_rate !== "undifined"){
+          f_rate = (typeof f_rate !== "undifined" && f_rate !== '' && f_rate !== NaN) ? f_rate : 0;
+          qty = (typeof qty !== "undifined" && qty !== '' && qty !== NaN) ? qty : 0;
+          var total = (parseInt(qty)*parseInt(f_rate));
+       }else{
+        var total ="0";
+       }
+      $(this).closest('tr').find('.ammout').val(total);
+      $(this).closest('tr').find('.f_rate').trigger("change");
+      //$('.ammout').trigger("change");
+  });
+
+  $('body').on('propertychange change keyup focusout past', '.f_rate', function() {
+      var qty = $(this).closest('tr').find('.qty').val();
+      var f_rate = $(this).val();
+       if(qty !== ''&& qty !== NaN && qty !== "undifined"){
+          f_rate = (typeof f_rate !== "undifined" && f_rate !== '' && f_rate !== NaN) ? f_rate : 0;
+          qty = (typeof qty !== "undifined" && qty !== '' && qty !== NaN) ? qty : 0;
+          var total = (parseInt(qty)*parseInt(f_rate));
+       }else{
+        var total ="0";
+       }
+       console.log(total);
+      $(this).closest('tr').find('.ammout').val(parseFloat(total).toFixed(2));
+      $('.ammout').trigger("change");
+  });
+
+  $('body').on('propertychange change keyup focusout past', '.discount', function() {
+      var totalamount = 0;
+      var discount = $(this).val();
+      var rate = $(this).closest('tr').find('.rate').val();
+      if(rate !== ''&& rate !== NaN && rate !== "undifined"){
+        rate = (typeof rate !== "undifined" && rate !== '' && rate !== NaN) ? rate : 0;
+        discount = (typeof discount !== "undifined" && discount !== '' && discount !== NaN) ? discount : 0;
+        var total = (parseInt(rate)-parseInt(discount));
+      }else{
+        var total = "0";
+      }
+      $(this).closest('tr').find('.f_rate').val(total);
+      $(this).closest('tr').find('.f_rate').trigger("change");
+      //$('.ammout').trigger("change");
+  });
+
+  $('body').on('propertychange change keyup focusout past', '.rate', function() {
+      var totalamount = 0;
+      var rate = $(this).val();
+      var discount = $(this).closest('tr').find('.discount').val();
+      rate = (typeof rate !== "undifined" && rate !== '' && rate !== NaN) ? rate : 0;
+      discount = (typeof discount !== "undifined" && discount !== '' && discount !== NaN) ? discount : 0;
+      var total = (parseInt(rate)-parseInt(discount));
+      $(this).closest('tr').find('.f_rate').val(total);
+      $(this).closest('tr').find('.f_rate').trigger("change");
+      //$('.ammout').trigger("change");
+    });
+
 });
 
     
