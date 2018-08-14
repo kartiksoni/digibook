@@ -56,161 +56,164 @@
                 <div class="card-body">
                 
                   <!-- Main Catagory -->
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="purchase-top-btns">
-                            <a href="purchase.php" class="btn btn-dark active">Purchase Bill</a>
-                            <a href="purchase-return.php" class="btn btn-dark">Purchase Return</a>
-                            <a href="purchase-return-list.php" class="btn btn-dark">Purchase Return List</a>
-                            <a href="#" class="btn btn-dark btn-fw">Cancel List</a>
-                            <a href="purchase-history.php" class="btn btn-dark btn-fw">History</a>
-                            <a href="#" class="btn btn-dark btn-fw">Settings</a>
-                        </div>   
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="purchase-top-btns">
+                          <a href="purchase.php" class="btn btn-dark active">Purchase Bill</a>
+                          <a href="purchase-return.php" class="btn btn-dark">Purchase Return</a>
+                          <a href="purchase-return-list.php" class="btn btn-dark">Purchase Return List</a>
+                          <a href="#" class="btn btn-dark btn-fw">Cancel List</a>
+                          <a href="purchase-history.php" class="btn btn-dark btn-fw">History</a>
+                          <a href="#" class="btn btn-dark btn-fw">Settings</a>
+                      </div>   
                     </div> 
-                    </div>
-                    <hr>
-                    
-                
-                
-                 <br>
+                  </div>
+
+                  <hr/>
+                  <br/>
                   <form class="forms-sample">
                   
-                  <div class="form-group row">
-                  
+                    <div class="form-group row">
+                    
                       <div class="col-12 col-md-3">
-                       <label for="exampleInputName1">Vendor Name</label>
-                            <select class="js-example-basic-single" style="width:100%"> 
-                                <option value="Regular">Alaska</option>
-                                <option value="Unregistered">Alaska</option>
-                            </select>
+                        <label for="exampleInputName1">Vendor Name</label>
+                        <select class="js-example-basic-single" style="width:100%" name="vendor_id"> 
+                            <option value="">Select Vendor</option>
+                            <?php 
+                              $vendorQuery = "SELECT id, name FROM ledger_master WHERE group_id = 14 AND status = 1 ORDER BY name"; 
+                              $vendorRes = mysqli_query($conn, $vendorQuery);
+                              if($vendorRes && mysqli_num_rows($vendorRes)){
+                                while ($vendorRow = mysqli_fetch_array($vendorRes)) {
+                            ?>
+                              <option value="<?php echo $vendorRow['id']; ?>"><?php echo $vendorRow['name']; ?></option>
+                            <?php } } ?>
+                        </select>
                       </div>
-                      
+                        
                       <div class="col-12 col-md-2">
-                       <label for="exampleInputName1">Invoice Number</label>
-                       <input type="text" class="form-control" id="exampleInputName1" placeholder="Invoice Number">
+                       <label for="invoice_no">Invoice Number</label>
+                       <input type="text" name="invoice_no" class="form-control" placeholder="Invoice Number">
                       </div>
-                      
+                        
                       <div class="col-12 col-md-3">
-                       <label for="exampleInputName1">Product</label>
-                       <input type="text" class="form-control" id="exampleInputName1" placeholder="Product">
+                       <label for="product">Product</label>
+                       <input type="text" class="form-control" id="product" placeholder="Product" id="product">
                       </div>
-                      
+                        
                       <div class="col-12 col-md-2">
-                       <label for="exampleInputName1">GR.No</label>
-                       <input type="text" class="form-control" id="exampleInputName1" placeholder="GR.No">
+                       <label for="gr_no">GR.No</label>
+                       <input type="text" class="form-control" id="gr_no" name="gr_no" placeholder="GR.No">
                       </div>
-                      
+                        
                       <div class="col-12 col-md-2">
-                       <label for="exampleInputName1">Returned Date</label>
-                         <div id="datepicker-popup" class="input-group date datepicker">
-                            <input type="text" class="form-control border" >
+                       <label for="return_date">Returned Date</label>
+                         <div class="input-group date datepicker">
+                            <input type="text" class="form-control border" name="return_date">
                             <span class="input-group-addon input-group-append border-left">
                               <span class="mdi mdi-calendar input-group-text"></span>
                             </span>
                           </div>
                       </div>
-                      
+                        
                       <div class="col-12 col-md-3">
-                       <label for="exampleInputName1">Batch</label>
-                       <input type="text" class="form-control" id="exampleInputName1" placeholder="Batch Number">
+                       <label for="batch">Batch</label>
+                       <input type="text" class="form-control" id="batch" name="batch" placeholder="Batch Number">
                       </div>
-                      
+                        
                       <div class="col-12 col-md-3">
                       	<button type="submit" class="btn btn-success mt-30">Submit</button>
                       </div>
-                      
-                     
-                    
-                  </div> 
-                  
-                 
-                   
-                   
+
+                    </div> 
                   </form>
                 </div>
               </div>
             </div>
             
-           
-            
              <!-- Table ------------------------------------------------------------------------------------------------------>
             
             <div class="col-md-12 grid-margin stretch-card">
-              	<div class="card">
+            	<div class="card">
                 <div class="card-body">
-                
-                	<!-- TABLE Filters btn -->
-                   
-                    
-                    <!-- TABLE STARTS -->
-                    <div class="col mt-3">
-                    	 <div class="row">
-                            <div class="col-12">
-                              <table id="order-listing1" class="table">
-                                <thead>
-                                  <tr>
-                                      <th>Return No</th>
-                                      <th>Return Date</th>
-                                      <th>Invoice/GR</th>
-                                      <th>Invoice Date</th>
-                                      <th>Vendor</th>
-                                      <th>Mobile</th>
-                                      <th>Reason</th>
-                                      <th>Payment Status</th>
-                                      <th>Payment Remarks</th>
-                                      <th>Action</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <!-- Row Starts --> 	
-                                  <tr>
-                                      <td>O133</td>
-                                      <td> 14/07/2018</td>
-                                      <td>567 / O133</td>
-                                      <td>14/07/2018</td>
-                                      <td>Agarwal Distributors</td>
-                                      <td>-</td>
-                                      <td>Damage</td>
-                                      <td>-</td>
-                                      <td>-</td>
-                                      <td>
-                                      	<a href="#" class="btn  btn-behance p-2"><i class="fa fa-print mr-0"></i></a>
-                                        <a href="#" class="btn  btn-behance p-2"><i class="fa fa-pencil mr-0"></i></a>
-                                        <a href="#" class="btn  btn-danger p-2">Cancel</a>
-                                        <a href="#" class="btn btn-primary  p-2" data-toggle="modal" data-target="#exampleModal-4" data-whatever="@mdo">Apply Credit Note</a>
-                                      </td>
-                                  </tr><!-- End Row --> 	
-                                  
-                                
-                                  
-                                 
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
+              
+              	<!-- TABLE Filters btn -->
+                  
+                  <!-- TABLE STARTS -->
+                  <div class="col mt-3">
+                  	<div class="row">
+                      <div class="col-12">
+                        <table id="order-listing1" class="table">
+                          <thead>
+                            <tr>
+                                <th>Return No</th>
+                                <th>Return Date</th>
+                                <!-- <th>Invoice/GR</th> -->
+                                <!-- <th>Invoice Date</th> -->
+                                <th>Vendor</th>
+                                <th>Mobile</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th>Payment Status</th>
+                                <th>Payment Remarks</th>
+                                <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <!-- Row Starts -->
+                            <?php 
+                              $getAllDataQuery = "SELECT pr.id, pr.debit_note_date, pr.debit_note_no, pr.remarks, pr.debit_note_settle, lgr.name as vendor_name, lgr.mobile FROM purchase_return pr INNER JOIN ledger_master lgr ON pr.vendor_id = lgr.id ORDER BY pr.id DESC";
+                              $getAllDataRes = mysqli_query($conn, $getAllDataQuery );
+                            ?>
+
+                            <?php if($getAllDataRes && mysqli_num_rows($getAllDataRes) > 0){ ?>
+                              <?php while ($row = mysqli_fetch_array($getAllDataRes)) { ?>
+                                <tr>
+                                    <td><?php echo (isset($row['debit_note_no'])) ? $row['debit_note_no'] : ''; ?></td>
+                                    <td>
+                                      <?php echo (isset($row['debit_note_date']) && $row['debit_note_date'] != '') ? date('d/m/Y',strtotime($row['debit_note_date'])) : ''; ?>
+                                    </td>
+                                    <td><?php echo (isset($row['vendor_name'])) ? $row['vendor_name'] : ''; ?></td>
+                                    <td><?php echo (isset($row['mobile'])) ? $row['mobile'] : ''; ?></td>
+                                    <td><?php echo (isset($row['remarks'])) ? $row['remarks'] : ''; ?></td>
+                                    <td>
+                                      <?php 
+                                        if(isset($row['debit_note_settle']) && $row['debit_note_settle'] == 1){
+                                          echo '<div class="badge badge-outline-success">Done</div>';
+                                        }else{
+                                          echo '<div class="badge badge-outline-danger">Pending</div>';
+                                        } 
+                                      ?>
+                                    </td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>
+                                    	<a href="purchase-return-print.php?id=<?php echo $row['id']; ?>" class="btn  btn-behance p-2"><i class="fa fa-print mr-0"></i></a>
+                                      <a href="purchase-return.php?id=<?php echo $row['id']; ?>" class="btn  btn-behance p-2"><i class="fa fa-pencil mr-0"></i></a>
+                                      <a href="#" class="btn  btn-danger p-2">Cancel</a>
+                                      <a href="#" class="btn btn-primary p-2" data-id="<?php echo $row['id']; ?>" data-toggle="modal" data-target="#apply-creditnote-model" data-whatever="@mdo">Apply Credit Note</a>
+                                    </td>
+                                </tr><!-- End Row -->
+                              <?php } ?> 	
+                            <?php } ?>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                    
-        
-                
+                  </div>
+              
                 </div>
-                </div>
-                </div>  
-            
-            
-            
-            
-      
-            
+              </div>
+            </div> 
+
           </div>
         </div>
         <!-- content-wrapper ends -->
         
         <!-- partial:partials/_footer.php -->
-        <?php include "include/footer.php" ?>
+        <?php include "include/footer.php";?>
         <!-- partial -->
-        
-        
-        
+
+        <?php include "popup/apply-creditnote-model.php";?>
     
       </div>
       <!-- main-panel ends -->
@@ -258,9 +261,11 @@
   
   <!-- Datepicker Initialise-->
  <script>
-    $('#datepicker-popup1').datepicker({
+    $('.datepicker').datepicker({
       enableOnReadonly: true,
       todayHighlight: true,
+      dateFormat: 'dd/mm/yyyy',
+      autoclose: true
     });
  </script>
 
@@ -271,6 +276,8 @@
   <script>
   	 $('#order-listing2').DataTable();
   </script>
+
+  <script src="js/parsley.min.js"></script>
   <script type="text/javascript">
     $('form').parsley();
   </script>
