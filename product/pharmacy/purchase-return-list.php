@@ -71,7 +71,7 @@
 
                   <hr/>
                   <br/>
-                  <form class="forms-sample">
+                  <form class="forms-sample" method="POST">
                   
                     <div class="form-group row">
                     
@@ -85,7 +85,7 @@
                               if($vendorRes && mysqli_num_rows($vendorRes)){
                                 while ($vendorRow = mysqli_fetch_array($vendorRes)) {
                             ?>
-                              <option value="<?php echo $vendorRow['id']; ?>"><?php echo $vendorRow['name']; ?></option>
+                              <option value="<?php echo $vendorRow['id']; ?>" <?php echo (isset($_POST['vendor_id']) && $_POST['vendor_id'] == $vendorRow['id']) ? 'selected' : ''; ?>><?php echo $vendorRow['name']; ?></option>
                             <?php } } ?>
                         </select>
                       </div>
@@ -108,7 +108,7 @@
                       <div class="col-12 col-md-2">
                        <label for="return_date">Returned Date</label>
                          <div class="input-group date datepicker">
-                            <input type="text" class="form-control border" name="return_date">
+                            <input type="text" class="form-control border datepicker" name="return_date" value="<?php echo (isset($_POST['return_date']) && $_POST['return_date'] != '') ? $_POST['return_date'] : ''; ?>" autocomplete="off">
                             <span class="input-group-addon input-group-append border-left">
                               <span class="mdi mdi-calendar input-group-text"></span>
                             </span>
@@ -161,7 +161,22 @@
                           <tbody>
                             <!-- Row Starts -->
                             <?php 
-                              $getAllDataQuery = "SELECT pr.id, pr.debit_note_date, pr.debit_note_no, pr.remarks, pr.debit_note_settle, lgr.name as vendor_name, lgr.mobile FROM purchase_return pr INNER JOIN ledger_master lgr ON pr.vendor_id = lgr.id ORDER BY pr.id DESC";
+                              $getAllDataQuery = "SELECT pr.id, pr.debit_note_date, pr.debit_note_no, pr.remarks, pr.debit_note_settle, lgr.name as vendor_name, lgr.mobile FROM purchase_return pr INNER JOIN ledger_master lgr ON pr.vendor_id = lgr.id ";
+
+                              $where = array();
+
+                                if(isset($_POST['vendor_id']) && $_POST['vendor_id'] != ''){
+                                  $where[] .= "lgr.id=".$_POST['vendor_id'];
+                                }
+                                if(isset($_POST['return_date']) && $_POST['return_date'] != ''){
+                                  $where[] .= "pr.debit_note_date='".date('Y-m-d',strtotime(str_replace('/','-',$_POST['return_date'])))."'";
+                                  
+                                }
+                              if(!empty($where)){
+                                $where = implode(" AND ",$where);
+                                $getAllDataQuery .="WHERE ".$where;
+                              }
+                              $getAllDataQuery .= " ORDER BY pr.id DESC";
                               $getAllDataRes = mysqli_query($conn, $getAllDataQuery );
                             ?>
 
@@ -264,7 +279,7 @@
     $('.datepicker').datepicker({
       enableOnReadonly: true,
       todayHighlight: true,
-      dateFormat: 'dd/mm/yyyy',
+      format: 'dd/mm/yyyy',
       autoclose: true
     });
  </script>
