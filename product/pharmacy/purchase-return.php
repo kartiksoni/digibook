@@ -62,6 +62,11 @@ if(isset($_POST['submit'])){
             $product_id = $_POST["product_id"][$i];
         }
 
+        $purchase_id="";
+        if(isset($_POST["purchase_id"][$i])){
+          $purchase_id = $_POST["purchase_id"][$i];
+        }
+
         $mrp = "";
         if(isset($_POST["mrp"][$i])){
             $mrp = $_POST["mrp"][$i];
@@ -112,7 +117,7 @@ if(isset($_POST['submit'])){
             $ammout = $_POST["ammout"][$i];
         }
 
-        $ins_product = "INSERT INTO `purchase_return_detail` (`pr_id`, `product_id`, `mrp`, `mfg_co`, `batchno`, `expiry`,`qty`, `free_qty`, `rate`, `discount`, `final_rate`,`amount`,`created`,`createdby`) VALUES ('".$last_id."','".$product_id."',  '".$mrp."', '".$mfg_no."', '".$batch_no."', '".$expiry."','".$qty."','".$free_qty."', '".$rate."', '".$discount."', '".$f_rate."', '".$ammout."','".date('Y-m-d H:i:s')."','".$user_id."')";
+        $ins_product = "INSERT INTO `purchase_return_detail` (`pr_id`, `product_id`,`purchase_id`, `mrp`, `mfg_co`, `batchno`, `expiry`,`qty`, `free_qty`, `rate`, `discount`, `final_rate`,`amount`,`created`,`createdby`) VALUES ('".$last_id."','".$product_id."', '".$purchase_id."', '".$mrp."', '".$mfg_no."', '".$batch_no."', '".$expiry."','".$qty."','".$free_qty."', '".$rate."', '".$discount."', '".$f_rate."', '".$ammout."','".date('Y-m-d H:i:s')."','".$user_id."')";
         
        
 
@@ -303,12 +308,13 @@ if(isset($_POST['submit'])){
                                           <td>
                                           	<input type="text" placeholder="Product" class="tags form-control" required="" name="product[]">
 	                                          <input type="hidden" class="product-id" name="product_id[]">
+                                             <input type="hidden" value="" class="purchase-id" name="purchase_id[]">
                                             <small class="text-danger empty-message0"></small>
                                           </td>
                                             <td><input name="mrp[]" type="text" class="form-control mrp" id="mrp" placeholder="MRP"></td>
                                             <td><input name="mfg_no[]" type="text" class="form-control mfg_no" id="mfg_no" placeholder="MFG. Co."></td>
                                             <td><input name="batch_no[]" type="text" class="form-control batch_no" id="batch_no" placeholder="Batch No."></td>
-                                            <td><input name="expiry[]" type="text" class="form-control expiry" id="expiry" placeholder="Expiry"></td>
+                                            <td><input name="expiry[]" type="text" class="form-control expiry datepicker-ex" id="expiry" placeholder="Expiry"></td>
                                             <td><input name="qty[]" type="text" class="form-control qty" id="qty" placeholder="Qty."></td>
                                             <td><input name="free_qty[]" type="text" class="form-control free_qty" id="free_qty" placeholder="Free Qty"></td>
                                             <td><input name="rate[]" type="text" class="form-control rate" id="rate" placeholder="Rate"></td>
@@ -330,6 +336,7 @@ if(isset($_POST['submit'])){
                                             ?>
                                             <input type="text" placeholder="Product" value="<?php echo $rowp['product_name']; ?>" class="tags form-control" required="" name="product[]">
                                             <input type="hidden" value="<?php echo $value['product_id']; ?>" class="product-id" name="product_id[]">
+                                            <input type="hidden" value="<?php echo $value['purchase_id']; ?>" class="purchase-id" name="purchase_id[]">
                                             <small class="text-danger empty-message0"></small>
                                           </td>
                                             <td><input name="mrp[]" value="<?php echo $value['mrp']; ?>" type="text" class="form-control mrp" id="mrp" placeholder="MRP"></td>
@@ -342,7 +349,7 @@ if(isset($_POST['submit'])){
                                             <td><input name="discount[]" type="text" value="<?php echo $value['discount']; ?>" class="form-control discount" id="discount" placeholder="Discount"></td>
                                             <td><input type="text" name="f_rate[]" value="<?php echo $value['final_rate']; ?>" class="form-control f_rate priceOnly" id="f_rate" placeholder="Rate" autocomplete="off"></td>
                                             <td><input name="ammout[]" type="text" value="<?php echo $value['amount']; ?>" class="form-control ammout" readonly="" id="ammout" placeholder="Ammount"></td>
-                                            <td><a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a><a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product remove_last" style="display: none;"><i class="fa fa-close mr-0 ml-0"></i></a></td>
+                                            <td><a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a><a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product remove_last"><i class="fa fa-close mr-0 ml-0"></i></a></td>
                                         </tr><!-- End Row -->
                                         <?php
                                       }
@@ -414,6 +421,7 @@ if(isset($_POST['submit'])){
                             <td>
                               <input type="text" placeholder="Product" class="tags form-control" required="" name="product[]">
                               <input type="hidden" class="product-id" name="product_id[]">
+                              <input type="hidden" value="  " class="purchase-id" name="purchase_id[]">
                               <small class="text-danger empty-message##PRODUCTCOUNT##"></small>
                             </td>
                               <td><input name="mrp[]" type="text" class="form-control mrp" id="mrp" placeholder="MRP"></td>

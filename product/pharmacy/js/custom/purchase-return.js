@@ -88,6 +88,10 @@ $(document).ready(function(){
                     $(this).closest('tr').find('.f_igst').val(ui.item.igst);
                     $(this).closest('tr').find('.f_cgst').val(ui.item.cgst);
                     $(this).closest('tr').find('.f_sgst').val(ui.item.sgst);
+                    $(this).closest('tr').find('.mrp').val(ui.item.mrp);
+                    $(this).closest('tr').find('.mfg_no').val(ui.item.mfg_company);
+                    $(this).closest('tr').find('.batch_no').val(ui.item.batch);
+                    $(this).closest('tr').find('.expiry').val(ui.item.expiry);
                     return false;
                 },
 
@@ -212,6 +216,11 @@ $(document).ready(function(){
             $(this).closest('tr').find('.f_igst').val(ui.item.igst);
             $(this).closest('tr').find('.f_cgst').val(ui.item.cgst);
             $(this).closest('tr').find('.f_sgst').val(ui.item.sgst);
+            $(this).closest('tr').find('.purchase-id').val(ui.item.sgst);
+            $(this).closest('tr').find('.mrp').val(ui.item.mrp);
+            $(this).closest('tr').find('.mfg_no').val(ui.item.mfg_company);
+            $(this).closest('tr').find('.batch_no').val(ui.item.batch);
+            $(this).closest('tr').find('.expiry').val(ui.item.expiry);
             return false;
         },
 
