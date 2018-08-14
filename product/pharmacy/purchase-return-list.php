@@ -49,6 +49,7 @@
       
         <div class="content-wrapper">
           <?php include('include/flash.php'); ?>
+          <span id="errormsg"></span>
           <div class="row">
            <!-- Bank Management Form -->
             <div class="col-md-12 grid-margin stretch-card">
@@ -100,9 +101,14 @@
                        <input type="text" class="form-control" id="product" placeholder="Product" id="product">
                       </div>
                         
-                      <div class="col-12 col-md-2">
+                      <!-- <div class="col-12 col-md-2">
                        <label for="gr_no">GR.No</label>
                        <input type="text" class="form-control" id="gr_no" name="gr_no" placeholder="GR.No">
+                      </div> -->
+
+                      <div class="col-12 col-md-2">
+                       <label for="batch">Batch</label>
+                       <input type="text" class="form-control" id="batch" name="batch" placeholder="Batch Number">
                       </div>
                         
                       <div class="col-12 col-md-2">
@@ -115,13 +121,8 @@
                           </div>
                       </div>
                         
-                      <div class="col-12 col-md-3">
-                       <label for="batch">Batch</label>
-                       <input type="text" class="form-control" id="batch" name="batch" placeholder="Batch Number">
-                      </div>
-                        
-                      <div class="col-12 col-md-3">
-                      	<button type="submit" class="btn btn-success mt-30">Submit</button>
+                      <div class="col-12 col-md-12">
+                        <button type="submit" class="btn btn-success mt-30 pull-right">Submit</button>
                       </div>
 
                     </div> 
@@ -133,16 +134,16 @@
              <!-- Table ------------------------------------------------------------------------------------------------------>
             
             <div class="col-md-12 grid-margin stretch-card">
-            	<div class="card">
+              <div class="card">
                 <div class="card-body">
               
-              	<!-- TABLE Filters btn -->
+                <!-- TABLE Filters btn -->
                   
                   <!-- TABLE STARTS -->
                   <div class="col mt-3">
-                  	<div class="row">
+                    <div class="row">
                       <div class="col-12">
-                        <table id="order-listing1" class="table">
+                        <table class="table datatable">
                           <thead>
                             <tr>
                                 <th>Return No</th>
@@ -182,7 +183,7 @@
 
                             <?php if($getAllDataRes && mysqli_num_rows($getAllDataRes) > 0){ ?>
                               <?php while ($row = mysqli_fetch_array($getAllDataRes)) { ?>
-                                <tr>
+                                <tr id="tr-<?php echo $row['id']; ?>">
                                     <td><?php echo (isset($row['debit_note_no'])) ? $row['debit_note_no'] : ''; ?></td>
                                     <td>
                                       <?php echo (isset($row['debit_note_date']) && $row['debit_note_date'] != '') ? date('d/m/Y',strtotime($row['debit_note_date'])) : ''; ?>
@@ -191,24 +192,28 @@
                                     <td><?php echo (isset($row['mobile'])) ? $row['mobile'] : ''; ?></td>
                                     <td><?php echo (isset($row['remarks'])) ? $row['remarks'] : ''; ?></td>
                                     <td>
-                                      <?php 
-                                        if(isset($row['debit_note_settle']) && $row['debit_note_settle'] == 1){
-                                          echo '<div class="badge badge-outline-success">Done</div>';
-                                        }else{
-                                          echo '<div class="badge badge-outline-danger">Pending</div>';
-                                        } 
-                                      ?>
+                                      <span class="status">
+                                        <?php 
+                                          if(isset($row['debit_note_settle']) && $row['debit_note_settle'] == 0){
+                                            echo '<div class="badge badge-outline-warning">On Hold</div>';
+                                          }elseif(isset($row['debit_note_settle']) && $row['debit_note_settle'] == 1){
+                                            echo '<div class="badge badge-outline-success">Effect In Party Ledger</div>';
+                                          }else{
+                                            echo '<div class="badge badge-outline-danger">Close</div>';
+                                          } 
+                                        ?>
+                                      </span>
                                     </td>
                                     <td>-</td>
                                     <td>-</td>
                                     <td>
-                                    	<a href="purchase-return-print.php?id=<?php echo $row['id']; ?>" class="btn  btn-behance p-2"><i class="fa fa-print mr-0"></i></a>
+                                      <a href="purchase-return-print.php?id=<?php echo $row['id']; ?>" class="btn  btn-behance p-2"><i class="fa fa-print mr-0"></i></a>
                                       <a href="purchase-return.php?id=<?php echo $row['id']; ?>" class="btn  btn-behance p-2"><i class="fa fa-pencil mr-0"></i></a>
                                       <a href="#" class="btn  btn-danger p-2">Cancel</a>
-                                      <a href="#" class="btn btn-primary p-2" data-id="<?php echo $row['id']; ?>" data-toggle="modal" data-target="#apply-creditnote-model" data-whatever="@mdo">Apply Credit Note</a>
+                                      <button class="btn btn-primary p-2 btn-applycr" data-id="<?php echo $row['id']; ?>">Apply Credit Note</button>
                                     </td>
                                 </tr><!-- End Row -->
-                              <?php } ?> 	
+                              <?php } ?>  
                             <?php } ?>
                           </tbody>
                         </table>
@@ -289,14 +294,14 @@
   <script src="js/data-table.js"></script> 
   
   <script>
-  	 $('#order-listing2').DataTable();
+     $('.datatable').DataTable();
   </script>
 
   <script src="js/parsley.min.js"></script>
   <script type="text/javascript">
     $('form').parsley();
   </script>
-  
+  <script src="js/custom/purchase-return-list.js"></script>
   <!-- End custom js for this page-->
 </body>
 

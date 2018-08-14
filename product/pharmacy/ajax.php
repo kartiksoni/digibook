@@ -128,7 +128,8 @@ if($_REQUEST['action'] == "getproduct_purchase"){
               'name' => $row['product_name'],
               'purchase_id' => $row1['id'],
               'batch' => $row1['batch'],
-              'expiry' => $row1['expiry'],
+              'mfg_company'=> $row['mfg_company'],
+              'expiry' => date("d/m/Y",strtotime(str_replace("-","/",$row1['expiry']))),
               'total_qty' => $c_total,
               'unit' => $row['unit'],
               'mrp' => $row['give_mrp'],
@@ -1182,6 +1183,83 @@ if($_REQUEST['action'] == "getproduct_adjustment_changes"){
         }
       }else{
           $result = array('status' => false, 'message' => 'Vendor ID Not Found!', 'result' => '');
+      }
+      echo json_encode($result);
+      exit;
+    }
+    
+    // 13-08-2018
+    if($_REQUEST['action'] == "getGroupByAccountType"){
+      $type = (isset($_REQUEST['type'])) ? $_REQUEST['type'] : '';
+      if($type != ''){
+        $query = "SELECT id, name FROM `group` WHERE type='".$type."'";
+        $res = mysqli_query($conn, $query);
+        if($res && mysqli_num_rows($res) > 0){
+          $data = [];
+          while ($row = mysqli_fetch_array($res)) {
+            $arr['id'] = (isset($row['id'])) ? $row['id'] : '';
+            $arr['name'] = (isset($row['name'])) ? $row['name'] : '';
+            array_push($data, $arr);
+          }
+          $result = array('status' => true, 'message' => 'Success Found!', 'result' => $data);
+        }else{
+          $result = array('status' => false, 'message' => 'Not Found!', 'result' => '');
+        }
+      }else{
+        $result = array('status' => false, 'message' => 'Not Found!', 'result' => '');
+      }
+      echo json_encode($result);
+      exit;
+    }
+    
+    // 14-08-2018
+    if($_REQUEST['action'] == "getCreditNoteNo"){
+      $cr_no = 'CR-'.sprintf("%05d", 1);
+        $query = "SELECT cr_no FROM credit_note ORDER BY id DESC LIMIT 1";
+        $res = mysqli_query($conn, $query);
+        if($res){
+          if(mysqli_num_rows($res) > 0){
+            $row = mysqli_fetch_array($res);
+            if(isset($row['cr_no']) && $row['cr_no'] != ''){
+              $crarr = explode('-',$row['cr_no']);
+              $cr_no = $crarr[1];
+              $cr_no = $cr_no + 1;
+              $cr_no = sprintf("%05d", $cr_no);
+              $cr_no = 'CR-'.$cr_no;
+            }
+          }
+        }
+      $result = array('status' => true, 'message' => 'success', 'result' => $cr_no);
+      echo json_encode($result);
+      exit;
+    }
+
+    // 14-08-2018
+    if($_REQUEST['action'] == "addCreditNote"){
+      $data = [];
+      if(isset($_REQUEST['data'])){
+        parse_str($_REQUEST['data'], $data);
+      }
+      
+      if(!empty($data)){
+        $purchase_id = (isset($data['purchase_return_id'])) ? $data['purchase_return_id'] : '';
+        $cr_no = (isset($data['cr_no'])) ? $data['cr_no'] : '';
+        $cr_date = (isset($data['cr_date']) && $data['cr_date'] != '') ? date('Y-m-d',strtotime(str_replace('/','-',$data['cr_date']))) : '';
+        $remarks = (isset($data['remarks'])) ? $data['remarks'] : '';
+        $type = (isset($data['type'])) ? $data['type'] : '';
+        $amount = (isset($data['amount']) && $data['amount'] != '') ? $data['amount'] : 0;
+
+        $query = "INSERT INTO credit_note SET pr_id = '".$purchase_id."', cr_no = '".$cr_no."', cr_date = '".$cr_date."', type = '".$type."', amount ='".$amount."', remarks = '".$remarks."', created = '".date('Y-m-d H:i:s')."', createdby = '".$_SESSION['auth']['id']."'";
+        $res = mysqli_query($conn, $query);
+        if($res){
+          $updateStatus = "UPDATE purchase_return SET debit_note_settle = 2 WHERE id = '".$purchase_id."'";
+          mysqli_query($conn, $updateStatus);
+          $result = array('status' => true, 'message' => 'Credit Note Apply Successfully.', 'result' => '');    
+        }else{
+          $result = array('status' => false, 'message' => 'Credit Note Apply Fail! Try Again.', 'result' => '');    
+        }
+      }else{
+        $result = array('status' => false, 'message' => 'All Field is required!', 'result' => '');  
       }
       echo json_encode($result);
       exit;
