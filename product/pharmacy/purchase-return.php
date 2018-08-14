@@ -1,8 +1,23 @@
 <?php include('include/usertypecheck.php');
+if(isset($_GET['id'])){
+  $id = $_GET['id'];
+  $purchaseQry = "SELECT * FROM `purchase_return` WHERE id='".$id."' ORDER BY id DESC LIMIT 1";
+  $purchase = mysqli_query($conn,$purchaseQry);
+  $purchase_data = mysqli_fetch_assoc($purchase);
+  
+
+  $purchase_details_data = array();
+  $purchase_detailsQry = "SELECT * FROM `purchase_return_detail` WHERE pr_id='".$id."'";
+  $purchase_d = mysqli_query($conn,$purchase_detailsQry);
+  while($rowe = mysqli_fetch_assoc($purchase_d)){
+      $purchase_details_data[] = $rowe;
+  }
+}
 if(isset($_POST['submit'])){
+  
  
   $user_id = $_SESSION['auth']['id'];
-  $debit_date = date('Y-m-d',strtotime($_POST['debit_date']));
+  $debit_date = date('Y-m-d',strtotime(str_replace('/','-',$_POST["debit_date"])));
   $debit_note_number = $_POST['debit_note_number'];
   $vendor_id = $_POST['vendor_id'];
   $remarks = $_POST['remarks'];
@@ -23,6 +38,7 @@ if(isset($_POST['submit'])){
     $insert .= ",created ='".date('Y-m-d H:i:s')."',createdby = '".$user_id."'";
   }
 
+
   $result = mysqli_query($conn,$insert);
 
   $last_id = mysqli_insert_id($conn);
@@ -30,7 +46,7 @@ if(isset($_POST['submit'])){
   if($result){
     if(isset($_GET['id']) && $_GET['id'] != ''){
       $last_id = $_GET['id'];
-      $delete = "DELETE FROM purchase_details WHERE purchase_id='".$last_id."'";
+      $delete = "DELETE FROM purchase_return_detail WHERE pr_id='".$last_id."'";
       mysqli_query($conn,$delete);
     }
     $count = count($_POST['product']);
@@ -51,11 +67,11 @@ if(isset($_POST['submit'])){
             $mrp = $_POST["mrp"][$i];
         }
 
-        $mfg_co = "";
-        if(isset($_POST["mfg_co"][$i])){
-            $mfg_co = $_POST["mfg_co"][$i];
+        $mfg_no = "";
+        if(isset($_POST["mfg_no"][$i])){
+            $mfg_no = $_POST["mfg_no"][$i];
         }
-
+        
         $batch_no = "";
         if(isset($_POST["batch_no"][$i])){
             $batch_no = $_POST["batch_no"][$i];
@@ -96,7 +112,8 @@ if(isset($_POST['submit'])){
             $ammout = $_POST["ammout"][$i];
         }
 
-        $ins_product = "INSERT INTO `purchase_return_detail` (`pr_id`, `product_id`, `mrp`, `mfg_co`, `batchno`, `expiry`,`qty`, `free_qty`, `rate`, `discount`, `final_rate`,`amount`,`created`,`createdby`) VALUES ('".$last_id."','".$product_id."',  '".$mrp."', '".$mfg_co."', '".$batch_no."', '".$expiry."','".$qty."','".$free_qty."', '".$rate."', '".$discount."', '".$f_rate."', '".$ammout."','".date('Y-m-d H:i:s')."','".$user_id."')";
+        $ins_product = "INSERT INTO `purchase_return_detail` (`pr_id`, `product_id`, `mrp`, `mfg_co`, `batchno`, `expiry`,`qty`, `free_qty`, `rate`, `discount`, `final_rate`,`amount`,`created`,`createdby`) VALUES ('".$last_id."','".$product_id."',  '".$mrp."', '".$mfg_no."', '".$batch_no."', '".$expiry."','".$qty."','".$free_qty."', '".$rate."', '".$discount."', '".$f_rate."', '".$ammout."','".date('Y-m-d H:i:s')."','".$user_id."')";
+        
        
 
         mysqli_query($conn,$ins_product);
@@ -180,32 +197,6 @@ if(isset($_POST['submit'])){
     
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
-    
-        
-        
-        <!-- partial:partials/_settings-panel.html -->
-        
-        <!--<div class="theme-setting-wrapper">
-        <div id="settings-trigger"><i class="mdi mdi-settings"></i></div>
-        <div id="theme-settings" class="settings-panel">
-        <i class="settings-close mdi mdi-close"></i>
-        <p class="settings-heading">SIDEBAR SKINS</p>
-        <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
-        <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
-        <p class="settings-heading mt-2">HEADER SKINS</p>
-        <div class="color-tiles mx-0 px-4">
-          <div class="tiles primary"></div>
-          <div class="tiles success"></div>
-          <div class="tiles warning"></div>
-          <div class="tiles danger"></div>
-          <div class="tiles pink"></div>
-          <div class="tiles info"></div>
-          <div class="tiles dark"></div>
-          <div class="tiles default"></div>
-        </div>
-        </div>
-        </div>-->
-        
         
         <!-- Right Sidebar -->
         <?php include "include/sidebar-right.php" ?>
@@ -253,8 +244,8 @@ if(isset($_POST['submit'])){
                   
                       <div class="col-12 col-md-2">
                        <label for="debit_date">Debit Note Date</label>
-                            <div id="datepicker-popup" class="input-group date datepicker">
-                            <input type="text" class="form-control border debit_date" name="debit_date" >
+                            <div id="" class="input-group date datepicker">
+                            <input type="text" class="form-control border debit_date" value="<?php echo (isset($purchase_data['debit_note_date'])) ? date("d/m/Y",strtotime(str_replace("-","/",$purchase_data['debit_note_date']))) : ''; ?>" name="debit_date" >
                             <span class="input-group-addon input-group-append border-left">
                               <span class="mdi mdi-calendar input-group-text"></span>
                             </span>
@@ -265,7 +256,7 @@ if(isset($_POST['submit'])){
                       ?>
                       <div class="col-12 col-md-2">
                        <label for="debit_note_number">Debit Note Number</label>
-                            <input type="text" class="form-control" value="<?php echo $voucherVal; ?>" name="debit_note_number" id="debit_note_number" placeholder="Number">
+                            <input type="text" class="form-control" value="<?php echo (isset($purchase_data['debit_note_no'])) ? $purchase_data['debit_note_no'] : $voucherVal; ?>" name="debit_note_number" id="debit_note_number" placeholder="Number">
                       </div>
                       
                       <div class="col-12 col-md-3">
@@ -278,7 +269,7 @@ if(isset($_POST['submit'])){
                               ?>
                               <?php if($getAllVendorRes && mysqli_num_rows($getAllVendorRes) > 0){ ?>
                                 <?php while ($getAllVendorRow = mysqli_fetch_array($getAllVendorRes)) { ?>
-                                  <option value="<?php echo $getAllVendorRow['id']; ?>"><?php echo $getAllVendorRow['name']; ?></option>
+                                  <option <?php if(isset($purchase_data['vendor_id']) && $purchase_data['vendor_id'] == $getAllVendorRow['id']){echo "selected";} ?> value="<?php echo $getAllVendorRow['id']; ?>"><?php echo $getAllVendorRow['name']; ?></option>
                                 <?php } ?>
                               <?php } ?>
                           </select>
@@ -305,7 +296,8 @@ if(isset($_POST['submit'])){
                                       </tr>
                                     </thead>
                                     <tbody id="product-tbody">
-                                      <!-- Row Starts --> 	
+                                      <!-- Row Starts -->
+                                      <?php if(!isset($_GET['id'])){ ?>
                                       <tr class="product-tr">
                                           <td>1</td>
                                           <td>
@@ -324,7 +316,37 @@ if(isset($_POST['submit'])){
                                             <td><input type="text" name=f_rate[] class="form-control f_rate priceOnly" id="f_rate" placeholder="Rate" autocomplete="off"></td>
                                             <td><input name="ammout[]" type="text" class="form-control ammout" readonly="" id="ammout" placeholder="Ammount"></td>
                                             <td><a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a><a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product remove_last" style="display: none;"><i class="fa fa-close mr-0 ml-0"></i></a></td>
-                                      </tr><!-- End Row --> 	
+                                      </tr><!-- End Row -->
+                                      <?php }else{
+                                        foreach ($purchase_details_data as $key => $value) {
+                                        ?>
+                                        <tr class="product-tr">
+                                          <td><?php echo $key+1; ?></td>
+                                          <td>
+                                            <?php 
+                                            $productQry = "SELECT * FROM `product_master` WHERE id='".$value['product_id']."'";
+                                            $product_id = mysqli_query($conn, $productQry);
+                                            $rowp = mysqli_fetch_array($product_id);
+                                            ?>
+                                            <input type="text" placeholder="Product" value="<?php echo $rowp['product_name']; ?>" class="tags form-control" required="" name="product[]">
+                                            <input type="hidden" value="<?php echo $value['product_id']; ?>" class="product-id" name="product_id[]">
+                                            <small class="text-danger empty-message0"></small>
+                                          </td>
+                                            <td><input name="mrp[]" value="<?php echo $value['mrp']; ?>" type="text" class="form-control mrp" id="mrp" placeholder="MRP"></td>
+                                            <td><input name="mfg_no[]" value="<?php echo $value['mfg_co']; ?>" type="text" class="form-control mfg_no" id="mfg_no" placeholder="MFG. Co."></td>
+                                            <td><input name="batch_no[]" value="<?php echo $value['batchno']; ?>" type="text" class="form-control batch_no" id="batch_no" placeholder="Batch No."></td>
+                                            <td><input name="expiry[]" type="text" value="<?php echo date("d/m/Y",strtotime(str_replace("-","/",$value['expiry']))); ?>" class="form-control expiry datepicker-ex" id="expiry" placeholder="Expiry"></td>
+                                            <td><input name="qty[]" type="text" value="<?php echo $value['qty']; ?>" class="form-control qty" id="qty" placeholder="Qty."></td>
+                                            <td><input name="free_qty[]" type="text" value="<?php echo $value['free_qty'] ?>" class="form-control free_qty" id="free_qty" placeholder="Free Qty"></td>
+                                            <td><input name="rate[]" type="text" value="<?php echo $value['rate']; ?>" class="form-control rate" id="rate" placeholder="Rate"></td>
+                                            <td><input name="discount[]" type="text" value="<?php echo $value['discount']; ?>" class="form-control discount" id="discount" placeholder="Discount"></td>
+                                            <td><input type="text" name="f_rate[]" value="<?php echo $value['final_rate']; ?>" class="form-control f_rate priceOnly" id="f_rate" placeholder="Rate" autocomplete="off"></td>
+                                            <td><input name="ammout[]" type="text" value="<?php echo $value['amount']; ?>" class="form-control ammout" readonly="" id="ammout" placeholder="Ammount"></td>
+                                            <td><a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product"><i class="fa fa-plus mr-0 ml-0"></i></a><a href="javascript:;" class="btn btn-danger btn-xs pt-2 pb-2 btn-remove-product remove_last" style="display: none;"><i class="fa fa-close mr-0 ml-0"></i></a></td>
+                                        </tr><!-- End Row -->
+                                        <?php
+                                      }
+                                      } ?> 	
                                       
                                    
                                       
@@ -336,7 +358,7 @@ if(isset($_POST['submit'])){
                       
                       <div class="col-12 col-md-6">
                       <label for="exampleInputName1">Remarks / Reason for Return </label>
-                        <textarea class="form-control" name="remarks" id="remarks" rows="3"></textarea>
+                        <textarea class="form-control" name="remarks" id="remarks" rows="3"><?php echo (isset($purchase_data['remarks'])) ? $purchase_data['remarks'] : ''; ?></textarea>
                       </div>
                       
                      
@@ -352,7 +374,7 @@ if(isset($_POST['submit'])){
                                         <div class="col">
                                             <div class="form-radio">
                                             <label class="form-check-label">
-                                            <input type="radio" class="form-check-input debit_ac" name="debit_ac" id="optionsRadios1" value="1" checked>
+                                            <input type="radio" class="form-check-input debit_ac" name="debit_ac" id="optionsRadios1" value="1" <?php if(isset($purchase_data['debit_note_settle']) && $purchase_data['debit_note_settle'] == "1"){echo "checked";}else{echo "checked";} ?> >
                                            Yes
                                             </label>
                                             </div>
@@ -361,7 +383,7 @@ if(isset($_POST['submit'])){
                                         <div class="col">
                                             <div class="form-radio">
                                             <label class="form-check-label">
-                                            <input type="radio" class="form-check-input debit_ac" name="debit_ac" id="optionsRadios2" value="0">
+                                            <input type="radio" class="form-check-input debit_ac" name="debit_ac" id="optionsRadios2" value="0" <?php if(isset($purchase_data['debit_note_settle']) && $purchase_data['debit_note_settle'] == "0"){echo "checked";} ?> >
                                             No
                                             </label>
                                             </div>
@@ -397,7 +419,7 @@ if(isset($_POST['submit'])){
                               <td><input name="mrp[]" type="text" class="form-control mrp" id="mrp" placeholder="MRP"></td>
                               <td><input name="mfg_no[]" type="text" class="form-control mfg_no" id="mfg_no" placeholder="MFG. Co."></td>
                               <td><input name="batch_no[]" type="text" class="form-control batch_no" id="batch_no" placeholder="Batch No."></td>
-                              <td><input name="expiry[]" type="text" class="form-control expiry" id="expiry" placeholder="Expiry"></td>
+                              <td><input name="expiry[]" type="text" class="form-control expiry datepicker-ex" id="expiry" placeholder="Expiry"></td>
                               <td><input name="qty[]" type="text" class="form-control qty" id="qty" placeholder="Qty."></td>
                               <td><input name="free_qty[]" type="text" class="form-control free_qty" id="free_qty" placeholder="Free Qty"></td>
                               <td><input name="rate[]" type="text" class="form-control rate" id="rate" placeholder="Rate"></td>
@@ -507,6 +529,25 @@ if(isset($_POST['submit'])){
       todayHighlight: true,
     });
  </script>
+ <script type="text/javascript">
+   $('.datepicker').datepicker({
+      enableOnReadonly: true,
+      todayHighlight: true,
+      format: 'dd/mm/yyyy',
+      autoclose : true
+    });
+ </script>
+ <script type="text/javascript">
+  $(document).on('focus',".datepicker-ex", function(){ //bind to all instances of class "date". 
+    $(this).datepicker({
+      enableOnReadonly: true,
+      todayHighlight: true,
+      format: 'dd/mm/yyyy',
+      autoclose : true
+    });
+    $(this).datepicker("refresh");
+});
+</script>
  
   <!-- Custom js for this page Datatables-->
   <script src="js/data-table.js"></script> 
