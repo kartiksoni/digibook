@@ -244,6 +244,21 @@
                 </div>
               </a>
             </div>
+
+            <div class="col-md-3 grid-margin">
+              <a href="doctor-profile.php" class="">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex flex-row align-items-top">
+                      <i class="mdi mdi-stethoscope text-facebook icon-md"></i>
+                      <div class="ml-3 p-t-5">
+                        <h5 class="text-facebook">Docter Profile</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div> 
           </div>
         </div>
         <!-- content-wrapper ends -->
