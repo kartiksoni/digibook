@@ -25,6 +25,7 @@ if(isset($_POST['submit']))
         if($doctoreditrun)
         {
             $_SESSION['msg']['success'] = 'Doctor Updated Successfully.';
+            header('location:doctor-profile.php');
         }
         else
         {

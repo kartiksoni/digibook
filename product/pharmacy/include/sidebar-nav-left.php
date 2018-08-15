@@ -103,7 +103,7 @@
 </li>
 
 <li class="nav-item">
-    <a class="nav-link" href="#">
+    <a class="nav-link" href="accounting-cash-management.php">
     <i class="icon-repeat menu-icon"></i>
     <span class="menu-title">Transfer </span>
     </a>
