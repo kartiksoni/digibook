@@ -96,10 +96,18 @@
 
 
 <li class="nav-item">
-    <a class="nav-link" href="#">
-    <i class="icon-paper menu-icon"></i>
-    <span class="menu-title">Sell </span>
+    <a class="nav-link" data-toggle="collapse" href="#sales" aria-expanded="false" aria-controls="sales">
+        <i class="icon-layers menu-icon"></i>
+        <span class="menu-title">Sell</span>
+        <i class="menu-arrow"></i>
     </a>
+    <div class="collapse" id="sales">
+        <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="sales-tax-billing.php">Tax Billing</a></li>
+            <li class="nav-item"> <a class="nav-link" href="#">BOS</a></li>
+            <li class="nav-item"> <a class="nav-link" href="#">Service Billing</a></li>
+        </ul>
+    </div>
 </li>
 
 <li class="nav-item">

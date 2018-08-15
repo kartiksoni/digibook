@@ -1264,9 +1264,131 @@ if($_REQUEST['action'] == "getproduct_adjustment_changes"){
       echo json_encode($result);
       exit;
     }
+    
+    /*--------------------------------------------CUSTOMER RELATED AJAX START------------------------------------------------*/
+    // 15-08-2018
+    if($_REQUEST['action'] == "getAllCustomerByCity"){
+      $city_id = (isset($_REQUEST['city_id'])) ? $_REQUEST['city_id'] : '';
+      if($city_id != ''){
+        $query = "SELECT id, name FROM ledger_master WHERE group_id = 10 AND status = 1 AND city = '".$city_id."' ORDER BY name";
+        $res = mysqli_query($conn, $query);
+        if($res && mysqli_num_rows($res) > 0){
+          $data = [];
+          while ($row = mysqli_fetch_array($res)) {
+            $arr['id'] = $row['id'];
+            $arr['name'] = $row['name'];
+            array_push($data, $arr);
+          }
+          $result = array('status' => true, 'message' => 'Data Found Success.', 'result' => $data);  
+        }else{
+          $result = array('status' => false, 'message' => 'Data Not Found!', 'result' => '');  
+        }
+      }else{
+        $result = array('status' => false, 'message' => 'City ID Not Found!', 'result' => '');
+      }
+      echo json_encode($result);
+      exit;
+    }
+
+    // 15-08-2018
+    if($_REQUEST['action'] == "getCustomerAddressById"){
+      $customer_id = (isset($_REQUEST['customer_id'])) ? $_REQUEST['customer_id'] : '';
+      if($customer_id){
+        $query = "SELECT id, addressline1, addressline2, addressline3 FROM ledger_master WHERE id = '".$customer_id."'";
+        $res = mysqli_query($conn, $query);
+        if($res && mysqli_num_rows($res)){
+          $row = mysqli_fetch_array($res);
+          $data['id'] = (isset($row['id'])) ? $row['id'] : '';
+          $data['addressline1'] = (isset($row['addressline1'])) ? $row['addressline1'] : '';
+          $data['addressline2'] = (isset($row['addressline2'])) ? $row['addressline2'] : '';
+          $data['addressline3'] = (isset($row['addressline3'])) ? $row['addressline3'] : '';
+          $result = array('status' => true, 'message' => 'Data Found Success!', 'result' => $data);
+        }else{
+          $result = array('status' => false, 'message' => 'Data Not Found!', 'result' => '');
+        }
+      }else{
+        $result = array('status' => false, 'message' => 'Customer ID Not Found!', 'result' => '');
+      }
+      echo json_encode($result);
+      exit;
+    }
+
+    // 15-08-2018
+    if($_REQUEST['action'] == "addcustomer"){
+      if(isset($_REQUEST['data']) && !empty($_REQUEST['data'])){
+        
+        $query = "INSERT INTO ledger_master SET";
+        foreach ($_REQUEST['data'] as $key => $value) {
+          $query .= " ".$value['name']." = '".$value['value']."', ";
+        }
+        $query .= "group_id = '10', account_type = '1', status = '1',created = '".date('Y-m-d H:i:s')."', createdby = '".$_SESSION['auth']['id']."'";
+        $result = mysqli_query($conn, $query);
+        if($result){
+          $result = array('status' => true, 'message' => 'Customer Added Success.', 'result' => '');
+        }else{
+          $result = array('status' => false, 'message' => 'Customer Added Fail! Try Again.', 'result' => '');
+        }
+      }else{
+        $result = array('status' => false, 'message' => 'Field is required!', 'result' => '');
+      }
+      echo json_encode($result);
+      exit;
+    }
+
+    /*--------------------------------------------CUSTOMER RELATED AJAX END-----------------------------------------------------------------------------*/
+
+    // 15-08-2018
+    // This ajax is used to get onvoice no on tax billing
+    if($_REQUEST['action'] == "getInvoiceNo"){
+      $bill_type = (isset($_REQUEST['bill_type'])) ? $_REQUEST['bill_type'] : '';
+      $invoice_no = '';
+
+      if($bill_type == 'Cash'){
+        $query = "SELECT invoice_no FROM tax_billing WHERE bill_type = 'Cash' ORDER BY id DESC LIMIT 1";
+        $res = mysqli_query($conn, $query);
+        if($res){
+          $count = mysqli_num_rows($res);
+            if($count !== '' && $count !== 0){
+              $row = mysqli_fetch_array($res);
+              $invoice_no = (isset($row['invoice_no'])) ? $row['invoice_no'] : '';
+
+              $invoice_noarr = explode('-',$invoice_no);
+              $invoice_no = $invoice_noarr[1];
+              $invoice_no = $invoice_no + 1;
+              $invoice_no = sprintf("%05d", $invoice_no);
+              $invoice_no = 'C-'.$invoice_no;
+            }else{
+              $invoice_no = sprintf("%05d", 1);
+              $invoice_no = 'C-'.$invoice_no;
+            }
+        }
+      }else{
+        $query = "SELECT invoice_no FROM tax_billing WHERE bill_type = 'Debit' ORDER BY id DESC LIMIT 1";
+        $res = mysqli_query($conn, $query);
+        if($res){
+          $count = mysqli_num_rows($res);
+            if($count !== '' && $count !== 0){
+              $row = mysqli_fetch_array($res);
+              $invoice_no = (isset($row['invoice_no'])) ? $row['invoice_no'] : '';
+
+              $invoice_noarr = explode('-',$invoice_no);
+              $invoice_no = $invoice_noarr[1];
+              $invoice_no = $invoice_no + 1;
+              $invoice_no = sprintf("%05d", $invoice_no);
+              $invoice_no = 'D-'.$invoice_no;
+            }else{
+              $invoice_no = sprintf("%05d", 1);
+              $invoice_no = 'D-'.$invoice_no;
+            }
+        }
+      }
+      $result = array('status' => true, 'message' => 'Success', 'result' => $invoice_no);
+      echo json_encode($result);
+      exit;
+    }
 
 
-    // Author : viragbhai
+    /*--------------------------------------------VIRAG BHAI AJAX START-----------------------------------------------------------------------------*/
     // Date   : 11-08-18
     if($_REQUEST['action'] == "getAutoSearchOrderList"){
       $search = (isset($_REQUEST['query']['term'])) ? $_REQUEST['query']['term'] : '';
@@ -1303,5 +1425,6 @@ if($_REQUEST['action'] == "getproduct_adjustment_changes"){
         echo json_encode($data);
         exit; 
     }
+    /*--------------------------------------------VIRAG BHAI AJAX END-----------------------------------------------------------------------------*/
 
 ?>
