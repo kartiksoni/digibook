@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
   <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
   <link rel="stylesheet" href="vendors/css/vendor.bundle.addons.css">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
   <!-- endinject -->
   
    <!-- plugin css for this page -->
@@ -91,14 +92,16 @@
                         </select>
                       </div>
                         
-                      <div class="col-12 col-md-2">
+                      <!-- <div class="col-12 col-md-2">
                        <label for="invoice_no">Invoice Number</label>
                        <input type="text" name="invoice_no" class="form-control" placeholder="Invoice Number">
-                      </div>
+                      </div> -->
                         
                       <div class="col-12 col-md-3">
                        <label for="product">Product</label>
-                       <input type="text" class="form-control" id="product" placeholder="Product" id="product">
+                       <input type="text" class="form-control tags" id="product" placeholder="Product" id="product">
+                       <input type="hidden" class="pr_id" name="pr_id">
+                       <small class="text-danger empty-message0"></small>
                       </div>
                         
                       <!-- <div class="col-12 col-md-2">
@@ -106,10 +109,10 @@
                        <input type="text" class="form-control" id="gr_no" name="gr_no" placeholder="GR.No">
                       </div> -->
 
-                      <div class="col-12 col-md-2">
+                      <!-- <div class="col-12 col-md-2">
                        <label for="batch">Batch</label>
                        <input type="text" class="form-control" id="batch" name="batch" placeholder="Batch Number">
-                      </div>
+                      </div> -->
                         
                       <div class="col-12 col-md-2">
                        <label for="return_date">Returned Date</label>
@@ -154,8 +157,8 @@
                                 <th>Mobile</th>
                                 <th>Reason</th>
                                 <th>Status</th>
-                                <th>Payment Status</th>
-                                <th>Payment Remarks</th>
+                                <!-- <th>Payment Status</th>
+                                <th>Payment Remarks</th> -->
                                 <th>Action</th>
                             </tr>
                           </thead>
@@ -173,6 +176,10 @@
                                   $where[] .= "pr.debit_note_date='".date('Y-m-d',strtotime(str_replace('/','-',$_POST['return_date'])))."'";
                                   
                                 }
+                                if(isset($_POST['pr_id']) && $_POST['pr_id'] != ''){
+                                  $where[] .= "pr.id=".$_POST['pr_id'];
+                                }
+                                
                               if(!empty($where)){
                                 $where = implode(" AND ",$where);
                                 $getAllDataQuery .="WHERE ".$where;
@@ -204,8 +211,8 @@
                                         ?>
                                       </span>
                                     </td>
-                                    <td>-</td>
-                                    <td>-</td>
+                                    <!-- <td>-</td>
+                                    <td>-</td> -->
                                     <td>
                                       <a href="purchase-return-print.php?id=<?php echo $row['id']; ?>" class="btn  btn-behance p-2"><i class="fa fa-print mr-0"></i></a>
                                       <a href="purchase-return.php?id=<?php echo $row['id']; ?>" class="btn  btn-behance p-2"><i class="fa fa-pencil mr-0"></i></a>
@@ -296,7 +303,7 @@
   <script>
      $('.datatable').DataTable();
   </script>
-
+  <script src="js/jquery-ui.js"></script>
   <script src="js/parsley.min.js"></script>
   <script type="text/javascript">
     $('form').parsley();

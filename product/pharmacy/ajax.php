@@ -217,6 +217,51 @@ if($_REQUEST['action'] == "getproduct_purchase_return"){
       exit;
 }
 
+if($_REQUEST['action'] == "getproduct_purchase_return_list"){
+
+  $getproduct_purchase_return_list = array();
+  $query = "SELECT * FROM `purchase_return_detail` pu JOIN product_master pm ON pu.product_id = pm.id WHERE pm.product_name LIKE '%".$_REQUEST['query']."%' GROUP BY pu.product_id";
+  $result = mysqli_query($conn,$query);
+  $num = mysqli_num_rows($result);
+  while($row = mysqli_fetch_array($result)){
+    $c_total = total_qty($row['id'],$row['batch_no']);
+    //echo total_qty($row['id'],$row['batch_no']);exit;
+    if(empty($row['batch_no'])){
+      $batch_no = "-";
+    }else{
+      $batch_no = $row['batch_no'];
+    }
+
+    $c_total = total_qty($row['id'],$row['batch_no']);
+    //echo total_qty($row['id'],$row['batch_no']);exit;
+    if(empty($row['batch_no'])){
+      $batch_no = "-";
+    }else{
+      $batch_no = $row['batch_no'];
+    }
+    $getproduct_purchase_return_list[] = array(
+            'id' => $row['id'],
+            'name' => $row['product_name'],
+            'batch' => $batch_no,
+            'expiry' => $row['ex_date'],
+            'total_qty' =>$c_total,
+            'unit' => $row['unit'],
+            'mrp' => $row['mrp'],
+            'generic_name' => $row['generic_name'],
+            'gst' => $row['igst'],
+            'ratio' => $row['ratio'],
+            'igst'=> $row['igst'],
+            'cgst' => $row['cgst'],
+            'sgst' => $row['sgst'],
+            'mfg_company' => $row['mfg_company'],
+            'pr_id' =>$row['pr_id']
+          );
+  }
+  echo json_encode($getproduct_purchase_return_list);
+  exit;
+
+}
+
 if($_REQUEST['action'] == "getproduct_self"){
       $getproduct_self = array();
       $query = "SELECT * FROM `product_master` WHERE product_name LIKE '%".$_REQUEST['query']."%'";

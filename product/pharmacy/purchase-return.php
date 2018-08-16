@@ -382,7 +382,7 @@ if(isset($_POST['submit'])){
                                             <div class="form-radio">
                                             <label class="form-check-label">
                                             <input type="radio" class="form-check-input debit_ac" name="debit_ac" id="optionsRadios1" value="1" <?php if(isset($purchase_data['debit_note_settle']) && $purchase_data['debit_note_settle'] == "1"){echo "checked";}else{echo "checked";} ?> >
-                                           Yes
+                                            ON HOLD 
                                             </label>
                                             </div>
                                         </div>
@@ -391,7 +391,7 @@ if(isset($_POST['submit'])){
                                             <div class="form-radio">
                                             <label class="form-check-label">
                                             <input type="radio" class="form-check-input debit_ac" name="debit_ac" id="optionsRadios2" value="0" <?php if(isset($purchase_data['debit_note_settle']) && $purchase_data['debit_note_settle'] == "0"){echo "checked";} ?> >
-                                            No
+                                            EFFECT IN PARTY LEDGER
                                             </label>
                                             </div>
                                         </div>
