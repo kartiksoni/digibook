@@ -29,12 +29,14 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
 $(document).ready(function(){
-    $("#showradio").click(function(){
-        $(".show").show("fast");
-    });
-
-    $("#hideradio").click(function(){
-        $(".show").hide("fast");
+    $(".revercechange").change(function(){
+      var val = $("input[name='revercechange']:checked").val();
+      if(val == 'Active'){
+        $('#reversechangeper').show();
+      }else{
+        $('#reversechangeper').hide();
+      }
+      
     });
 });
 </script>
@@ -145,82 +147,86 @@ $(document).ready(function(){
                     <form class="forms-sample">
                         <div class="form-group row">
                         
-                        <div class="col-12 col-md-6">
-                              <label for="exampleInputName1">Select Type</label>
+                        <div class="col-12 col-md-4">
+                          <label for="exampleInputName1">Select Type</label>
                             <div class="row no-gutters">
-                                    
-                                        <div class="col">
-                                            <div class="form-radio">
-                                            <label class="form-check-label">
-                                            <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="Active" checked>
-                                           		Cash Payment
-                                            </label>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-12 col-md-9">
-                                            <div class="form-radio">
-                                            <label class="form-check-label">
-                                            <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="Deactive">
-                                            Cash Receipt
-                                            </label>
-                                            </div>
-                                        </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-radio">
+                                    <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="Active" checked>
+                                   		Cash Payment
+                                    </label>
                                     </div>
+                                </div>
+                                
+                                <div class="col-12 col-md-6">
+                                    <div class="form-radio">
+                                    <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="Deactive">
+                                    Cash Receipt
+                                    </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="col-12 col-md-3">
-                              <label for="exampleInputName1">Reverse Change</label>
+                        <div class="col-12 col-md-4">
+                          <label for="exampleInputName1">Reverse Change</label>
+                          <div class="row no-gutters">
+                                  
+                            <div class="col-12 col-md-6">
+                                <div class="form-radio">
+                                <label class="form-check-label">
+                                <input type="radio" class="form-check-input revercechange" name="revercechange" value="Deactive" checked>
+                               		No
+                                </label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6">
+                                <div class="form-radio">
+                                <label class="form-check-label">
+                                <input type="radio" class="form-check-input revercechange" name="revercechange" value="Active">
+                                Yes
+                                </label>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        
+                          <div class="col-12 col-md-4" id="reversechangeper" style="display: none;">
+                            <label for="exampleInputName1">Reverse Change</label>
                             <div class="row no-gutters">
-                                    
-                                        <div class="col">
-                                            <div class="form-radio">
-                                            <label class="form-check-label">
-                                            <input type="radio" class="form-check-input" name="reverseradio" id="hideradio" value="Deactive" checked>
-                                           		No
-                                            </label>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col col-md-8">
-                                            <div class="form-radio">
-                                            <label class="form-check-label">
-                                            <input type="radio" class="form-check-input" name="reverseradio" id="showradio" value="Active">
-                                            Yes
-                                            </label>
-                                            </div>
-                                        </div>
+                              <div class="col-12 col-md-4">
+                                  <div class="form-radio">
+                                  <label class="form-check-label">
+                                  <input type="radio" class="form-check-input" name="radio" id="" value="Active">
+                                  5%
+                                  </label>
+                                  </div>
+                              </div>
 
-                                        <div class="show" style="display:none;">
-                                        <div class="col">
-                                            <div class="form-radio">
-                                            <label class="form-check-label">
-                                            <input type="radio" class="form-check-input" name="radio" id="" value="Active">
-                                            5%
-                                            </label>
-                                            </div>
-                                        </div>
+                              <div class="col-12 col-md-4">
+                                  <div class="form-radio">
+                                  <label class="form-check-label">
+                                  <input type="radio" class="form-check-input" name="radio" id="" value="Active">
+                                  12%
+                                  </label>
+                                  </div>
+                              </div>
 
-                                        <div class="col">
-                                            <div class="form-radio">
-                                            <label class="form-check-label">
-                                            <input type="radio" class="form-check-input" name="radio" id="" value="Active">
-                                            12%
-                                            </label>
-                                            </div>
-                                        </div>
-
-                                        <div class="col">
-                                            <div class="form-radio">
-                                            <label class="form-check-label">
-                                            <input type="radio" class="form-check-input" name="radio" id="" value="Active">
-                                            18%
-                                            </label>
-                                            </div>
-                                        </div>
-                                        </div>
-                                    </div>
-                        </div>  
+                              <div class="col-12 col-md-4">
+                                  <div class="form-radio">
+                                  <label class="form-check-label">
+                                  <input type="radio" class="form-check-input" name="radio" id="" value="Active">
+                                  18%
+                                  </label>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                          
                         
                         
                          <div class="col-12">
