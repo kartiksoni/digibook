@@ -99,7 +99,7 @@
                         
                       <div class="col-12 col-md-3">
                        <label for="product">Product</label>
-                       <input type="text" class="form-control tags" id="product" placeholder="Product" id="product">
+                       <input type="text" class="form-control tags" name="product" value="<?php echo (isset($_POST['product']) && $_POST['product'] != '') ? $_POST['product'] : ''; ?>" id="product" placeholder="Product" id="product">
                        <input type="hidden" class="pr_id" name="pr_id">
                        <small class="text-danger empty-message0"></small>
                       </div>

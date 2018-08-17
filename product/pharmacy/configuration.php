@@ -176,7 +176,7 @@
                       <div class="d-flex flex-row align-items-top">
                         <i class="mdi mdi-plus-box text-facebook icon-md"></i>
                         <div class="ml-3 p-t-5">
-                          <h5 class="text-facebook">Pharmarcy Profile</h5>
+                          <h5 class="text-facebook">Pharmacy Master</h5>
                         </div>
                       </div>
                     </div>
@@ -223,7 +223,7 @@
                     <div class="d-flex flex-row align-items-top">
                       <i class="mdi mdi-blur-linear text-facebook icon-md"></i>
                       <div class="ml-3 p-t-5">
-                        <h5 class="text-facebook">Near Expiry</h5>
+                        <h5 class="text-facebook">Near Expiry Reminder</h5>
                       </div>
                     </div>
                   </div>
@@ -237,7 +237,7 @@
                     <div class="d-flex flex-row align-items-top">
                       <i class="mdi mdi-city text-facebook icon-md"></i>
                       <div class="ml-3 p-t-5">
-                        <h5 class="text-facebook">Company Master</h5>
+                        <h5 class="text-facebook">Comapnay Code Master</h5>
                       </div>
                     </div>
                   </div>
