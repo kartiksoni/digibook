@@ -28,4 +28,81 @@ if($_REQUEST['action'] == "getgroup"){
       echo json_encode($result);
       exit;
     }
+
+
+if($_REQUEST['action'] == "getcash"){
+  $cash = (isset($_REQUEST['cash'])) ? $_REQUEST['cash'] : '';
+
+  if($cash == 'cashpayment'){
+    //function getcashpaymentno(){
+      //global $conn;
+      $voucher_no = '';
+
+     $voucherqry = "SELECT voucher_no FROM accounting_cash_management WHERE payment_type = 'cashpayment' ORDER BY id DESC LIMIT 1";
+      $voucherrun = mysqli_query($conn, $voucherqry);
+      if($voucherrun){
+        $count = mysqli_num_rows($voucherrun);
+        if($count !== '' && $count !== 0){
+          $row = mysqli_fetch_assoc($voucherrun);
+          $voucherno = (isset($row['voucher_no'])) ? $row['voucher_no'] : '';
+
+          if($voucherno != ''){
+            $vouchernoarr = explode('-',$voucherno);
+            $voucherno = $vouchernoarr[1];
+            $voucherno = $voucherno + 1;
+            $voucherno = sprintf("%05d", $voucherno);
+            $voucher_no = 'CP-'.$voucherno;
+          }
+        }else{
+          $voucherno = sprintf("%05d", 1);
+          $voucher_no = 'CP-'.$voucherno;
+        }
+      }
+      echo $voucher_no;
+      exit;
+    }
+
+  if($cash == "cashreceipt"){
+    $voucher_no = '';
+
+    $voucherqry = "SELECT voucher_no FROM accounting_cash_management WHERE payment_type = 'cashreceipt' ORDER BY id DESC LIMIT 1";
+     $voucherrun = mysqli_query($conn, $voucherqry);
+     if($voucherrun){
+       $count = mysqli_num_rows($voucherrun);
+       if($count !== '' && $count !== 0){
+         $row = mysqli_fetch_assoc($voucherrun);
+         $voucherno = (isset($row['voucher_no'])) ? $row['voucher_no'] : '';
+
+         if($voucherno != ''){
+           $vouchernoarr = explode('-',$voucherno);
+           $voucherno = $vouchernoarr[1];
+           $voucherno = $voucherno + 1;
+           $voucherno = sprintf("%05d", $voucherno);
+           $voucher_no = 'CR-'.$voucherno;
+         }
+       }else{
+         $voucherno = sprintf("%05d", 1);
+         $voucher_no = 'CR-'.$voucherno;
+       }
+     }
+     echo $voucher_no;
+     exit;
+  }
+  
+  }
+//}
+
+if($_REQUEST['action'] == "getstate")
+$state = (isset($_REQUEST['state'])) ? $_REQUEST['state'] : '';
+
+$stateqry = "SELECT state FROM  ledger_master WHERE id = '".$state."'";
+$staterun = mysqli_query($conn, $stateqry);
+$statedata = mysqli_fetch_assoc($staterun);
+$vendorstate = $statedata['state'];
+
+$state = "SELECT state_code_gst FROM own_states WHERE id = '".$vendorstate."'";
+$run = mysqli_query($conn, $state);
+$data = mysqli_fetch_assoc($run);
+$stategst = $data['state_code_gst'];
+echo $stategst;exit;
 ?>
