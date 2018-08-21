@@ -41,30 +41,6 @@
     
         
         
-        <!-- partial:partials/_settings-panel.html -->
-        
-        <!--<div class="theme-setting-wrapper">
-        <div id="settings-trigger"><i class="mdi mdi-settings"></i></div>
-        <div id="theme-settings" class="settings-panel">
-        <i class="settings-close mdi mdi-close"></i>
-        <p class="settings-heading">SIDEBAR SKINS</p>
-        <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
-        <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
-        <p class="settings-heading mt-2">HEADER SKINS</p>
-        <div class="color-tiles mx-0 px-4">
-          <div class="tiles primary"></div>
-          <div class="tiles success"></div>
-          <div class="tiles warning"></div>
-          <div class="tiles danger"></div>
-          <div class="tiles pink"></div>
-          <div class="tiles info"></div>
-          <div class="tiles dark"></div>
-          <div class="tiles default"></div>
-        </div>
-        </div>
-        </div>-->
-        
-        
         <!-- Right Sidebar -->
         <?php include "include/sidebar-right.php" ?>
         
@@ -259,6 +235,22 @@
                 </div>
               </a>
             </div> 
+
+            <div class="col-md-3 grid-margin">
+              <a href="doctor-profile.php" class="">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex flex-row align-items-top">
+                      <i class="mdi mdi-account text-facebook icon-md"></i>
+                      <div class="ml-3 p-t-5">
+                        <h5 class="text-facebook">Admin Rights</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div> 
+
           </div>
         </div>
         <!-- content-wrapper ends -->

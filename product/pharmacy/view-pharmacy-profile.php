@@ -91,6 +91,7 @@
                                       <td><?php echo $row['email']; ?></td>
                                       <td>
                                         <a class="btn  btn-behance p-2" href="pharmacy-profile.php?id=<?php echo $row['id']; ?>" title="edit"><i class="fa fa-pencil mr-0"></i></a>
+                                        <a class="btn  btn-success p-2" href="user.php?pharmacy_id=<?php echo $row['id']; ?>" title="edit"><i class="fa fa-user-plus mr-0"></i></a>
                                       </td>
                                   </tr><!-- End Row --> 
                                   <?php 
@@ -188,7 +189,6 @@
   </script>
   
   <!-- End custom js for this page-->
-  <?php include('include/usertypecheck.php'); ?>
 </body>
 
 

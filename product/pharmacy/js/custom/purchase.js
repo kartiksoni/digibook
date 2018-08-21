@@ -6,6 +6,9 @@ $(document).ready(function(){
 
     $('body').on('click', '.btn-addmore-product', function() {
         var totalproduct = $('.product-tr').length;//for product length
+        if(totalproduct > 0){
+          $(".add_show").hide();
+        }
         var html = $('#html-copy').html();
         
         html = html.replace('##SRNO##',totalproduct);
@@ -143,6 +146,13 @@ $(document).ready(function(){
     $('body').on('click', '.btn-remove-product', function(e) {
         e.preventDefault();
         $(this).closest ('tr').remove ();
+        var totalproduct = $('.product-tr').length;//for product length
+          if(totalproduct <= 1){
+            $(".add_show").show();
+             $(':input[type="submit"]').prop('disabled', true);
+          }else{
+            $(".add_show").hide();
+          }
         //$('.f_amount').trigger("change");
         $('.f_rate').trigger("change");
     });
@@ -312,8 +322,8 @@ $(document).ready(function(){
     });
 
     $('body').on('propertychange change keyup focusout past', '.f_rate', function() {
-      var qty = $(this).closest('tr').find('.qty').val();
-      var f_rate = $(this).val();
+      qty = $(this).closest('tr').find('.qty').val();
+      f_rate = $(this).val();
        if(qty !== ''&& qty !== NaN && qty !== "undifined"){
           f_rate = (typeof f_rate !== "undifined" && f_rate !== '' && f_rate !== NaN) ? f_rate : 0;
           qty = (typeof qty !== "undifined" && qty !== '' && qty !== NaN) ? qty : 0;
@@ -333,6 +343,7 @@ $(document).ready(function(){
         var totalcgst = 0;
         var totaligst = 0;
         var totalsgst = 0;
+        var total_gst = 0;
         var statecode = $("#statecode").val();
         var cgst;
         $('.ammout').each(function() {
@@ -358,7 +369,8 @@ $(document).ready(function(){
           var cgst_total_avg = totalcgst/f_cgst_count;
           totalamount = parseFloat(totalamount);
           cgst_total_avg = parseFloat(cgst_total_avg);
-          var cgst_total = ((totalamount * cgst_total_avg) / 100);
+          var cgst_total = ((totalamount * cgst_total_avg) / 100);3
+          cgst_total = (cgst_total != '' && !isNaN(cgst_total)) ? cgst_total : 0;
           $("#total_cgst").val(parseFloat(cgst_total).toFixed(2));
           $("#hidden_total_cgst").val(parseFloat(cgst_total).toFixed(2));
 
@@ -380,6 +392,7 @@ $(document).ready(function(){
           totalamount = parseFloat(totalamount);
           sgst_total_avg = parseFloat(sgst_total_avg);
           var sgst_total = ((totalamount * sgst_total_avg) / 100);
+          sgst_total = (sgst_total != '' && !isNaN(sgst_total)) ? sgst_total : 0;
           $("#total_sgst").val(parseFloat(sgst_total).toFixed(2));
           $("#hidden_total_sgst").val(parseFloat(sgst_total).toFixed(2));
 
@@ -421,6 +434,7 @@ $(document).ready(function(){
           totalamount = parseFloat(totalamount);
           igst_total_avg = parseFloat(igst_total_avg);
           var igst_total = ((totalamount * igst_total_avg) / 100);
+          igst_total = (igst_total != '' && !isNaN(igst_total)) ? igst_total : 0;
           $("#total_igst").val(parseFloat(igst_total).toFixed(2));
           $("#hidden_total_igst").val(parseFloat(igst_total).toFixed(2));
           /// End IGST Count Code ///
@@ -440,6 +454,7 @@ $(document).ready(function(){
           var final_cgst = parseFloat($("#total_cgst").val());
           var final_igst = parseFloat($("#total_igst").val());
           var total_gst = final_sgst + final_cgst + final_igst;
+          total_gst = (total_gst != '' && !isNaN(total_gst)) ? parseFloat(total_gst) : 0;
           $("#total_tax").val(parseFloat(total_gst).toFixed(2));
           $("#hidden-total_tax").val(parseFloat(total_gst).toFixed(2));
           /// End Total Gst Count Code ///

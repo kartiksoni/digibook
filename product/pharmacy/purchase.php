@@ -466,10 +466,13 @@ if(isset($_POST['submit'])){
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                    <!-- TABLE STARTS -->
+                  <!-- TABLE STARTS -->
                     <div class="col mt-3">
                        <div class="row">
                           <div class="col-12">
+                            <div class="add_show" style="display: none;">
+                            <a href="javascript:;" class="btn btn-primary btn-xs pt-2 pb-2 btn-addmore-product pull-right add_show"><i class="fa fa-plus mr-0 ml-0"></i></a>
+                            </div>
                             <table id="order-listing1" class="table">
                               <thead>
                                 <tr>
@@ -699,9 +702,10 @@ if(isset($_POST['submit'])){
                                     
                                      <tr>
                                       <td align="right">
+                                        
                                         <select class="form-control note_details " name="note_details" id="note_details" style="width:250px;">
                                               <option <?php if(isset($purchase_data) && $purchase_data['note_details'] == "credit_note"){echo "selected";} ?> value="credit_note">Credit Note</option>
-                                              <option <?php if(isset($purchase_data) && $purchase_data['debit_note'] == "debit_note"){echo "selected";} ?> value="debit_note">Debit Note</option>
+                                              <option <?php if(isset($purchase_data) && $purchase_data['note_details'] == "debit_note"){echo "selected";} ?> value="debit_note">Debit Note</option>
                                           </select>
                                       </td>
                                       <td align="right">
