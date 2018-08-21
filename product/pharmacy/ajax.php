@@ -5,16 +5,27 @@
       global $conn;
       $query1 = "SELECT * FROM `product_master` WHERE id='".$product_id."' AND batch_no='".$product_batch."'";
       $result1 = mysqli_query($conn,$query1);
-      $row1 = mysqli_fetch_array($result1);
+      $row1 = ($result1 && mysqli_num_rows($result1) > 0) ? mysqli_fetch_array($result1) : '';
+
+
       $query2 = "SELECT SUM(consumption) As c_total FROM `self_consumption` WHERE product_id ='".$product_id."' AND batch='".$product_batch."' GROUP BY purchase_id";
       $result2 = mysqli_query($conn,$query2);
-      $row2 = mysqli_fetch_array($result2);
+      $row2 = ($result2 && mysqli_num_rows($result2) > 0) ? mysqli_fetch_array($result2) : '';
+
       $query3 = "SELECT SUM(qty)as a_total FROM `adjustment` WHERE product_id='".$product_id."'AND batch_no='".$product_batch."' AND type='inward'  GROUP BY qty";
       $result3 = mysqli_query($conn,$query3);
-      $row3 = mysqli_fetch_array($result3);
+      $row3 = ($result3 && mysqli_num_rows($result3) > 0) ? mysqli_fetch_array($result3) : '';
+
       $query4 = "SELECT SUM(qty)as a_total FROM `adjustment` WHERE product_id='".$product_id."' AND batch_no='".$product_batch."' AND type='outward'  GROUP BY qty";
       $result4 = mysqli_query($conn,$query4);
-      $row4 = mysqli_fetch_array($result4);
+      $row4 = ($result4 && mysqli_num_rows($result4) > 0) ? mysqli_fetch_array($result4) : '';
+      
+      $row1['opening_qty'] = (isset($row1['opening_qty']) && $row1['opening_qty'] != '') ? $row1['opening_qty'] : 0;
+      $row1['ratio'] = (isset($row1['ratio']) && $row1['ratio'] != '') ? $row1['ratio'] : 0;
+      $row2['c_total'] = (isset($row2['c_total']) && $row2['c_total'] != '') ? $row2['c_total'] : 0;
+      $row3['a_total'] = (isset($row3['a_total']) && $row3['a_total'] != '') ? $row3['a_total'] : 0;
+      $row4['a_total'] = (isset($row4['a_total']) && $row4['a_total'] != '') ? $row4['a_total'] : 0;
+
       $c_total = ($row1['opening_qty']*$row1['ratio']) - $row2['c_total'] + $row3['a_total'] - $row4['a_total'];
       return $c_total;
     }
@@ -1339,7 +1350,7 @@ if($_REQUEST['action'] == "getproduct_adjustment_changes"){
     if($_REQUEST['action'] == "getCustomerAddressById"){
       $customer_id = (isset($_REQUEST['customer_id'])) ? $_REQUEST['customer_id'] : '';
       if($customer_id){
-        $query = "SELECT id, addressline1, addressline2, addressline3 FROM ledger_master WHERE id = '".$customer_id."'";
+        $query = "SELECT lgr.id, lgr.addressline1, lgr.addressline2, lgr.addressline3, st.state_code_gst as statecode FROM ledger_master lgr LEFT JOIN own_states st ON lgr.state = st.id WHERE lgr.id = '".$customer_id."'";
         $res = mysqli_query($conn, $query);
         if($res && mysqli_num_rows($res)){
           $row = mysqli_fetch_array($res);
@@ -1347,6 +1358,7 @@ if($_REQUEST['action'] == "getproduct_adjustment_changes"){
           $data['addressline1'] = (isset($row['addressline1'])) ? $row['addressline1'] : '';
           $data['addressline2'] = (isset($row['addressline2'])) ? $row['addressline2'] : '';
           $data['addressline3'] = (isset($row['addressline3'])) ? $row['addressline3'] : '';
+          $data['statecode'] = (isset($row['statecode'])) ? $row['statecode'] : '';
           $result = array('status' => true, 'message' => 'Data Found Success!', 'result' => $data);
         }else{
           $result = array('status' => false, 'message' => 'Data Not Found!', 'result' => '');
@@ -1431,6 +1443,40 @@ if($_REQUEST['action'] == "getproduct_adjustment_changes"){
       echo json_encode($result);
       exit;
     }
+    
+     // 20/08/18
+    if($_REQUEST['action'] == "addMissOrder"){
+      if(isset($_REQUEST['data']) && $_REQUEST['data'] != ''){
+        $data = [];
+        parse_str($_REQUEST['data'], $data);
+
+        if(!empty($data)){
+          $count = count($data['product_id']);
+          if($count > 0){
+            for ($i=0; $i < $count; $i++) {
+              $product_id = (isset($data['product_id'][$i])) ? $data['product_id'][$i] : NULL;
+              $qty = (isset($data['qty'][$i])) ? $data['qty'][$i] : 0;
+              $unit = (isset($data['unit'][$i])) ? $data['unit'][$i] : 0;
+              $created = date('Y-m-d H:i:s');
+              $createdby = $_SESSION['auth']['id'];
+
+              $query = "INSERT INTO missed_order SET product_id = '".$product_id."', qty = '".$qty."', unit = '".$unit."', created = '".$created."', createdby = '".$createdby."'";
+              mysqli_query($conn, $query);
+            }
+            $result = array('status' => true, 'message' => 'Missed order save successfully.', 'result' => '');   
+          }else{
+            $result = array('status' => false, 'message' => 'Please Enter at least one product!', 'result' => '');   
+          }
+        }else{
+           $result = array('status' => false, 'message' => 'Missed order save fail! Try again.', 'result' => '');   
+        }
+      }else{
+        $result = array('status' => false, 'message' => 'Missed order save fail! Try again.', 'result' => '');
+      }
+      echo json_encode($result);
+      exit;
+    }
+    
 
 
     /*--------------------------------------------VIRAG BHAI AJAX START-----------------------------------------------------------------------------*/
