@@ -33,12 +33,12 @@ if($_REQUEST['action'] == "getgroup"){
 if($_REQUEST['action'] == "getcash"){
   $cash = (isset($_REQUEST['cash'])) ? $_REQUEST['cash'] : '';
 
-  if($cash == 'cashpayment'){
+  if($cash == 'cash_payment'){
     //function getcashpaymentno(){
       //global $conn;
       $voucher_no = '';
 
-     $voucherqry = "SELECT voucher_no FROM accounting_cash_management WHERE payment_type = 'cashpayment' ORDER BY id DESC LIMIT 1";
+     $voucherqry = "SELECT voucher_no FROM accounting_cash_management WHERE payment_type = 'cash_payment' ORDER BY id DESC LIMIT 1";
       $voucherrun = mysqli_query($conn, $voucherqry);
       if($voucherrun){
         $count = mysqli_num_rows($voucherrun);
@@ -62,10 +62,10 @@ if($_REQUEST['action'] == "getcash"){
       exit;
     }
 
-  if($cash == "cashreceipt"){
+  if($cash == "cash_receipt"){
     $voucher_no = '';
 
-    $voucherqry = "SELECT voucher_no FROM accounting_cash_management WHERE payment_type = 'cashreceipt' ORDER BY id DESC LIMIT 1";
+    $voucherqry = "SELECT voucher_no FROM accounting_cash_management WHERE payment_type = 'cash_receipt' ORDER BY id DESC LIMIT 1";
      $voucherrun = mysqli_query($conn, $voucherqry);
      if($voucherrun){
        $count = mysqli_num_rows($voucherrun);
@@ -92,7 +92,7 @@ if($_REQUEST['action'] == "getcash"){
   }
 //}
 
-if($_REQUEST['action'] == "getstate")
+if($_REQUEST['action'] == "getstate"){
 $state = (isset($_REQUEST['state'])) ? $_REQUEST['state'] : '';
 
 $stateqry = "SELECT state FROM  ledger_master WHERE id = '".$state."'";
@@ -100,9 +100,12 @@ $staterun = mysqli_query($conn, $stateqry);
 $statedata = mysqli_fetch_assoc($staterun);
 $vendorstate = $statedata['state'];
 
+if($vendorstate != ''){
 $state = "SELECT state_code_gst FROM own_states WHERE id = '".$vendorstate."'";
 $run = mysqli_query($conn, $state);
 $data = mysqli_fetch_assoc($run);
 $stategst = $data['state_code_gst'];
 echo $stategst;exit;
+}
+}
 ?>

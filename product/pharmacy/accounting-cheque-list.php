@@ -53,13 +53,14 @@
 <!-- Table ------------------------------------------------------------------------------------------------------>
 <?php 
 
-    $accountqry = "select * from accounting_cash_management";
-    $accountrun = mysqli_query($conn, $accountqry);
+    $listqry = "SELECT * FROM `accounting_cheque`";
+    $listrun = mysqli_query($conn, $listqry);
+   
 ?>
   <div class="col-md-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Accounting Cash Management List</h4>
+        <h4 class="card-title">Accounting Cheque List</h4>
         <hr class="alert-dark">
         <br>
         <div class="col mt-3">
@@ -70,11 +71,13 @@
               <thead>
                 <tr>
                     <th>Sr No</th>
-                    <th>Payment Type</th>
                     <th>Voucher No</th>
-                    <th>Voucher Date</th>
-                    <th>Amount</th>
+                    <th>Bank Name</th>
+                    <th>Voucher Type</th>
                     <th>Credit_Debit</th>
+                    <th>Cheque No</th>
+                    <th>Cheque Date</th>
+                    <th>Amount</th>
                     <th>Action</th>
                 </tr>
               </thead>
@@ -83,22 +86,25 @@
               <!-- Row Starts --> 
 
               <?php
-              if($accountrun){
-                  $count = 0;
-                  while($accountdata = mysqli_fetch_assoc($accountrun)){
-                      $count++;
+                
+                if($listrun){
+                    $count = 0;
+                  while($listdata = mysqli_fetch_assoc($listrun)){
+                    $count++;
               ?>  
-              <tr>
+                <tr>
                     <td><?php echo $count; ?></td>
-                    <td><?php echo $accountdata['payment_type']; ?></td>
-                    <td><?php echo $accountdata['voucher_no']; ?></td>
-                    <td><?php echo $accountdata['voucher_date']; ?></td>
-                    <td><?php echo $accountdata['amount']; ?></td>
-                    <td><?php echo $accountdata['credit_debit']; ?></td>
+                    <td><?php echo $listdata['voucher_no']; ?></td>
+                    <td><?php echo $listdata['bank_name']; ?></td>
+                    <td><?php echo $listdata['voucher_type']; ?></td>
+                    <td><?php echo $listdata['credit_debit']; ?></td>
+                    <td><?php echo $listdata['cheque_no']; ?></td>
+                    <td><?php echo $listdata['cheque_date']; ?></td>
+                    <td><?php echo $listdata['amount']; ?></td>
                     <td> 
-                    <a class="btn  btn-behance p-2" href="accounting-cash-management.php?id=<?php echo $accountdata['id']; ?>" title="edit"><i class="fa fa-pencil mr-0"></i></a>
-              </tr><!-- End Row -->
-              <?php } } ?>
+                    <a class="btn  btn-behance p-2" href="accounting-cheque.php?id=<?php echo $listdata['id']; ?>"title="edit"><i class="fa fa-pencil mr-0"></i></a>
+                </tr><!-- End Row -->
+                <?php } }?>
             </tbody>
             </table>
             </div>
