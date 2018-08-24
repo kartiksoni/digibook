@@ -55,7 +55,7 @@
                           <div class="enventory">
                               <a href="order.php" class="btn btn-dark btn-fw active">Order</a>
                               <a href="order-list-tab.php" class="btn btn-dark btn-fw ">List</a>
-                              <a href="#" class="btn btn-dark btn-fw ">Missed Sales Order</a>
+                              <a href="missed-sales-order.php" class="btn btn-dark btn-fw ">Missed Sales Order</a>
                               <a href="#" class="btn btn-dark btn-fw ">Settings</a>
                           </div>  
                       </div> 
