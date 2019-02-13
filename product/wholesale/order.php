@@ -1,0 +1,422 @@
+<?php $title = "Order"; ?>
+<?php include('include/usertypecheck.php');?>
+<?php include('include/permission.php'); ?>
+<?php $pharmacy_id = (isset($_SESSION['auth']['pharmacy_id']) && $_SESSION['auth']['pharmacy_id'] != '') ? $_SESSION['auth']['pharmacy_id'] : '';?>
+<?php $financial_id = (isset($_SESSION['auth']['financial'])) ? $_SESSION['auth']['financial'] : '';?>
+  <!-------------------------------------------ORDER EMAIL---- STRAT--------------------------->
+<?php
+if((isset($_REQUEST['id']) && $_REQUEST['id'] != '') && (isset($_REQUEST['group']) && $_REQUEST['group'] != '')) {
+   $vendor_id = $_REQUEST['id'];
+   $groups = $_REQUEST['group'];
+ 
+  $emails = [];
+  $name = "SELECT * FROM `ledger_master` where id = '".$vendor_id."'";
+  $getname = mysqli_query($conn, $name);
+  $vendor= mysqli_fetch_assoc($getname); 
+  $emails[] = $vendor['email'];
+  $emails[] = $_SESSION['auth']['email'];
+  
+
+if(isset($vendor['email']) && $vendor['email'] != '') {
+
+  $querys = "SELECT ord.id, ord.vendor_id, ord.product_id, ord.purchase_price, ord.gst, ord.unit, ord.qty,lg.name as vendor_name, pm.product_name, pm.mfg_company, pm.generic_name, st.state_code_gst as state FROM orders ord LEFT JOIN ledger_master lg ON ord.vendor_id = lg.id LEFT JOIN product_master pm ON ord.product_id = pm.id LEFT JOIN own_states st ON lg.state = st.id WHERE ord.pharmacy_id = '".$pharmacy_id."' AND ord.financial_id = '".$financial_id."' AND ord.groups = '".$groups."' AND ord.vendor_id = '".$vendor_id."'";
+          $res = mysqli_query($conn, $querys); 
+          $countrow =  mysqli_num_rows($res);
+         
+           if($countrow > 0){
+                 $html = "<center><h3>Order Summary</h3><table border='1' cellpadding='10' cellspacing='0'><thead><th>Sr. No</th><th>Vendor Name</th><th>Product</th><th>Purchase Price</th><th>GST(%)</th><th>Unit</th><th>Qty</th></thead><tbody>";
+                 $count = 1;
+               while($rows = mysqli_fetch_assoc($res)){
+                 
+                      $html .= "<tr>";
+                      $html .= "<td>".$count."</td>";
+                      $html .= "<td>".$rows['vendor_name']."</td>";
+                      $html .= "<td>".$rows['product_name']."</td>";
+                      $html .= "<td>".$rows['purchase_price']."</td>";
+                      $html .= "<td>".$rows['gst']."</td>";
+                      $html .= "<td>".$rows['unit']."</td>";
+                      $html .= "<td>".$rows['qty']."</td>";
+                      $html .= "<tr/>";
+
+                      $count++;
+                     
+                   }
+                    $html .="</tbody></table></center>";
+                  
+                       $sent = smtpmail($emails, '', '', 'Digibook Order', $html, '', '');
+                        
+                       if($sent){
+                        $_SESSION['msg']['success'] = 'Mail send successfully.';
+                       header('location:order.php');exit;
+                       }else{
+                         $_SESSION['msg']['fail'] = 'Mail Send Fail! Please Try Again.';
+                     header('location:order.php');exit;
+                       }
+               }
+            }
+          } 
+ ?>
+ 
+  <!-------------------------------------------ORDER EMAIL---- END--------------------------->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Order</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
+  <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="vendors/css/vendor.bundle.addons.css">
+  <!-- endinject -->
+  
+   <!-- plugin css for this page -->
+  <link rel="stylesheet" href="vendors/icheck/skins/all.css">
+  
+  <!-- plugin css for this page -->
+  <link rel="stylesheet" href="vendors/iconfonts/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="vendors/iconfonts/simple-line-icon/css/simple-line-icons.css">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="images/favicon.png" />
+
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="css/parsley.css">
+  <style type="text/css">
+    tr.group,
+    tr.group:hover {
+        background-color: #ddd !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-scroller">
+    <!-- Topbar -->
+    <?php include "include/topbar.php" ?>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- Right Sidebar -->
+        <?php include "include/sidebar-right.php" ?>
+        <!-- Left Navigation -->
+        <?php include "include/sidebar-nav-left.php" ?>
+        <div class="main-panel">
+        
+          <div class="content-wrapper">
+            <span id="errormsg"></span>
+            <div class="row">
+             <!-- Inventory Form ------------------------------------------------------------------------------------------------------>
+              <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <!-- Main Catagory -->
+                    <div class="row">
+                      <div class="col-12">
+                            <div class="enventory">
+                        	    <?php if((isset($user_sub_module) && in_array("Order", $user_sub_module)) || $_SESSION['auth']['user_type'] == "owner"){ ?>
+                          		    <a href="order.php" class="btn btn-dark btn-fw active">Order</a>
+                        	    <?php } if((isset($user_sub_module) && in_array("List", $user_sub_module)) || $_SESSION['auth']['user_type'] == "owner"){ ?>
+                          		    <a href="order-list-tab.php" class="btn btn-dark btn-fw ">List</a>
+                    		    <?php } if((isset($user_sub_module) && in_array("Missed Sales Order", $user_sub_module)) || $_SESSION['auth']['user_type'] == "owner"){ ?>
+                          		    <a href="missed-sales-order.php" class="btn btn-dark btn-fw ">Missed Sales Order</a>
+                    		    <?php } ?>
+                      	    </div>  
+                      </div> 
+                    </div>
+                    <hr>
+                    <!-- Sub Catagory Catagory -->
+                    <div class="row">
+                      <div class="col-12 bg-inverse-light" >
+                          <div class="order-sub">
+                              <a href="order.php" class="btn btn-grey-1 btn-rounded btn-xs <?php echo (basename($_SERVER['PHP_SELF']) == 'order.php') ? 'active' : ''; ?>">By Vendor</a>
+                              <a href="order-by-transition.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-transition.php') ? 'active' : ''; ?>">By Transition</a>
+                              <a href="order-by-min-qty.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-min-qty.php') ? 'active' : ''; ?>">By Min Reorder</a>
+                              <a href="order-by-product.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-product.php') ? 'active' : ''; ?>">By Product</a>
+                          </div>   
+                      </div> 
+                    </div>
+                    <hr>
+                    <form class="forms-sample" id="add_byvendor_temp" method="POST" autocomplete="off">
+                      <div class="form-group row">
+                        <div class="col-12 col-md-2 col-sm-3">
+                          <label>Select Vendor</label>
+                          <select class="js-example-basic-single" style="width:100%" name="vendor_id" id="vendor_id" data-parsley-errors-container="#error-vendor" required> 
+                              <option value="">Please select</option>
+                              <?php 
+                                $getAllVendorQuery = "SELECT id, name FROM ledger_master WHERE status=1 AND group_id=14 AND pharmacy_id = '".$pharmacy_id."' order by name";
+                                $getAllVendorRes = mysqli_query($conn, $getAllVendorQuery);
+                              ?>
+                              <?php if($getAllVendorRes && mysqli_num_rows($getAllVendorRes) > 0){ ?>
+                                <?php while ($getAllVendorRow = mysqli_fetch_array($getAllVendorRes)) { ?>
+                                  <option value="<?php echo $getAllVendorRow['id']; ?>"><?php echo $getAllVendorRow['name']; ?></option>
+                                <?php } ?>
+                              <?php } ?>
+                          </select>
+                          <div id="error-vendor"></div>
+                          <input type="hidden" id="statecode" name="statecode">
+                          <input type="hidden" id="vendor_name" name="vendor_name">
+                        </div>
+                        <div class="col-12 col-md-2 col-lg-2">
+                            <label >Select anyone</label>
+                            <select class="js-example-basic-single" style="width:100%" id="selectsearch"> 
+                                <option value="product">Product Name </option>
+                                <option value="mrp">MRP</option>
+                                <!--<option value="generic">Generic Name</option>-->
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <label id="search-lable">Product Name</label>
+                            <select class="js-example-basic-single" name="product_id" style="width:100%" id="product_id" required> 
+                                <option value="">Select Product</option>
+                            </select>
+                            <i class="fa fa-spin fa-refresh" id="product_loader" style="position: absolute;top: 40px;right: 40px;display: none;"></i>
+                            <input type="hidden" name="product_name" id="product_name">
+                        </div>
+                        <div class="col-12 col-md-2">
+                          <button type="button" id="add-newproduct" class="btn btn-primary" data-toggle="modal" data-target="#purchase-addproductmodel" style="margin-top:30px;"><i class="fa fa-plus"></i> Add New Product</button>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-12 col-md-2">
+                            <label >Purchase Price </label>
+                            <input type="text" class="form-control onlynumber" name="purchase_price" id="purchase_price" placeholder="0.00" value="0" data-parsley-type="number">
+                        </div>
+                        <div class="col-12 col-md-1">
+                            <label >GST</label>
+                            <input type="text" class="form-control onlynumber" name="gst" id="gst" placeholder="0" value="0" data-parsley-type="number">
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <label >Unit/Strip/Packing </label>
+                            <input type="text" class="form-control onlynumber" name="unit" id="unit" placeholder="0" value="0" data-parsley-type="number">
+                        </div>
+                        <div class="col-12 col-md-1">
+                            <label >Qty</label>
+                            <input type="text" class="form-control onlynumber" id="qty" name="qty" placeholder="0" value="1" data-parsley-type="number" data-parsley-min="1" required>
+                        </div>
+                        <div class="col-12 col-md-1">
+                          <button type="submit" class="btn btn-success mt-30" id="btn-addtop" style="margin-top:30px;" disabled>Add</button>
+                        </div>
+                      </div> 
+                      <div class="form-group row">
+                        <div class="col-6 col-md-3" style="display:none;">
+                          <label>Generic Name</label>
+                          <p id="generic-name"></p>
+                          <input type="hidden" name="generic_name" id="generic-name-input">
+                        </div>
+                        <div class="col-6 col-md-3">
+                          <label>Manufacturer Name</label>
+                          <p id="menufacturer-name"></p>
+                          <input type="hidden" name="menufacturer_name" id="menufacturer-name-input">
+                          <input type="hidden" name="editid" id="editid">
+                          <input type="hidden" name="id" id="id">
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+               <!-- Table ------------------------------------------------------------------------------------------------------>
+              <div class="col-md-12 grid-margin stretch-card" id="tmpdata-div" style="display: none;">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="col mt-3">
+                       <div class="row">
+                          <div class="col-12">
+                            <form id="add-byvendor-form" method="POST">
+                              <table class="table">
+                                <thead>
+                                  <tr>
+                                      <th>Vendor Name</th>
+                                      <th>Product</th>
+                                      <th>Purchase Price</th>
+                                      <th>GST</th>
+                                      <th>Unit / Strip / Packing</th>
+                                      <th>Qty</th>
+                                      <th>Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="tbody-tmp">
+                                 
+                                </tbody>
+                              </table>
+
+                              <table class="table">
+                                <tr>
+                                  <td class="text-left" width="10%">
+                                    <label>Reminder Day</label><input type="text" name="day" id="day" class="form-control onlynumber">
+                                  </td>
+                                  <td class="text-right">
+                                    <button type="submit" class="btn btn-success btn-savebyvendor" style="margin-top:30px;">Save</button>
+                                  </td>
+                                </tr>
+                              </table>
+                              
+                            </form>
+                          </div>
+                        </div>
+                    </div>
+                    <hr>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="col mt-3">
+                       <div class="row">
+                          <div class="col-12">
+                              <table class="table datatable">
+                                <thead>
+                                  <tr>
+                                      <th>Sr. No</th>
+                                      <th>Date/Time</th>
+                                      <th>Vendor Name</th>
+                                      <th>Total Order</th>
+                                      <th>Action</th>
+                                  </tr> 
+                                </thead>
+                                  <tbody>
+                                  </tbody>
+                              </table>
+                              <span class="flip-square-loader mx-auto text-center table-loader display-none" style="position: absolute;left: 45%;top: 20%;"></span>
+                          </div>
+                        </div>
+                    </div>
+                    <hr>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+          
+          <!-- partial:partials/_footer.php -->
+          <?php include "include/footer.php" ?>
+          <!-- partial -->
+
+          <!-- Add new Product Model -->
+          <?php include("include/addproductmodel.php");?>
+          <!--ADD COMPANY CODE MODEL-->
+          <?php include "include/addcompanymodel.php"?>
+
+        </div>
+        <!-- main-panel ends -->
+      </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  
+ <input type="hidden" name="cur_statecode" id="cur_statecode" value="<?php echo (isset($_SESSION['state_code'])) ? $_SESSION['state_code'] : ''; ?>" >
+  
+ <!-- HIDDEN TR HTML -->
+  <div id="addproduct-tr-html" style="display: none;">
+    <table>
+      <tr id="##DATAID##">
+        <td>
+          ##VENDORNAME##
+          <input type="hidden" name="vendor_id[]" class="vendor_id" value="##VENDORID##">
+          <input type="hidden" name="vendor_name[]" class="vendor_name" value="##VENDORNAME##">
+          <input type="hidden" name="state_code[]" class="state_code" value="##STATECODE##">
+        </td>
+        <td>
+          ##PRODUCTNAME##
+          <input type="hidden" name="product_id[]" class="product_id" value="##PRODUCTID##">
+          <input type="hidden" name="product_name[]" class="product_name" value="##PRODUCTNAME##">
+        </td>
+        <td>
+          ##MRP##
+          <input type="hidden" name="purchase_price[]" class="purchase_price" value="##MRP##">
+        </td>
+        <td>
+          ##GST##
+          <input type="hidden" name="gst[]" class="gst" value="##GST##">
+        </td>
+        <td>
+          ##UNIT##
+          <input type="hidden" name="unit[]" class="unit" value="##UNIT##">
+        </td>
+        <td>
+          ##QTY##
+          <input type="hidden" name="qty[]" class="qty" value="##QTY##">
+        </td>
+        <td>
+          <input type="hidden" name="generic_name[]" class="generic_name" value="##GENERICNAME##">
+          <input type="hidden" name="menufacturer_name[]" class="menufacturer_name" value="##MANUFACTURERNAME##">
+          <input type="hidden" name="editid[]" class="editid" value="##EDITID##">
+
+          <button type="button" class="btn  btn-danger p-2 edit-temp"><i class="icon-pencil mr-0"></i></button>
+          <button type="button" class="btn  btn-primary p-2 delete-temp"><i class="icon-trash mr-0"></i></button>
+        </td>
+      </tr>
+    </table>
+  </div>
+  
+  
+
+  <!-- plugins:js -->
+  <script src="vendors/js/vendor.bundle.base.js"></script>
+  <script src="vendors/js/vendor.bundle.addons.js"></script>
+  <!-- endinject -->
+  <!-- inject:js -->
+  <script src="js/off-canvas.js"></script>
+  <script src="js/hoverable-collapse.js"></script>
+  <script src="js/misc.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/todolist.js"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="js/file-upload.js"></script>
+  <script src="js/iCheck.js"></script>
+  <script src="js/typeahead.js"></script>
+  <script src="js/select2.js"></script>
+  
+  <!-- Custom js for this page-->
+  <script src="js/formpickers.js"></script>
+  <script src="js/form-addons.js"></script>
+  <script src="js/x-editable.js"></script>
+  <script src="js/dropify.js"></script>
+  <script src="js/dropzone.js"></script>
+  <script src="js/jquery-file-upload.js"></script>
+  <script src="js/formpickers.js"></script>
+  <script src="js/form-repeater.js"></script>
+  
+  <!-- toast notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
+  
+  <!-- Custom js for this page Modal Box-->
+  <script src="js/modal-demo.js"></script>
+  
+  
+  <!-- Datepicker Initialise-->
+ <script>
+    $('.datepicker').datepicker({
+      enableOnReadonly: true,
+      todayHighlight: true,
+    });
+ </script>
+ 
+  <!-- Custom js for this page Datatables-->
+  <script src="js/data-table.js"></script> 
+
+  <!-- script for custom validation -->
+<script src="js/parsley.min.js"></script>
+<script type="text/javascript">
+  $('form').parsley();
+  // $('.datatable').DataTable({'rowsGroup': [0]});
+</script>
+<script src="js/jquery-ui.js"></script>
+<script src="js/custom/order_by_vendor.js"></script>
+<script src="js/custom/product-gst-change.js"></script>
+<script src="js/custom/onlynumber.js"></script>
+  <!-- End custom js for this page-->
+</body>
+
+
+</html>

@@ -24,6 +24,7 @@
 
 				$query = "INSERT INTO users SET 
 		                                    name = '".$name."',
+		                                    user_type = 'owner',
 		                                    company= '".$company."',
 		                                    city= '".$city."',
 		                                    state = '".$state."',

@@ -1,27 +1,47 @@
 <?php include('include/usertypecheck.php');
-define('BASE_URL', 'http://localhost/digibook/product/api/api.php' );
-if(isset($_GET['id'])){
-  $id = $_GET['id'];
-  $url= BASE_URL."?action=edit_user&id=".$id."";  
-  $edit_data = file_get_contents($url);
-  $edit = json_decode($edit_data,true);
+//define('BASE_URL', 'http://localhost/digibook/product/api/api.php' );
+if(isset($_GET['user_id'])){
+  $id = $_GET['user_id'];
+  $getQry = "SELECT * FROM `admin_rights` WHERE user_id='".$id."'";
+  $get = mysqli_query($conn,$getQry);
+  $get = mysqli_fetch_assoc($get);
+  
+  $get_module = explode(",",$get['module']);
+  $get_sub_module = explode(",",$get['sub_module']);
+
 }
 
 
 if(isset($_POST['submit'])){
   $id = $_REQUEST['user_id'];
-  $pharmacy_id = $_REQUEST['pharmacy_id'];
+  //$pharmacy_id = $_REQUEST['pharmacy_id'];
   $owner_id = $_SESSION['auth']['id'];
   $module = implode(",",$_POST['module']);
   $sub_module = implode(",",$_POST['sub_module']);
 
-  $admin_rightsQry = "SELECT * FROM `admin_rights` WHERE owner_id='".$owner_id."'";
+  $admin_rightsQry = "SELECT * FROM `admin_rights` WHERE user_id='".$id."'";
   $admin_rights = mysqli_query($conn,$admin_rightsQry);
   $admin_rights_data = mysqli_fetch_assoc($admin_rights);
   if(!empty($admin_rights_data)){
-    echo "update";exit;
+    $UpdateQty = "UPDATE `admin_rights` SET `module`='".$module."',`sub_module`='".$sub_module."' WHERE user_id='".$id."'";
+    $result = mysqli_query($conn,$UpdateQty);
+    if($result){
+      $_SESSION['msg']['success'] = 'Admin Rights Updated Successfully.';
+      header('location:user.php?pharmacy_id='.$pharmacy_id);exit;
+    }else{
+      $_SESSION['msg']['fail'] = 'Admin Rights Updated Failed.';
+      header('location:user.php?pharmacy_id='.$pharmacy_id);exit;
+    }
   }else{
-    echo "insert";exit;
+    $inQty = "INSERT INTO `admin_rights`(`owner_id`, `pharmacy_id`,`user_id`,`module`, `sub_module`) VALUES ('".$owner_id."','".$pharmacy_id."','".$id."','".$module."','".$sub_module."')";
+    $result = mysqli_query($conn,$inQty);
+    if($result){
+      $_SESSION['msg']['success'] = 'Admin Rights Added Successfully.';
+      header('location:user.php?pharmacy_id='.$pharmacy_id);exit;
+    }else{
+      $_SESSION['msg']['fail'] = 'Admin Rights Added Failed.';
+      header('location:user.php?pharmacy_id='.$pharmacy_id);exit;
+    }
   }
 }
 
@@ -99,7 +119,6 @@ if(isset($_POST['edit'])){
       <div class="main-panel">
       
         <div class="content-wrapper">
-          <?php include('include/flash.php'); ?>
           <span id="errormsg"></span>
           <div class="row">
             
@@ -110,6 +129,12 @@ if(isset($_POST['edit'])){
               <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                   <div class="card-body">
+                      <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" id="checkall">Check All
+                        </label>
+                      </div>
+                      <hr>
                     <div class="row">
                       <?php
                       $module_query = mysqli_query($conn,"SELECT * FROM `module`");
@@ -120,7 +145,7 @@ if(isset($_POST['edit'])){
                           <div class="card-header bg-success">
                               <div class="form-check">
                               <label class="form-check-label">
-                                <input type="checkbox" id="module<?php echo $moduleInfo['id'];?>" value="<?php echo $moduleInfo['id']; ?>" class="form-check-input ModuleChange" name="module[]">
+                                <input type="checkbox" <?php if(isset($get_module) && in_array($moduleInfo['id'], $get_module)){echo "checked";} ?> id="module<?php echo $moduleInfo['id'];?>" value="<?php echo $moduleInfo['id']; ?>" class="form-check-input ModuleChange" name="module[]">
                                 <?php echo $moduleInfo['name']; ?>
                               </label>
                             </div>
@@ -134,7 +159,7 @@ if(isset($_POST['edit'])){
                             ?>
                             <div class="form-check">
                               <label class="form-check-label">
-                                <input type="checkbox" value="<?php echo $submoduleInfo['id']; ?>" data-moduleid="<?php echo $moduleInfo['id']; ?>" class="form-check-input SubModuleChange sub_module<?php echo $module_id; ?>" name="sub_module[]">
+                                <input type="checkbox" <?php if(isset($get_sub_module) && in_array($submoduleInfo['id'], $get_sub_module)){echo "checked";} ?> value="<?php echo $submoduleInfo['id']; ?>" data-moduleid="<?php echo $moduleInfo['id']; ?>" class="form-check-input SubModuleChange sub_module<?php echo $module_id; ?>" name="sub_module[]">
                                 <?php echo $submoduleInfo['name']; ?>
                               </label>
                             </div>
@@ -213,6 +238,11 @@ if(isset($_POST['edit'])){
   
   <!-- change status js -->
   <script src="js/custom/admin_rights.js"></script>
+  
+   
+ <!-- toast notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
   
   
   <!-- End custom js for this page-->

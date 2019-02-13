@@ -44,8 +44,8 @@ $( document ).ready(function() {
 	$("#add-creditnote-form").on("submit", function(event){
         event.preventDefault();
         var data = $(this).serialize();
-        var htmlsuccess = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
-        var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+        // var htmlsuccess = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+        // var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
         var dataarr = JSON.parse('{"' + decodeURI(data).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
 
         $.ajax({
@@ -59,24 +59,27 @@ $( document ).ready(function() {
             },
             success: function (data) {
               if(data.status == true){
-                htmlsuccess = htmlsuccess.replace("##MSG##", data.message);
-                $('#errormsg').html(htmlsuccess);
+                 showSuccessToast(data.message);
+                // htmlsuccess = htmlsuccess.replace("##MSG##", data.message);
+                // $('#errormsg').html(htmlsuccess);
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 $('#apply-creditnote-model').modal('toggle');
                 $('#add-creditnote-form')[0].reset();
                 $('#tr-'+dataarr.purchase_return_id).find('.status').html('<div class="badge badge-outline-danger">Close</div>');
                 
               }else{
-                htmlerror =  htmlerror.replace("##MSG##", data.message);
-                $('#addcreditnote-errormsg').html(htmlerror);
+                showDangerToast(data.message);
+                // htmlerror =  htmlerror.replace("##MSG##", data.message);
+                // $('#addcreditnote-errormsg').html(htmlerror);
                 $("html, body").animate({ scrollTop: 0 }, "slow");
               }
               $('#btn-addcreditnote').html('Save');
               $('#btn-addcreditnote').prop('disabled', false);
             },
             error: function () {
-              htmlerror =  htmlerror.replace("##MSG##", 'Somthing Want Wrong!');
-              $('#addcreditnote-errormsg').html(htmlerror);
+              showDangerToast('Somthing Want Wrong! Try again.');
+              // htmlerror =  htmlerror.replace("##MSG##", 'Somthing Want Wrong!');
+              // $('#addcreditnote-errormsg').html(htmlerror);
               $("html, body").animate({ scrollTop: 0 }, "slow");
 
               $('#btn-addcreditnote').html('Save');

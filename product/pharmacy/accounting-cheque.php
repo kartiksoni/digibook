@@ -1,52 +1,68 @@
+<?php $title = "Bank Transaction"; ?>
 <?php include('include/usertypecheck.php');
+include('include/permission.php');
 
 if (isset($_POST['submit'])) {
-
   $user_id = $_SESSION['auth']['id'];
-  $voucherno = $_POST['voucherno'];
-  $date = $_POST['date'];
+  
+  if(isset($_GET['id']) && $_GET['id'] != ''){
+      $voucherno = $_POST['voucherno'];
+  }else{
+      $voucherno = getaccountingchequevoucher($_POST['voucher_type']);
+  }
+  $date = date('Y-m-d', strtotime(str_replace('/','-',$_POST['date'])));
   $bank = $_POST['bank'];
   $vouchertype = $_POST['voucher_type'];
-  $cr_dr = $_POST['cr_dr'];
+  $cr_dr = $_POST['credit_debit'];
   $group = $_POST['group'];
   $perticular = $_POST['perticular'];
   $chequeno = $_POST['cheque'];
-  $chequedate = $_POST['cheque_date'];
+  $chequedate = date('Y-m-d', strtotime(str_replace('/', '-', $_POST['cheque_date'])));
   $amount = $_POST['amount'];
   $remark = $_POST['remark'];
+  $reverse_change = $_POST['reversechange'];
+  $reverse_change_gst = $_POST['gst'];
+  $owner_id = (isset($_SESSION['auth']['owner_id']) && $_SESSION['auth']['owner_id'] != '') ? $_SESSION['auth']['owner_id'] : NULL;
+  $admin_id = (isset($_SESSION['auth']['admin_id']) && $_SESSION['auth']['admin_id'] != '') ? $_SESSION['auth']['admin_id'] : NULL;
+  $pharmacy_id = (isset($_SESSION['auth']['pharmacy_id']) && $_SESSION['auth']['pharmacy_id'] != '') ? $_SESSION['auth']['pharmacy_id'] : NULL;
+  $financial_id = (isset($_SESSION['auth']['financial']) && $_SESSION['auth']['financial'] != '') ? $_SESSION['auth']['financial'] : NULL;
 
   if(isset($_REQUEST['id']) && $_REQUEST['id'] != ''){
   
     $editid = $_REQUEST['id'];
 
-    $editqry = "UPDATE `accounting_cheque` SET `voucher_no`= '".$voucherno."', `voucher_date`= '".$date."', `bank_name`= '".$bank."',`voucher_type`= '".$vouchertype."', `credit_debit`= '".$cr_dr."', `group_id`= '".$group."', `perticular`= '".$perticular."',`cheque_no`= '".$chequeno."', `cheque_date`= '".$chequedate."', `amount`= '".$amount."', `remark`= '".$remark."', `modified`= '".date('Y-m-d H:i:s')."', `modifiedby`= '".$user_id."' WHERE id = '".$editid."'";
+    $editqry = "UPDATE `accounting_cheque` SET `voucher_no`= '".$voucherno."', `voucher_date`= '".$date."', `bank_name`= '".$bank."',`voucher_type`= '".$vouchertype."', `credit_debit`= '".$cr_dr."', `group_id`= '".$group."', `perticular`= '".$perticular."',`cheque_no`= '".$chequeno."', `cheque_date`= '".$chequedate."', `amount`= '".$amount."', `remark`= '".$remark."',`reverse_change`='".$reverse_change."',`reverse_change_gst`='".$reverse_change_gst."', `modified`= '".date('Y-m-d H:i:s')."', `modifiedby`= '".$user_id."' WHERE id = '".$editid."'";
 
     $editrun = mysqli_query($conn, $editqry);
     if($editrun){
 
-      $_SESSION['msg']['success'] = 'Data Updated Successfully.';
-      header('location:accounting-cheque.php');
-      exit;
+      $_SESSION['msg']['success'] = 'Transaction Updated Successfully.';
+      header('location:accounting-cheque-list.php');exit;
     }
     else{
-      $_SESSION['msg']['fail'] = 'Updated fail.';
+      $_SESSION['msg']['fail'] = 'Transaction Updated fail.';
+      header('location:accounting-cheque.php');exit;
     }
 
   }
   else{
-  $addqry = "INSERT INTO `accounting_cheque`(`voucher_no`, `voucher_date`, `bank_name`, `voucher_type`, `credit_debit`, `group_id`, `perticular`, `cheque_no`, `cheque_date`, `amount`, `remark`, `created`, `createdby`) VALUES ('" . $voucherno . "', '" . $date . "', '" . $bank . "', '" . $vouchertype . "', '" . $cr_dr . "', '" . $group . "', '" . $perticular . "', '" . $chequeno . "', '" . $chequedate . "', '" . $amount . "', '" . $remark . "', '" . date('Y-m-d H:i:s') . "', '" . $user_id . "')";
+  $addqry = "INSERT INTO `accounting_cheque`(`owner_id`, `admin_id`, `pharmacy_id`, `financial_id`, `voucher_no`, `voucher_date`, `bank_name`, `voucher_type`, `credit_debit`, `group_id`, `perticular`, `cheque_no`, `cheque_date`, `amount`, `remark`,`reverse_change`,`reverse_change_gst`,`created`, `createdby`) VALUES ('".$owner_id."', '".$admin_id."', '".$pharmacy_id."', '".$financial_id."', '" . $voucherno . "', '" . $date . "', '" . $bank . "', '" . $vouchertype . "', '" . $cr_dr . "', '" . $group . "', '" . $perticular . "', '" . $chequeno . "', '" . $chequedate . "', '" . $amount . "', '" . $remark . "','".$reverse_change."','".$reverse_change_gst."', '" . date('Y-m-d H:i:s') . "', '" . $user_id . "')";
 
   $addrun = mysqli_query($conn, $addqry);
 
   if ($addrun) {
-
-    $_SESSION['msg']['success'] = 'Data Added Successfully.';
+    $_SESSION['msg']['success'] = 'Transaction Added Successfully.';
+    header('location:accounting-cheque-list.php');exit;
   } else {
-
-    $_SESSION['msg']['fail'] = 'Added Fail';
+    $_SESSION['msg']['fail'] = 'Transaction Added Fail';
+    header('location:accounting-cheque.php');exit;
   }
 }
 }
+?>
+
+<?php 
+    $allBank = getBank();
 ?>
 
 <!DOCTYPE html>
@@ -56,7 +72,7 @@ if (isset($_POST['submit'])) {
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>DigiBooks | <?php echo (isset($_GET['id']) && $_GET['id'] != '') ? 'Edit' : 'Add'; ?> Cheque</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -115,36 +131,7 @@ if (isset($_POST['submit'])) {
         
         <!-- Right Sidebar -->
         <?php include "include/sidebar-right.php" ?>
-        <?php function getcashpaymentno()
-        {
-          global $conn;
-          $voucher_no = '';
-
-          $voucherqry = "SELECT * FROM accounting_cheque ORDER BY id DESC LIMIT 1";
-          $voucherrun = mysqli_query($conn, $voucherqry);
-          if ($voucherrun) {
-            $count = mysqli_num_rows($voucherrun);
-            if ($count !== '' && $count !== 0) {
-              $row = mysqli_fetch_assoc($voucherrun);
-              $voucherno = (isset($row['voucher_no'])) ? $row['voucher_no'] : '';
-
-              if ($voucherno != '') {
-                $vouchernoarr = explode('-', $voucherno);
-                $voucherno = $vouchernoarr[1];
-                $voucherno = $voucherno + 1;
-                $voucherno = sprintf("%05d", $voucherno);
-                $voucher_no = 'CP-' . $voucherno;
-              }
-            } else {
-              $voucherno = sprintf("%05d", 1);
-              $voucher_no = 'CP-' . $voucherno;
-            }
-          }
-          return $voucher_no;
-        }
-        ?>
-       
-       <!-- Left Navigation -->
+        <!-- Left Navigation -->
         <?php include "include/sidebar-nav-left.php" ?>
         
         
@@ -153,93 +140,145 @@ if (isset($_POST['submit'])) {
       <div class="main-panel">
       
         <div class="content-wrapper">
-          <?php include('include/flash.php'); ?>
           <span id="errormsg"></span>
             <form class="forms-sample" method="post" action="">
               <div class="row">
-          
-          
+                <?php include "include/transaction_header.php"; ?>
                 <!-- Form -->
                 <div class="col-md-12 grid-margin stretch-card">
                   <div class="card">
                     <div class="card-body">
-                
-                      <!-- Main Catagory -->
-                      <div class="row">
-                        <div class="col-12">
-                          <div class="purchase-top-btns">
-                            <a href="accounting-cash-management.php" class="btn btn-dark ">Cash Management</a>
-                            <a href="accounting-customer-receipt.php" class="btn btn-dark btn-fw">Customer Receipt</a>
-                            <a href="accounting-cheque.php" class="btn btn-dark  btn-fw active">Cheque</a>
-                            <a href="accounting-vendor-payments.php" class="btn btn-dark  btn-fw">Vendor Payment</a>
-                            <a href="financial-year.php" class="btn btn-dark  btn-fw">Financial Year Settings</a>
-                            <a href="purchase-return.php" class="btn btn-dark  btn-fw">Credit Note / Purchase Note</a>
-                            <a href="quotation-estimate-proformo-invoice.php" class="btn btn-dark  btn-fw">Quotation / Estimate / Proformo Invoice</a>    
-                          </div>   
-                        </div> 
-                      </div>
-                      <hr>
                     
                       <!-- First Row  -->
 
                       <?php
                       if(isset($_REQUEST['id']) && $_REQUEST['id'] != ''){
                         $id = $_REQUEST['id'];
-                        $accountdataqry = "select * from accounting_cheque where id = '".$id."'";
+                        $pharmacy_id = (isset($_SESSION['auth']['pharmacy_id']) && $_SESSION['auth']['pharmacy_id'] != '') ? $_SESSION['auth']['pharmacy_id'] : NULL;
+                        $financial_id = (isset($_SESSION['auth']['financial']) && $_SESSION['auth']['financial'] != '') ? $_SESSION['auth']['financial'] : NULL;
+                        $accountdataqry = "select * from accounting_cheque where id = '".$id."' AND pharmacy_id = '".$pharmacy_id."' AND financial_id = '".$financial_id."'";
                         $accountdatarun = mysqli_query($conn, $accountdataqry);
                         $accountdata = mysqli_fetch_assoc($accountdatarun);
+                       
+                        
                       }
                       ?>
                     
                       <div class="form-group row">
                         
+                        <?php if(isset($_REQUEST['id'])){ ?>
                         <div class="col-12">
-                          <label for="exampleInputName1" class="pull-right bg-success color-white p-2">Running Balance: 123456</label>
+                          <label for="exampleInputName1" class="pull-right bg-success color-white p-2">Running Balance: <span id="bank_running">0</span></label>
                         </div>     
-                        
+                      <?php } else {?>
+                        <div class="col-12">
+                          <label for="exampleInputName1" class="pull-right bg-success color-white p-2">Running Balance: <span id="bank_running">0</span></label>
+                        </div>     
+                        <?php } ?>
                       </div>
                       
                       <div class="form-group row">
                         
                         <div class="col-12 col-md-2">
-                          <label for="exampleInputName1">Voucher No.</label>
-                          <?php
-                          $voucher = getcashpaymentno();
-                          ?>
-                          <input type="text" class="form-control" id="exampleInputName1" name="voucherno" placeholder="Voucher No." value="<?php if(isset($_REQUEST['id'])){echo $accountdata['voucher_no'];}else{echo $voucher; } ?>">
+                          <label for="exampleInputName1">Voucher No.<span class="text-danger">*</span></label>
+                          <input type="text" class="form-control" id="voucherno" name="voucherno" placeholder="Voucher No." value="<?php if(isset($_REQUEST['id'])){echo $accountdata['voucher_no'];}else{echo getaccountingchequevoucher('payment'); } ?>" required="">
                         </div>
                         
                         <div class="col-12 col-md-2">
-                          <label for="exampleInputName1">Date</label>
+                          <label for="exampleInputName1">Date<span class="text-danger">*</span></label>
                           <div id="datepicker-popup1" class="input-group date datepicker">
-                            <input type="text" class="form-control border" name="date" value="<?php if(isset($_REQUEST['id'])){echo $accountdata['voucher_date'];}else{echo date("d/m/Y"); } ?>">
+                            <input type="text" class="form-control border" name="date" value="<?php if(isset($_REQUEST['id'])){echo date('d-m-Y', strtotime(str_replace('/', '-', $accountdata['voucher_date'])));}else{echo date("d/m/Y"); } ?>" required="" data-parsley-errors-container="#error-date">
                             <span class="input-group-addon input-group-append border-left">
                               <span class="mdi mdi-calendar input-group-text"></span>
                             </span>
                           </div>
+                          <span id="error-date"></span>
                         </div>
                         
                         
                         <div class="col-12 col-md-2">
-                          <label for="exampleInputName1">Bank Name</label>
-                          <select class="js-example-basic-single" style="width:100%" name="bank"> 
-                            <option value="SBI" <?php if(isset($_REQUEST['id']) && $accountdata['bank_name'] == "SBI"){echo "selected";}?>>SBI</option>
-                            <option value="AXIS" <?php if(isset($_REQUEST['id']) && $accountdata['bank_name'] == "AXIS"){echo "selected";}?>>AXIS</option>
+                          <label for="exampleInputName1">Bank Name<span class="text-danger">*</span></label>
+                          <select class="js-example-basic-single" id="bank" style="width:100%" name="bank" required="" data-parsley-errors-container="#error-bank">
+                            <option value="">Select Bank</option>
+                            <?php if(isset($allBank) && !empty($allBank)){ ?>
+                                <?php foreach ($allBank as $key => $value) { ?>
+                                  <option value="<?php echo $value['id']; ?>" <?php echo (isset($accountdata['bank_name']) && $accountdata['bank_name'] == $value['id']) ? 'selected' : ''; ?> > <?php echo $value['name']; ?> </option>
+                                <?php } ?>
+                            <?php } ?>
                           </select>
+                          <span id="error-bank"></span>
                         </div>
                         
                         <div class="col-12 col-md-2">
-                          <label for="exampleInputName1">Voucher Type</label>
-                            <select class="js-example-basic-single" style="width:100%" name="voucher_type"> 
+                          <label for="exampleInputName1">Voucher Type<span class="text-danger">*</span></label>
+                            <select class="js-example-basic-single voucher" style="width:100%" name="voucher_type"> 
                               <option value="payment" <?php if(isset($_REQUEST['id']) && $accountdata['voucher_type'] == "payment"){echo "selected";}?>>Payment</option>
                               <option value="receipt" <?php if(isset($_REQUEST['id']) && $accountdata['voucher_type'] == "receipt"){echo "selected";}?>>Receipt</option>
                             </select>
                         </div>
                       </div>
+                      <div class="form-group row">
+                          <div class="col-12 col-md-4">
+                          <label for="exampleInputName1">Reverse Change</label>
+                          <div class="row no-gutters">
+                                  
+                            <div class="col-12 col-md-6">
+                              <div class="form-radio">
+                                <label class="form-check-label">
+                                  <input type="radio" class="form-check-input reversechange" name="reversechange" value="no" checked 
+                                  <?php if (isset($_REQUEST['id']) && $accountdata['reverse_change'] == "no"){echo "checked";} ?>>
+                               		No
+                                </label>
+                              </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6">
+                              <div class="form-radio">
+                                <label class="form-check-label">
+                                  <input type="radio" class="form-check-input reversechange" name="reversechange" value="yes" <?php if (isset($_REQUEST['id']) && $accountdata['reverse_change'] == "yes") {echo "checked";} ?>>
+                                  Yes
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-12 col-md-4" id="reversechangeper" <?php if (isset($_REQUEST['id']) && $accountdata['reverse_change'] == "yes") {} else { ?> style="display: none;"<?php } ?>>
+                          <label for="exampleInputName1">GST%</label>
+                            <div class="row no-gutters">
+                              <div class="col-12 col-md-4">
+                                <div class="form-radio">
+                                  <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="gst" id="" value="5" <?php if (isset($_REQUEST['id']) && $accountdata['reverse_change_gst'] == "5") {echo "checked";} ?>> 
+                                    5%
+                                  </label>
+                                </div>
+                              </div>
+
+                              <div class="col-12 col-md-4">
+                                <div class="form-radio">
+                                  <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="gst" id="" value="12" <?php if (isset($_REQUEST['id']) && $accountdata['reverse_change_gst'] == "12") {echo "checked";} ?>>
+                                    12%
+                                  </label>
+                                </div>
+                              </div>
+
+                              <div class="col-12 col-md-4">
+                                <div class="form-radio">
+                                  <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="gst" id="" value="18" <?php if (isset($_REQUEST['id']) && $accountdata['reverse_change_gst'] == "18") {echo "checked";} ?>>
+                                    18%
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                      </div>
                     </div>    
                   </div>
                 </div>
-              </div>
+              
             
      
             
@@ -256,21 +295,26 @@ if (isset($_POST['submit'])) {
                           <table id="order-listing1" class="table">
                             <thead>
                               <tr>
-                                <th>Credit/Debit</th>
-                                <th>Type</th>
-                                <th>Perticulars</th>
+                                <th>Credit/Debit<span class="text-danger">*</span></th>
+                                <th>Type<span class="text-danger">*</span></th>
+                                <th>Perticulars<span class="text-danger">*</span></th>
                                 <th>Cheque No.</th>
-                                <th>Cheque Date</th>
-                                <th>Amount</th>
+                                <th>Cheque Date<span class="text-danger">*</span></th>
+                                <th>Amount<span class="text-danger">*</span></th>
                               </tr>
                             </thead>
                               <tbody>
                                 <!-- Row Starts --> 	
                                 <tr>
-                                  <td><input type="text" class="form-control" id="exampleInputName1" name="cr_dr" placeholder="Cr/Dr"       required="" value="<?php if(isset($_REQUEST['id'])){echo $accountdata['credit_debit']; }?>">
+                                  <td><input type="text" class="form-control credit_debit" name="credit_debit" readonly required="" value="<?php if(isset($_REQUEST['id']) && $accountdata['credit_debit']) { echo ucfirst($accountdata['credit_debit']);} else { echo "Credit";}?>" >
+                                  <!-- <select class="js-example-basic-single" name="credit_debit" style="width:100%" id="exampleInputName1" required="">
+                                   <option value="credit">Credit </option>
+                                            
+                                   <option value="debit">Debit </option> 
+                                  </select> -->
                                   </td>
 
-                                  <td><select class="js-example-basic-single" name="group" style="width:100%" id="group" required=""> 
+                                  <td><select class="js-example-basic-single" name="group" style="width:100%" id="group" required="" data-parsley-errors-container="#error-type"> 
                                         <option value="">Please Select</option>
                                           <?php
                                           $dataqry = "SELECT * FROM `group`";
@@ -279,53 +323,66 @@ if (isset($_POST['submit'])) {
                                           <option value="<?php echo $data['id']; ?>" <?php echo (isset($accountdata['group_id']) && $accountdata['group_id'] == $data['id']) ? 'selected' : ''; ?>> <?php echo $data['name']; ?></option>
                                           <?php  } ?>     
                                       </select>
+                                      <span id="error-type"></span>
                                   </td>
 
                                   <td>
-                                    <select class="js-example-basic-single" name="perticular" style="width:100%" id="ledger" required=""> 
+                                    <select class="js-example-basic-single" name="perticular" style="width:100%" id="ledger" required="" data-parsley-errors-container="#error-perticular"> 
                                       <option value="">Please Select</option>
                                       <?php
-                                      $sqlqry = "SELECT * FROM `ledger_master` WHERE group_id = '".$accountdata['group_id']."'";
+                                      $p_id = (isset($_SESSION['auth']['pharmacy_id']) && $_SESSION['auth']['pharmacy_id'] != '') ? $_SESSION['auth']['pharmacy_id'] : NULL;
+                                      $sqlqry = "SELECT * FROM `ledger_master` WHERE group_id = '".$accountdata['group_id']."' AND pharmacy_id = '".$p_id."'";
                                       $sqlqryrun = mysqli_query($conn, $sqlqry);
                                       while ($sqldata = mysqli_fetch_assoc($sqlqryrun)) { ?>
                                         <option value="<?php echo $sqldata['id']; ?>" <?php echo (isset($accountdata['perticular']) && $accountdata['perticular'] == $sqldata['id']) ? 'selected' : '';?>> <?php echo $sqldata['name']; ?> 
                                       </option>
                                       <?php } ?>
                                     </select>
+                                    <div class="badge badge-primary pull-right display-none" id="ledger_running_balance">0</div>
+                                    <span id="error-perticular"></span>
                                   </td>
 
-                                  <td><input type="text" class="form-control" name="cheque" id="exampleInputName1" placeholder="Cheque      No" value="<?php if(isset($_REQUEST['id'])){echo $accountdata['cheque_no']; }?>">
+                                  <td><input type="text" class="form-control" name="cheque" id="exampleInputName1" placeholder="Cheque No" autocomplete="off" value="<?php if(isset($_REQUEST['id'])){echo $accountdata['cheque_no']; }?>">
                                   </td>
 
                                   <td>
                                     <div id="datepicker-popup2" class="input-group date datepicker" >
-                                      <input type="text" name="cheque_date" class="form-control border" value="<?php if(isset($_REQUEST['id'])){echo $accountdata['cheque_date'];}else{echo date("d/m/Y"); }?>" required="">
+                                      <input type="text" name="cheque_date" class="form-control border" value="<?php if(isset($_REQUEST['id'])){echo date('d/m/Y', strtotime(str_replace('/', '-', $accountdata['cheque_date'])));}else{echo date("d/m/Y"); }?>" required="" data-parsley-errors-container="#error-chequedate">
                                       <span class="input-group-addon input-group-append border-left">
                                         <span class="mdi mdi-calendar input-group-text"></span>
                                       </span>
                                     </div>
+                                    <span id="error-chequedate"></span>
                                   </td>
                                       
-                                  <td><input type="text" name="amount" class="form-control" id="exampleInputName1" 
-                                      placeholder="Enter Amount" data-parsley-type="number" required="" value="<?php if(isset($_REQUEST['id'])){echo $accountdata['amount']; }?>">
+                                  <td><input type="text" name="amount" class="form-control onlynumber" id="exampleInputName1" 
+                                      placeholder="Enter Amount" data-parsley-type="number" required="" autocomplete="off" value="<?php if(isset($_REQUEST['id'])){echo $accountdata['amount']; }?>">
                                   </td>
                                       
                                 </tr><!-- End Row --> 	
                                   
                                 <tr>
-                                  <td>
-                                    <label for="exampleInputName1">Remarks</label>
-                                      <textarea  class="form-control" name="remark" id="exampleInputName1" 
-                                        placeholder="Remarks" rows="3"><?php if(isset($_REQUEST['id'])){echo $accountdata['remark']; }?>
-                                      </textarea> 
-                                  </td>
-                                    <td colspan="3">&nbsp;</td>
+                                    <td>
+                                        <label for="exampleInputName1">Remarks</label>
+                                        <textarea  class="form-control" name="remark" id="exampleInputName1" 
+                                            placeholder="Remarks" rows="3"><?php if(isset($_REQUEST['id'])){echo $accountdata['remark']; }?>
+                                        </textarea> 
+                                    </td>
+                                    <td></td>
+                                    <td colspan="3">
+                                        <div id="bank-detail" <?php if(isset($_REQUEST['id'])){ }else{?> class="display-none" <?php } ?>>
+                                            <p>Bank Name : <span id="bank_name"></span></p>
+                                            <p>Bank A/C No : <span id="bank_ac_no"></span></p>
+                                            <p>Branch Name : <span id="branch_name"></span></p>
+                                            <p>IFSC Code : <span id="ifsc_code"></span></p>
+                                        </div>
+                                    </td>
                                 </tr>
                               </tbody>
                           </table>
                             
                             <div class="col-12">
-                            	<a href="accounting-cheque-list.php" class="btn btn-dark mt-30 pull-left">Back</a>
+                            	<a href="accounting-cheque-list.php" class="btn btn-light mt-30 pull-left">Back</a>
                               <button type="submit" name="submit" class="btn btn-success mt-30 pull-right">Submit</button>
                             </div>                
                         </div>   
@@ -335,6 +392,7 @@ if (isset($_POST['submit'])) {
                 </div>  
               </div>
             </form>
+        </div>
         </div>
         <!-- content-wrapper ends -->
         
@@ -377,10 +435,15 @@ if (isset($_POST['submit'])) {
   <script src="js/jquery-file-upload.js"></script>
   <script src="js/formpickers.js"></script>
   <script src="js/form-repeater.js"></script>
+  <script src="js/custom/onlynumber.js"></script>
   
   <!-- Custom js for this page Modal Box-->
   <script src="js/modal-demo.js"></script>
   
+  
+  <!--    Toast Notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
   
   <!-- Datepicker Initialise-->
  <script>

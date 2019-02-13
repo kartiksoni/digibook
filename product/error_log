@@ -24,3 +24,48 @@
 [04-Aug-2018 17:04:48 Asia/Kolkata] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home2/yamunxym/digibooks.cloud/product/login.php:3) in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 30
 [04-Aug-2018 17:05:20 Asia/Kolkata] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home2/yamunxym/digibooks.cloud/product/login.php:3) in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 30
 [04-Aug-2018 17:05:39 Asia/Kolkata] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home2/yamunxym/digibooks.cloud/product/login.php:3) in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 30
+[18-Sep-2018 18:25:52 Asia/Kolkata] PHP Warning:  require(/home2/yamunxym/digibooks.cloud/product/../PHPMailer/PHPMailerAutoload.php): failed to open stream: No such file or directory in /home2/yamunxym/digibooks.cloud/product/forgot-password.php on line 7
+[18-Sep-2018 18:25:52 Asia/Kolkata] PHP Fatal error:  require(): Failed opening required '/home2/yamunxym/digibooks.cloud/product/../PHPMailer/PHPMailerAutoload.php' (include_path='.:/opt/php56/lib/php') in /home2/yamunxym/digibooks.cloud/product/forgot-password.php on line 7
+[18-Sep-2018 18:29:25 Asia/Kolkata] PHP Notice:  Undefined variable: subject in /home2/yamunxym/digibooks.cloud/product/forgot-password.php on line 37
+[20-Sep-2018 12:28:31 Asia/Kolkata] PHP Warning:  require_once(/home2/yamunxym/digibooks.cloud/product/include/../PHPMailer/PHPMailerAutoload.php): failed to open stream: No such file or directory in /home2/yamunxym/digibooks.cloud/product/include/function.php on line 179
+[20-Sep-2018 12:28:31 Asia/Kolkata] PHP Fatal error:  require_once(): Failed opening required '/home2/yamunxym/digibooks.cloud/product/include/../PHPMailer/PHPMailerAutoload.php' (include_path='.:/opt/php56/lib/php') in /home2/yamunxym/digibooks.cloud/product/include/function.php on line 179
+[20-Sep-2018 12:33:03 Asia/Kolkata] PHP Notice:  Undefined variable: reset_token in /home2/yamunxym/digibooks.cloud/product/changepassword.php on line 91
+[20-Sep-2018 12:34:06 Asia/Kolkata] PHP Notice:  Undefined variable: reset_token in /home2/yamunxym/digibooks.cloud/product/changepassword.php on line 91
+[20-Sep-2018 12:35:06 Asia/Kolkata] PHP Notice:  Undefined variable: reset_token in /home2/yamunxym/digibooks.cloud/product/changepassword.php on line 91
+[20-Sep-2018 12:38:48 Asia/Kolkata] PHP Notice:  Undefined variable: reset_token in /home2/yamunxym/digibooks.cloud/product/changepassword.php on line 91
+[21-Sep-2018 12:01:37 Asia/Kolkata] PHP Notice:  Undefined variable: reset_token in /home2/yamunxym/digibooks.cloud/product/changepassword.php on line 91
+[21-Sep-2018 12:02:14 Asia/Kolkata] PHP Notice:  Undefined variable: reset_token in /home2/yamunxym/digibooks.cloud/product/changepassword.php on line 91
+[21-Sep-2018 12:02:57 Asia/Kolkata] PHP Notice:  Undefined variable: reset_token in /home2/yamunxym/digibooks.cloud/product/changepassword.php on line 91
+[21-Sep-2018 12:03:45 Asia/Kolkata] PHP Notice:  Undefined index: reset_token in /home2/yamunxym/digibooks.cloud/product/changepassword.php on line 8
+[21-Sep-2018 12:04:00 Asia/Kolkata] PHP Notice:  Undefined variable: reset_token in /home2/yamunxym/digibooks.cloud/product/changepassword.php on line 91
+[21-Sep-2018 12:06:14 Asia/Kolkata] PHP Notice:  Undefined variable: reset_token in /home2/yamunxym/digibooks.cloud/product/changepassword.php on line 91
+[21-Sep-2018 18:15:32 Asia/Kolkata] PHP Notice:  Undefined variable: reset_token in /home2/yamunxym/digibooks.cloud/product/changepassword.php on line 91
+[22-Sep-2018 09:46:35 Asia/Kolkata] PHP Notice:  Undefined variable: reset_token in /home2/yamunxym/digibooks.cloud/product/changepassword.php on line 91
+[22-Sep-2018 13:39:27 Asia/Kolkata] PHP Notice:  Undefined variable: reset_token in /home2/yamunxym/digibooks.cloud/product/changepassword.php on line 91
+[13-Nov-2018 16:13:09 Asia/Kolkata] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home2/yamunxym/digibooks.cloud/product/index-dashboard-confirm.php:3) in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 30
+[13-Nov-2018 16:15:09 Asia/Kolkata] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home2/yamunxym/digibooks.cloud/product/index-dashboard-confirm.php:3) in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 30
+[13-Nov-2018 16:17:42 Asia/Kolkata] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home2/yamunxym/digibooks.cloud/product/index-dashboard-confirm.php:3) in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 30
+[13-Nov-2018 16:17:49 Asia/Kolkata] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home2/yamunxym/digibooks.cloud/product/index-dashboard-confirm.php:3) in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 30
+[13-Nov-2018 16:18:57 Asia/Kolkata] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home2/yamunxym/digibooks.cloud/product/index-dashboard-confirm.php:3) in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 30
+[13-Nov-2018 16:19:01 Asia/Kolkata] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home2/yamunxym/digibooks.cloud/product/index-dashboard-confirm.php:3) in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 30
+[13-Nov-2018 16:20:44 Asia/Kolkata] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home2/yamunxym/digibooks.cloud/product/index-dashboard-confirm.php:3) in /home2/yamunxym/digibooks.cloud/product/index-dashboard-confirm.php on line 9
+[13-Nov-2018 16:21:25 Asia/Kolkata] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home2/yamunxym/digibooks.cloud/product/index-dashboard-confirm.php:3) in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 30
+[13-Nov-2018 16:22:51 Asia/Kolkata] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home2/yamunxym/digibooks.cloud/product/index-dashboard-confirm.php:3) in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 3
+[20-Nov-2018 11:50:13 Asia/Kolkata] PHP Warning:  mysqli_connect(): (HY000/1040): Too many connections in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 13
+[20-Nov-2018 11:50:13 Asia/Kolkata] PHP Notice:  Trying to get property of non-object in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 15
+[20-Nov-2018 11:50:13 Asia/Kolkata] PHP Warning:  mysqli_character_set_name() expects parameter 1 to be mysqli, boolean given in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 18
+[20-Nov-2018 11:50:13 Asia/Kolkata] PHP Warning:  mysqli_set_charset() expects parameter 1 to be mysqli, boolean given in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 21
+[20-Nov-2018 11:50:13 Asia/Kolkata] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, boolean given in /home2/yamunxym/digibooks.cloud/product/include/config.php on line 22
+[28-Dec-2018 11:27:05 Asia/Kolkata] PHP Fatal error:  Call to undefined function pr() in /home2/yamunxym/digibooks.cloud/product/login.php on line 13
+[03-Jan-2019 17:20:16 Asia/Kolkata] PHP Notice:  Undefined index: ihis_login in /home2/yamunxym/digibooks.cloud/product/login.php on line 9
+[03-Jan-2019 17:23:54 Asia/Kolkata] PHP Notice:  Undefined index: ihis_login in /home2/yamunxym/digibooks.cloud/product/login.php on line 9
+[03-Jan-2019 17:24:52 Asia/Kolkata] PHP Notice:  Undefined index: ihis_login in /home2/yamunxym/digibooks.cloud/product/login.php on line 9
+[03-Jan-2019 17:26:14 Asia/Kolkata] PHP Notice:  Undefined index: ihis_login in /home2/yamunxym/digibooks.cloud/product/login.php on line 9
+[03-Jan-2019 17:47:11 Asia/Kolkata] PHP Notice:  Undefined index: ihis_login in /home2/yamunxym/digibooks.cloud/product/login.php on line 9
+[03-Jan-2019 17:54:10 Asia/Kolkata] PHP Notice:  Undefined index: ihis_login in /home2/yamunxym/digibooks.cloud/product/login.php on line 9
+[03-Jan-2019 18:22:39 Asia/Kolkata] PHP Notice:  Undefined index: ihis_login in /home2/yamunxym/digibooks.cloud/product/login.php on line 9
+[03-Jan-2019 18:24:40 Asia/Kolkata] PHP Notice:  Undefined index: ihis_login in /home2/yamunxym/digibooks.cloud/product/login.php on line 9
+[03-Jan-2019 18:24:51 Asia/Kolkata] PHP Notice:  Undefined index: ihis_login in /home2/yamunxym/digibooks.cloud/product/login.php on line 9
+[04-Jan-2019 10:23:40 Asia/Kolkata] PHP Notice:  Undefined index: ihis_login in /home2/yamunxym/digibooks.cloud/product/login.php on line 9
+[24-Jan-2019 13:00:49 Asia/Kolkata] PHP Parse error:  syntax error, unexpected 'else' (T_ELSE) in /home2/yamunxym/digibooks.cloud/product/login.php on line 65
+[26-Jan-2019 12:55:34 Asia/Kolkata] PHP Fatal error:  Call to undefined function pr() in /home2/yamunxym/digibooks.cloud/product/login.php on line 20

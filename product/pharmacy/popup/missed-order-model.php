@@ -15,12 +15,12 @@
             <div class="form-group row">
               <div class="col-12 col-md-6">
                 <label for="mis_product">Product <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" name="mis_product" id="mis_product" placeholder="Product" required>
-                <small class="text-danger" id="mis-empty-error"></small>
+                <input type="text" class="form-control" name="mis_product" placeholder="Product" required>
+                <!--<small class="text-danger" id="mis-empty-error"></small>!-->
                 <input type="hidden" class="form-control" name="mis_product_id" id="mis_product_id" placeholder="Product">
               </div>
               
-              <div class="col-12 col-md-3">
+              <!--<div class="col-12 col-md-3">
                 <label for="mis_qty">Qty.</label>
                 <input type="text" class="form-control onlynumber" name="mis_qty" id="mis_qty" placeholder="00" value="1">
               </div>
@@ -28,16 +28,16 @@
               <div class="col-12 col-md-3">
                 <label for="mis_unit">Unit/Strip</label>
                 <input type="text" class="form-control onlynumber" name="mis_unit" id="mis_unit" placeholder="00">
-              </div>
+              </div>!-->
               
               <div class="col-12 col-md-3">
                 <input type="hidden" name="editid" id="editid">
                <button type="submit" class="btn btn-success btn-xs mt-30" id="btn-addmissorder-tmp" disabled>Add</button>
               </div>
               
-              <div class="col-12 col-md-3 mt-30">
-               <a href="#" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#exampleModal-7" data-whatever="">Add New Product</a>
-              </div>
+              <!--<div class="col-12 col-md-3 mt-30">
+               <a href="#" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#purchase-addproductmodel" data-whatever="">Add New Product</a>
+              </div>!-->
             </div>
           </form>
           <form id="missed-order-form" method="POST">
@@ -47,8 +47,8 @@
                 <thead>
                   <tr>
                       <th>Product</th>
-                      <th>Qty.</th>
-                      <th>Unit/MRP</th>
+                      <th></th>
+                      <th></th>
                       <th>Action</th>
                   </tr>
                 </thead>
@@ -79,14 +79,14 @@
         <input type="hidden" class="product" name="product[]" value="##PRODUCTNAME##">
         <input type="hidden" class="product_id" name="product_id[]" value="##PRODUCTID##">
       </td>
-      <td>
+      <!--<td>
         ##QTY##
         <input type="hidden" class="qty" name="qty[]" value="##QTY##">
       </td>
       <td>
         ##UNIT##
         <input type="hidden" class="unit" name="unit[]" value="##UNIT##">
-      </td>
+      </td>!-->
       <td>
         <button type="button" class="btn btn-success p-2 btn-mis-edit"><i class="icon-pencil mr-0"></i></button>
         <button type="button" class="btn btn-danger p-2 btn-mis-delete"><i class="icon-close mr-0"></i></button>

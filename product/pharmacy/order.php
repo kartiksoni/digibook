@@ -1,4 +1,63 @@
+<?php $title = "Order"; ?>
 <?php include('include/usertypecheck.php');?>
+<?php include('include/permission.php'); ?>
+<?php $pharmacy_id = (isset($_SESSION['auth']['pharmacy_id']) && $_SESSION['auth']['pharmacy_id'] != '') ? $_SESSION['auth']['pharmacy_id'] : '';?>
+<?php $financial_id = (isset($_SESSION['auth']['financial'])) ? $_SESSION['auth']['financial'] : '';?>
+  <!-------------------------------------------ORDER EMAIL---- STRAT--------------------------->
+<?php
+if((isset($_REQUEST['id']) && $_REQUEST['id'] != '') && (isset($_REQUEST['group']) && $_REQUEST['group'] != '')) {
+   $vendor_id = $_REQUEST['id'];
+   $groups = $_REQUEST['group'];
+ 
+  $emails = [];
+  $name = "SELECT * FROM `ledger_master` where id = '".$vendor_id."'";
+  $getname = mysqli_query($conn, $name);
+  $vendor= mysqli_fetch_assoc($getname); 
+  $emails[] = $vendor['email'];
+  $emails[] = $_SESSION['auth']['email'];
+  
+
+if(isset($vendor['email']) && $vendor['email'] != '') {
+
+  $querys = "SELECT ord.id, ord.vendor_id, ord.product_id, ord.purchase_price, ord.gst, ord.unit, ord.qty,lg.name as vendor_name, pm.product_name, pm.mfg_company, pm.generic_name, st.state_code_gst as state FROM orders ord LEFT JOIN ledger_master lg ON ord.vendor_id = lg.id LEFT JOIN product_master pm ON ord.product_id = pm.id LEFT JOIN own_states st ON lg.state = st.id WHERE ord.pharmacy_id = '".$pharmacy_id."' AND ord.financial_id = '".$financial_id."' AND ord.groups = '".$groups."' AND ord.vendor_id = '".$vendor_id."'";
+          $res = mysqli_query($conn, $querys); 
+          $countrow =  mysqli_num_rows($res);
+         
+           if($countrow > 0){
+                 $html = "<center><h3>Order Summary</h3><table border='1' cellpadding='10' cellspacing='0'><thead><th>Sr. No</th><th>Vendor Name</th><th>Product</th><th>Purchase Price</th><th>GST(%)</th><th>Unit</th><th>Qty</th></thead><tbody>";
+                 $count = 1;
+               while($rows = mysqli_fetch_assoc($res)){
+                 
+                      $html .= "<tr>";
+                      $html .= "<td>".$count."</td>";
+                      $html .= "<td>".$rows['vendor_name']."</td>";
+                      $html .= "<td>".$rows['product_name']."</td>";
+                      $html .= "<td>".$rows['purchase_price']."</td>";
+                      $html .= "<td>".$rows['gst']."</td>";
+                      $html .= "<td>".$rows['unit']."</td>";
+                      $html .= "<td>".$rows['qty']."</td>";
+                      $html .= "<tr/>";
+
+                      $count++;
+                     
+                   }
+                    $html .="</tbody></table></center>";
+                  
+                       $sent = smtpmail($emails, '', '', 'Digibook Order', $html, '', '');
+                        
+                       if($sent){
+                        $_SESSION['msg']['success'] = 'Mail send successfully.';
+                       header('location:order.php');exit;
+                       }else{
+                         $_SESSION['msg']['fail'] = 'Mail Send Fail! Please Try Again.';
+                     header('location:order.php');exit;
+                       }
+               }
+            }
+          } 
+ ?>
+ 
+  <!-------------------------------------------ORDER EMAIL---- END--------------------------->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +65,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>Digibooks | Order By Vendor</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -28,6 +87,12 @@
 
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
   <link rel="stylesheet" href="css/parsley.css">
+  <style type="text/css">
+    tr.group,
+    tr.group:hover {
+        background-color: #ddd !important;
+    }
+  </style>
 </head>
 <body>
   <div class="container-scroller">
@@ -42,7 +107,6 @@
         <div class="main-panel">
         
           <div class="content-wrapper">
-            <?php include('include/flash.php'); ?>
             <span id="errormsg"></span>
             <div class="row">
              <!-- Inventory Form ------------------------------------------------------------------------------------------------------>
@@ -53,10 +117,23 @@
                     <div class="row">
                       <div class="col-12">
                           <div class="enventory">
+                            <?php 
+                            if(isset($user_sub_module) && in_array("Order", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+                            ?>
                               <a href="order.php" class="btn btn-dark btn-fw active">Order</a>
+                            <?php } 
+                            if(isset($user_sub_module) && in_array("List", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+                            ?>
                               <a href="order-list-tab.php" class="btn btn-dark btn-fw ">List</a>
+                            <?php } 
+                            if(isset($user_sub_module) && in_array("Missed Sales Order", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+                            ?>
                               <a href="missed-sales-order.php" class="btn btn-dark btn-fw ">Missed Sales Order</a>
-                              <a href="#" class="btn btn-dark btn-fw ">Settings</a>
+                            <?php } 
+                            //if(isset($user_sub_module) && in_array("Settings", $user_sub_module)){ 
+                            ?>
+                              <!--<a href="#" class="btn btn-dark btn-fw ">Settings</a>-->
+                            <?php //} ?>
                           </div>  
                       </div> 
                     </div>
@@ -67,20 +144,20 @@
                           <div class="order-sub">
                               <a href="order.php" class="btn btn-grey-1 btn-rounded btn-xs <?php echo (basename($_SERVER['PHP_SELF']) == 'order.php') ? 'active' : ''; ?>">By Vendor</a>
                               <a href="order-by-transition.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-transition.php') ? 'active' : ''; ?>">By Transition</a>
-                              <a href="order-by-min-qty.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-min-qty.php') ? 'active' : ''; ?>">By Max Reorder</a>
+                              <a href="order-by-min-qty.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-min-qty.php') ? 'active' : ''; ?>">By Min Reorder</a>
                               <a href="order-by-product.php" class="btn btn-rounded btn-xs btn-grey-1 <?php echo (basename($_SERVER['PHP_SELF']) == 'order-by-product.php') ? 'active' : ''; ?>">By Product</a>
                           </div>   
                       </div> 
                     </div>
                     <hr>
-                    <form class="forms-sample" id="add_byvendor_temp" method="POST">
+                    <form class="forms-sample" id="add_byvendor_temp" method="POST" autocomplete="off">
                       <div class="form-group row">
                         <div class="col-12 col-md-2 col-sm-3">
                           <label>Select Vendor</label>
                           <select class="js-example-basic-single" style="width:100%" name="vendor_id" id="vendor_id" data-parsley-errors-container="#error-vendor" required> 
                               <option value="">Please select</option>
                               <?php 
-                                $getAllVendorQuery = "SELECT id, name FROM ledger_master WHERE status=1 AND group_id=14 order by name";
+                                $getAllVendorQuery = "SELECT id, name FROM ledger_master WHERE status=1 AND group_id=14 AND pharmacy_id = '".$pharmacy_id."' order by name";
                                 $getAllVendorRes = mysqli_query($conn, $getAllVendorQuery);
                               ?>
                               <?php if($getAllVendorRes && mysqli_num_rows($getAllVendorRes) > 0){ ?>
@@ -103,10 +180,11 @@
                         </div>
                         <div class="col-12 col-md-2">
                             <label id="search-lable">Product Name</label>
-                            <input class="form-control" name="search" id="search" type="text" placeholder="Start typing.." required>
-                            <input type="hidden" name="product_id" id="product_id">
+                            <select class="js-example-basic-single" name="product_id" style="width:100%" id="product_id" required> 
+                                <option value="">Select Product</option>
+                            </select>
+                            <i class="fa fa-spin fa-refresh" id="product_loader" style="position: absolute;top: 40px;right: 40px;display: none;"></i>
                             <input type="hidden" name="product_name" id="product_name">
-                            <small class="empty-message text-danger"></small>
                         </div>
                         <div class="col-12 col-md-2">
                           <button type="button" id="add-newproduct" class="btn btn-primary" data-toggle="modal" data-target="#purchase-addproductmodel" style="margin-top:30px;"><i class="fa fa-plus"></i> Add New Product</button>
@@ -144,6 +222,7 @@
                           <p id="menufacturer-name"></p>
                           <input type="hidden" name="menufacturer_name" id="menufacturer-name-input">
                           <input type="hidden" name="editid" id="editid">
+                          <input type="hidden" name="id" id="id">
                         </div>
                       </div>
                     </form>
@@ -174,7 +253,18 @@
                                  
                                 </tbody>
                               </table>
-                              <button type="submit" class="btn btn-success mt-30 pull-right btn-savebyvendor" style="margin-top:30px;">Save</button>
+
+                              <table class="table">
+                                <tr>
+                                  <td class="text-left" width="10%">
+                                    <label>Reminder Day</label><input type="text" name="day" id="day" class="form-control onlynumber">
+                                  </td>
+                                  <td class="text-right">
+                                    <button type="submit" class="btn btn-success btn-savebyvendor" style="margin-top:30px;">Save</button>
+                                  </td>
+                                </tr>
+                              </table>
+                              
                             </form>
                           </div>
                         </div>
@@ -194,23 +284,19 @@
                                 <thead>
                                   <tr>
                                       <th>Sr. No</th>
+                                      <th>Date/Time</th>
                                       <th>Vendor Name</th>
-                                      <th>Product</th>
-                                      <th>Purchase Price</th>
-                                      <th>GST</th>
-                                      <th>Unit / Strip / Packing</th>
-                                      <th>Qty</th>
+                                      <th>Total Order</th>
                                       <th>Action</th>
                                   </tr> 
                                 </thead>
-                                <tbody>
-                                 
-                                </tbody>
+                                  <tbody>
+                                  </tbody>
                               </table>
+                              <span class="flip-square-loader mx-auto text-center table-loader display-none" style="position: absolute;left: 45%;top: 20%;"></span>
                           </div>
                         </div>
                     </div>
-                    <hr>
                   </div>
                 </div>
               </div>
@@ -225,6 +311,12 @@
 
           <!-- Add new Product Model -->
           <?php include("include/addproductmodel.php");?>
+        <!-- Add Company model -->
+        <?php include "include/addcompanymodel.php"?>
+        <!-- Add GST Model -->
+        <?php include "include/addgstmodel.php"?>
+        <!--  Add Unit Model -->
+        <?php include "include/addunitmodel.php"?>
 
         </div>
         <!-- main-panel ends -->
@@ -233,6 +325,7 @@
   </div>
   <!-- container-scroller -->
   
+ <input type="hidden" name="cur_statecode" id="cur_statecode" value="<?php echo (isset($_SESSION['state_code'])) ? $_SESSION['state_code'] : ''; ?>" >
   
  <!-- HIDDEN TR HTML -->
   <div id="addproduct-tr-html" style="display: none;">
@@ -268,9 +361,10 @@
         <td>
           <input type="hidden" name="generic_name[]" class="generic_name" value="##GENERICNAME##">
           <input type="hidden" name="menufacturer_name[]" class="menufacturer_name" value="##MANUFACTURERNAME##">
+          <input type="hidden" name="editid[]" class="editid" value="##EDITID##">
 
-          <button class="btn  btn-danger p-2 edit-temp"><i class="icon-pencil mr-0"></i></button>
-          <button class="btn  btn-primary p-2 delete-temp"><i class="icon-trash mr-0"></i></button>
+          <button type="button" class="btn  btn-danger p-2 edit-temp"><i class="icon-pencil mr-0"></i></button>
+          <button type="button" class="btn  btn-primary p-2 delete-temp"><i class="icon-trash mr-0"></i></button>
         </td>
       </tr>
     </table>
@@ -324,10 +418,18 @@
 <script src="js/parsley.min.js"></script>
 <script type="text/javascript">
   $('form').parsley();
+  // $('.datatable').DataTable({'rowsGroup': [0]});
 </script>
 <script src="js/jquery-ui.js"></script>
 <script src="js/custom/order_by_vendor.js"></script>
+<script src="js/custom/product-gst-change.js"></script>
 <script src="js/custom/onlynumber.js"></script>
+
+
+  <!--    Toast Notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
+  
   <!-- End custom js for this page-->
 </body>
 

@@ -10,7 +10,7 @@
 	define('SERVER', 'localhost');
 	define('USER', 'root');
 	define('PASSWORD', '');
-	define('DB', 'digibook_website');
+	define('DB', 'yamunxym_digibooks_website');
 
 	$conn = mysqli_connect(SERVER, USER, PASSWORD, DB);// CONNECT DATABASE
 

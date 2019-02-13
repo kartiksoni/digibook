@@ -1,5 +1,5 @@
 <?php
-    include('include/config.php');
+    //include('include/config.php');
     if(!isset($_SESSION['auth']) && empty($_SESSION['auth'])){
         header('Location:index.php');
         exit;
@@ -45,46 +45,7 @@
               <a class="dropdown-item" href="#">
                 Japanese              </a>            </div>
           </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-              <i class="mdi mdi-email-outline"></i>
-              <span class="count bg-warning">5</span>            </a>
-            <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown">
-              <h6 class="p-3 mb-0">Messages</h6>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                    <img src="images/faces/face4.jpg" alt="image" class="profile-pic">                </div>
-                <div class="preview-item-content">
-                  <h6 class="preview-subject ellipsis">Mark sent you a message</h6>
-                  <p class="text-muted">
-                    1 Minutes ago                  </p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                    <img src="images/faces/face2.jpg" alt="image" class="profile-pic">                </div>
-                <div class="preview-item-content">
-                  <h6 class="preview-subject ellipsis">Cregh sent you a message</h6>
-                  <p class="text-muted">
-                    15 Minutes ago                  </p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                    <img src="images/faces/face3.jpg" alt="image" class="profile-pic">                </div>
-                <div class="preview-item-content">
-                  <h6 class="preview-subject ellipsis">Profile picture updated</h6>
-                  <p class="text-muted">
-                    18 Minutes ago                  </p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <h6 class="p-3 mb-0 text-center">4 new messages</h6>
-            </div>
-          </li>
+          
           <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
               <i class="mdi mdi-bell-outline"></i>
@@ -145,14 +106,6 @@
                 <i class="mdi mdi-logout mr-2 text-primary"></i>
                 Signout              </a>            </div>
           </li>
-          <li class="nav-item nav-settings d-none d-lg-block">
-            <a class="nav-link" href="#">
-              <i class="mdi mdi-backburger"></i>
-            </a>
-          </li>
-        </ul>
-        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-        <span class="mdi mdi-menu"></span>
-      </button>
+          
       </div>
     </nav>

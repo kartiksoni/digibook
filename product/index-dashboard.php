@@ -72,48 +72,78 @@ if($_POST){
                     <p class="w-75 mx-auto mb-5">Choose a plan that suits you the best. we offer 30 Day free trial!!</p>
                     
                     <div class="row">
-                     
-                      
-                      <div class="col-md-3 grid-margin stretch-card ">
-                          <a href="index-dashboard-confirm.php?type=pharmacy" class="dashboard-box">
-                            <div class="p-3 m-1">
-                              <div class="text-center pricing-card-head">
-                                <img src="images/dashboard-icon/pharmacy.png" alt="" class="img-md mb-2">
-                                <h4 class="mt-2">Pharmacy</h4>
-                              </div>
-                            </div>
-                          </a>  
-                      </div>
-                      
-                      <div class="col-md-3 grid-margin stretch-card ">
-                          <a href="index-dashboard-confirm.php?type=IPD" class="dashboard-box">
-                            <div class="p-3 m-1">
-                              <div class="text-center pricing-card-head">
-                                <img src="images/dashboard-icon/ipd.png" alt="" class="img-md mb-2">
-                                <h4 class="mt-2">IPD</h4>
-                              </div>
-                            </div>
-                          </a>
-                      </div>
-                      
-                      
-                      <div class="col-md-3 grid-margin stretch-card ">
-                         <a href="index-dashboard-confirm.php?type=finance" class="dashboard-box">
-                            <div class="p-3 m-1">
-                              <div class="text-center pricing-card-head">
-                                <img src="images/dashboard-icon/finance.png" alt="" class="img-md mb-2">
-                                <h4 class="mt-2">Finance</h4>
-                              </div>
-                            </div>
-                          </a>
-                      </div>
-                      
-                      <div class="col-md-3 grid-margin stretch-card ">
+                        
+                    <div class="col-md-3 grid-margin stretch-card ">
                          <a href="index-dashboard-confirm.php?type=general" class="dashboard-box">
                             <div class="p-3 m-1">
                               <div class="text-center pricing-card-head">
                                 <img src="images/dashboard-icon/general.png" alt="" class="img-md mb-2">
-                                <h4 class="mt-2">General</h4>
+                                <h4 class="mt-2">General Version</h4>
+                              </div>
+                            </div>
+                          </a>
+                    </div>
+                    <div class="col-md-3 grid-margin stretch-card ">
+                        <a href="index-dashboard-confirm.php?type=pharmacy" class="dashboard-box">
+                            <div class="p-3 m-1">
+                              <div class="text-center pricing-card-head">
+                                <img src="images/dashboard-icon/pharmacy.png" alt="" class="img-md mb-2">
+                                <h4 class="mt-2">Pharmacy Retails</h4>
+                              </div>
+                            </div>
+                        </a>  
+                    </div>
+                    <div class="col-md-3 grid-margin stretch-card ">
+                        <a href="index-dashboard-confirm.php?type=pharmacy_wholesale" class="dashboard-box">
+                            <div class="p-3 m-1">
+                              <div class="text-center pricing-card-head">
+                                <img src="images/dashboard-icon/pharmacy.png" alt="" class="img-md mb-2">
+                                <h4 class="mt-2">Pharmacy Wholesale</h4>
+                              </div>
+                            </div>
+                        </a>  
+                    </div>
+                      
+                      <div class="col-md-3 grid-margin stretch-card ">
+                          <a href="index-dashboard-confirm.php?type=readymade_garments" class="dashboard-box">
+                            <div class="p-3 m-1">
+                              <div class="text-center pricing-card-head">
+                                <img src="images/dashboard-icon/ipd.png" alt="" class="img-md mb-2">
+                                <h4 class="mt-2">Readymade Garments</h4>
+                              </div>
+                            </div>
+                          </a>
+                      </div>
+                      
+                      
+                      <div class="col-md-3 grid-margin stretch-card ">
+                         <a href="index-dashboard-confirm.php?type=it_company" class="dashboard-box">
+                            <div class="p-3 m-1">
+                              <div class="text-center pricing-card-head">
+                                <img src="images/dashboard-icon/finance.png" alt="" class="img-md mb-2">
+                                <h4 class="mt-2">IT Company</h4>
+                              </div>
+                            </div>
+                          </a>
+                      </div>
+                      
+                      <div class="col-md-3 grid-margin stretch-card ">
+                         <a href="index-dashboard-confirm.php?type=account" class="dashboard-box">
+                            <div class="p-3 m-1">
+                              <div class="text-center pricing-card-head">
+                                <img src="images/dashboard-icon/general.png" alt="" class="img-md mb-2">
+                                <h4 class="mt-2">Account And Transaction Company</h4>
+                              </div>
+                            </div>
+                          </a>
+                      </div>
+                      
+                      <div class="col-md-3 grid-margin stretch-card ">
+                         <a href="index-dashboard-confirm.php?type=electronics" class="dashboard-box">
+                            <div class="p-3 m-1">
+                              <div class="text-center pricing-card-head">
+                                <img src="images/dashboard-icon/finance.png" alt="" class="img-md mb-2">
+                                <h4 class="mt-2">Electronics</h4>
                               </div>
                             </div>
                           </a>

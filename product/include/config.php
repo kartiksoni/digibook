@@ -1,17 +1,14 @@
 <?php 
+error_reporting(E_ALL);
+    session_start();
+    ob_start();
 
-	/////////////////////////////////////////////////
-	//Author : Gautam Makwana
-	//Date : 14-07-2018
-	/////////////////////////////////////////////////
-    
-    
 	date_default_timezone_set('Asia/Kolkata');
 	
 	define('SERVER', 'localhost');
 	define('USER', 'root');
 	define('PASSWORD', '');
-	define('DB', 'digibook_website');
+	define('DB', 'yamunxym_digibooks_website');
 	
 	$conn = mysqli_connect(SERVER, USER, PASSWORD, DB);// CONNECT DATABASE
 
@@ -26,8 +23,6 @@
 	    exit();
 	} else { /*printf("Current character set: %s\n", mysqli_character_set_name($conn));exit;*/}
 
-	error_reporting(E_ALL);
-    session_start();
-    ob_start();
+	
 
 ?>

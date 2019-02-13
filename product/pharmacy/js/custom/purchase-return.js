@@ -1,147 +1,24 @@
-// author : Kartik Champaneriya
-// date   : 10-08-2018
+// author : Gautam Makwana
+// date   : 29-12-2018
 $(document).ready(function(){
+
+  var current_statecode = $('#current_statecode').val();
 
   $('body').on('click', '.btn-addmore-product', function() {
         var totalproduct = $('.product-tr').length;//for product length
         var html = $('#html-copy').html();
-        html = html.replace('##SRPRODUCT##',totalproduct);
-       /* html = html.replace('##SRNO##',totalproduct);
-        html = html.replace('##SRPRODUCT##',totalproduct);
-        html = html.replace('##PRODUCTCOUNT##',totalproduct);*/
-        html = html.replace('##PRODUCTCOUNT##',totalproduct);
+        html = html.replace('##SRNO##',totalproduct);
         html = html.replace('<table>','');
         html = html.replace('</table>','');
         html = html.replace('<tbody>','');
         html = html.replace('</tbody>',''); 
         $('#product-tbody').append(html);
-          $.widget('custom.mcautocomplete', $.ui.autocomplete, {
-              _create: function () {
-                  this._super();
-                  this.widget().menu("option", "items", "> :not(.ui-widget-header)");
-              },
-              _renderMenu: function (ul, items) {
-                  var self = this,
-                      thead;
-                  if (this.options.showHeader) {
-                      table = $('<div class="ui-widget-header" style="width:100%"></div>');
-                      $.each(this.options.columns, function (index, item) {
-                          table.append('<span style="padding:0 4px;float:left;width:' + item.width + ';">' + item.name + '</span>');
-                      });
-                      table.append('<div style="clear: both;"></div>');
-                      ul.append(table);
-                  }
-                  $.each(items, function (index, item) {
-                      self._renderItem(ul, item);
-                  });
-              },
-              _renderItem: function (ul, item) {
-                  var t = '',
-                      result = '';
-                  $.each(this.options.columns, function (index, column) {
-                      t += '<span style="padding:0 4px;float:left;width:' + column.width + ';">' + item[column.valueField ? column.valueField : index] + '</span>'
-                  });
-                  result = $('<li></li>')
-                      .data('ui-autocomplete-item', item)
-                      .append('<a class="mcacAnchor">' + t + '<div style="clear: both;"></div></a>')
-                      .appendTo(ul);
-                  return result;
-              }
-          });
-
-          $(".tags").mcautocomplete({
-                // These next two options are what this plugin adds to the autocomplete widget.
-                showHeader: true,
-                columns: [{
-                    name: 'Name',
-                    width: '100px;',
-                    valueField: 'name'
-                }, {
-                    name: 'Qty',
-                    width: '100px',
-                    valueField: 'total_qty'
-                }, {
-                    name: 'Batch',
-                    width: '100px',
-                    valueField: 'batch'
-                }, {
-                    name: 'Generic Name',
-                    width: '100px',
-                    valueField: 'generic_name'
-                }, {
-                    name: 'MRP',
-                    width: '100px',
-                    valueField: 'mrp'
-                }, {
-                    name: 'Expiry Date',
-                    width: '150px',
-                    valueField: 'expiry'
-                }],
-
-                // Event handler for when a list item is selected.
-                select: function (event, ui) {
-                    this.value = (ui.item ? ui.item.name : '');
-                    //$('#results').text(ui.item ? 'Selected: ' + ui.item.name + ', ' + ui.item.purchase_id + ', ' + ui.item.batch : 'Nothing selected, input was ' + this.value);
-                    console.log(ui);
-                    $(this).closest('tr').find('.product-id').val(ui.item.id);
-                    $(this).closest('tr').find('.qty-value').val(ui.item.ratio);
-                    $(this).closest('tr').find('.f_igst').val(ui.item.igst);
-                    $(this).closest('tr').find('.f_cgst').val(ui.item.cgst);
-                    $(this).closest('tr').find('.f_sgst').val(ui.item.sgst);
-                    $(this).closest('tr').find('.mrp').val(ui.item.mrp);
-                    $(this).closest('tr').find('.mfg_no').val(ui.item.mfg_company);
-                    $(this).closest('tr').find('.batch_no').val(ui.item.batch);
-                    $(this).closest('tr').find('.expiry').val(ui.item.expiry);
-                    return false;
-                },
-
-                // The rest of the options are for configuring the ajax webservice call.
-                minLength: 1,
-                source: function (request, response) {
-                    $.ajax({
-                        url: 'ajax.php',
-                        dataType: 'json',
-                        type: "POST",
-                        data: {
-                            query: request.term,
-                            action: "getproduct_purchase"
-                        },
-                        // The success event handler will display "No match found" if no items are returned.
-                        success: function (data) {
-                          if(data.length === 0){
-                            $(".empty-message"+totalproduct).text("No results found");
-                          }else{
-                            $(".empty-message"+totalproduct).empty();
-                            var result;
-                            if (data.length < 0) {
-                                result = [{
-                                    label: 'No match found.'
-                                }];
-                            } else {
-                                result = data;
-                            }
-                            response(result);
-                        }
-                      }
-                    });
-                }
-          }); 
-        if(totalproduct <= '2'){
-          $('.remove_last').show();
-        }
   });
 
-  // Remove product button js //
-
-    $('body').on('click', '.btn-remove-product', function(e) {
-        e.preventDefault();
-        $(this).closest ('tr').remove ();
-        //$('.f_amount').trigger("change");
-        $('.f_rate').trigger("change");
-    });
-
-    // End Remove product button js // 
-
+  $('body').on('click', '.btn-remove-product', function() {
+      $(this).closest ('tr').remove ();
+      calculation();
+  });
   
   $.widget('custom.mcautocomplete', $.ui.autocomplete, {
           _create: function () {
@@ -177,142 +54,167 @@ $(document).ready(function(){
           }
   });
 
-  $(".tags").mcautocomplete({
-        // These next two options are what this plugin adds to the autocomplete widget.
-        showHeader: true,
-        columns: [{
-            name: 'Name',
-            width: '100px;',
-            valueField: 'name'
-        }, {
-            name: 'Qty',
-            width: '100px',
-            valueField: 'total_qty'
-        }, {
-            name: 'Batch',
-            width: '100px',
-            valueField: 'batch'
-        }, {
-            name: 'Generic Name',
-            width: '100px',
-            valueField: 'generic_name'
-        }, {
-            name: 'MRP',
-            width: '100px',
-            valueField: 'mrp'
-        }, {
-            name: 'Expiry Date',
-            width: '150px',
-            valueField: 'expiry'
-        }],
 
-        // Event handler for when a list item is selected.
-        select: function (event, ui) {
-            this.value = (ui.item ? ui.item.name : '');
-            //$('#results').text(ui.item ? 'Selected: ' + ui.item.name + ', ' + ui.item.purchase_id + ', ' + ui.item.batch : 'Nothing selected, input was ' + this.value);
-            console.log(ui);
-            $(this).closest('tr').find('.product-id').val(ui.item.id);
-            $(this).closest('tr').find('.qty-value').val(ui.item.ratio);
-            $(this).closest('tr').find('.f_igst').val(ui.item.igst);
-            $(this).closest('tr').find('.f_cgst').val(ui.item.cgst);
-            $(this).closest('tr').find('.f_sgst').val(ui.item.sgst);
-            $(this).closest('tr').find('.purchase-id').val(ui.item.sgst);
+  $('body').on('keyup click', '.product ', function () {
+      var $this = $(this);
+      $(this).mcautocomplete({
+      // These next two options are what this plugin adds to the autocomplete widget.
+          showHeader: true,
+          columns: [{
+              name: 'Name',
+              width: '200px;',
+              valueField: 'product_name'
+          }, {
+              name: 'Qty',
+              width: '100px',
+              valueField: 'qty'
+          }, {
+              name: 'Batch',
+              width: '200px',
+              valueField: 'batch_no'
+          }, {
+              name: 'MRP',
+              width: '100px',
+              valueField: 'mrp'
+          }, {
+              name: 'Expiry Date',
+              width: '150px',
+              valueField: 'ex_date'
+          }, {
+              name: 'GST',
+              width: '50px',
+              valueField: 'igst'
+          }],
+
+          // Event handler for when a list item is selected.
+          select: function (event, ui) {
+            this.value = (ui.item ? ui.item.product_name : '');
+
+            $(this).closest('tr').find('.product_id').val(ui.item.id);
+            $(this).closest('tr').find('.purchase_id').val(ui.item.purchase_id);
             $(this).closest('tr').find('.mrp').val(ui.item.mrp);
-            $(this).closest('tr').find('.mfg_no').val(ui.item.mfg_company);
-            $(this).closest('tr').find('.batch_no').val(ui.item.batch);
-            $(this).closest('tr').find('.expiry').val(ui.item.expiry);
+            $(this).closest('tr').find('.mfg_co').val(ui.item.mfg_company);
+            $(this).closest('tr').find('.batch').val(ui.item.batch_no);
+            $(this).closest('tr').find('.expiry').val(ui.item.ex_date);
+            $(this).closest('tr').find('.qty').val(ui.item.qty);
+            $(this).closest('tr').find('.free_qty').val(ui.item.free_qty);
+            $(this).closest('tr').find('.rate').val(ui.item.rate);
+            $(this).closest('tr').find('.discount').val(ui.item.discount);
+
+            if($('#statecode').val() == current_statecode){
+              $(this).closest('tr').find('.igst').val(0);
+              $(this).closest('tr').find('.cgst').val(ui.item.cgst);
+              $(this).closest('tr').find('.sgst').val(ui.item.sgst);
+            }else{
+              $(this).closest('tr').find('.igst').val(ui.item.igst);
+              $(this).closest('tr').find('.cgst').val(0);
+              $(this).closest('tr').find('.sgst').val(0);
+            }
+
+            $('#model-invoice-no').text((typeof ui.item.invoice_no !== 'undefined' && ui.item.invoice_no != '') ? ui.item.invoice_no : '-');
+            $('#model-invoice-date').text((typeof ui.item.invoice_date !== 'undefined' && ui.item.invoice_date != '') ? ui.item.invoice_date : '-');
+            $('#model-invoice-amount').text((typeof ui.item.invoice_amount !== 'undefined' && ui.item.invoice_amount != '' && !isNaN(ui.item.invoice_amount)) ? parseFloat(ui.item.invoice_amount).toFixed(2) : '0');
+            $('#show-invoice-no-model').modal('show');
+
+            $($this).closest('tr').find('.qty').trigger('change');
             return false;
-        },
+          },
 
-        // The rest of the options are for configuring the ajax webservice call.
-        minLength: 1,
-        source: function (request, response) {
-            $.ajax({
-                url: 'ajax.php',
-                dataType: 'json',
-                type: "POST",
-                data: {
-                    query: request.term,
-                    action: "getproduct_purchase"
-                },
-                // The success event handler will display "No match found" if no items are returned.
-                success: function (data) {
-                  if(data.length === 0){
-                    $(".empty-message0").text("No results found");
-                  }else{
-                    $(".empty-message0").empty();
-                    var result;
-                    if (data.length < 0) {
-                        result = [{
-                            label: 'No match found.'
-                        }];
-                    } else {
-                        result = data;
+          // The rest of the options are for configuring the ajax webservice call.
+          minLength: 1,
+          source: function (request, response) {
+              $.ajax({
+                  url: 'ajax.php',
+                  dataType: 'json',
+                  type: "POST",
+                  data: {
+                      query: request.term,
+                      vendor_id: $('#vendor_id').val(),
+                      action: "searchProductPurchaseReturn"
+                  },
+                  // The success event handler will display "No match found" if no items are returned.
+                  success: function (data) {
+                    if(data.status == true){
+                      $($this).closest('tr').find('.product-error').empty();
+                      response(data.result)
+                    }else{
+                      $($this).closest('tr').find('.product-error').text("No Results Found!");
                     }
-                    response(result);
-                }
-              }
-            });
-        }
-  }); 
 
-  $('body').on('propertychange change keyup focusout past', '.qty', function() {
-      var f_rate = $(this).closest('tr').find('.f_rate').val();
-      var qty = $(this).val();
-       if(f_rate !== ''&& f_rate !== NaN && f_rate !== "undifined"){
-          f_rate = (typeof f_rate !== "undifined" && f_rate !== '' && f_rate !== NaN) ? f_rate : 0;
-          qty = (typeof qty !== "undifined" && qty !== '' && qty !== NaN) ? qty : 0;
-          var total = (parseInt(qty)*parseInt(f_rate));
-       }else{
-        var total ="0";
-       }
-      $(this).closest('tr').find('.ammout').val(total);
-      $(this).closest('tr').find('.f_rate').trigger("change");
-      //$('.ammout').trigger("change");
+                  }
+              });
+          }
+      });
   });
 
-  $('body').on('propertychange change keyup focusout past', '.f_rate', function() {
+  $('body').on('change', '#vendor_id', function() {
+    var statecode = $(this).find(':selected').attr('data-state');
+    $('#statecode').val(statecode);
+  });
+
+  $('#show-invoice-no-model').on('shown.bs.modal', function() {
+    $('#btn-invoice-ok').focus();
+  });
+
+  $('body').on('change keyup past', '.qty, .free_qty, .discount, .rate', function () {
+
+    var qty = $(this).closest('tr').find('.qty').val();
+    var discount = $(this).closest('tr').find('.discount').val();
+    var rate = $(this).closest('tr').find('.rate').val();
+
+    qty = (typeof qty !== 'undefined' && !isNaN(qty) && qty != '') ? parseFloat(qty) : 0;
+    discount = (typeof discount !== 'undefined' && !isNaN(discount) && discount != '') ? parseFloat(discount) : 0;
+    rate = (typeof rate !== 'undefined' && !isNaN(rate) && rate != '') ? parseFloat(rate) : 0;
+
+    var discount_amount = (rate*discount/100);
+    var final_rate = (rate-discount_amount);
+
+    $(this).closest('tr').find('.final_rate').val(final_rate.toFixed(2));
+    $(this).closest('tr').find('.amount').val((qty*final_rate).toFixed(2));
+
+    calculation();
+  });
+
+  function calculation(){
+    var taxable_amount = 0;
+    var total_igst = 0;
+    var total_cgst = 0;
+    var total_sgst = 0;
+
+    $('.amount').each(function() {
+      var val = $.trim( $(this).val() );
+      val = (typeof val !== 'undefined' && !isNaN(val) && val != '') ? parseFloat(val) : 0;
+
+      taxable_amount += val;
+
+      var igst = $(this).closest('tr').find('.igst').val();
+      igst = (typeof igst !== 'undefined' && !isNaN(igst) && igst != '') ? parseFloat(igst) : 0;
+      var cgst = $(this).closest('tr').find('.cgst').val();
+      cgst = (typeof cgst !== 'undefined' && !isNaN(cgst) && cgst != '') ? parseFloat(cgst) : 0;
+      var sgst = $(this).closest('tr').find('.sgst').val();
+      sgst = (typeof sgst !== 'undefined' && !isNaN(sgst) && sgst != '') ? parseFloat(sgst) : 0;
+
       var qty = $(this).closest('tr').find('.qty').val();
-      var f_rate = $(this).val();
-       if(qty !== ''&& qty !== NaN && qty !== "undifined"){
-          f_rate = (typeof f_rate !== "undifined" && f_rate !== '' && f_rate !== NaN) ? f_rate : 0;
-          qty = (typeof qty !== "undifined" && qty !== '' && qty !== NaN) ? qty : 0;
-          var total = (parseInt(qty)*parseInt(f_rate));
-       }else{
-        var total ="0";
-       }
-       console.log(total);
-      $(this).closest('tr').find('.ammout').val(parseFloat(total).toFixed(2));
-      $('.ammout').trigger("change");
-  });
+      qty = (typeof qty !== 'undefined' && !isNaN(qty) && qty != '') ? parseFloat(qty) : 0;
+      var free_qty = $(this).closest('tr').find('.free_qty').val();
+      free_qty = (typeof free_qty !== 'undefined' && !isNaN(free_qty) && free_qty != '') ? parseFloat(free_qty) : 0;
+      var final_rate = $(this).closest('tr').find('.final_rate').val();
+      final_rate = (typeof final_rate !== 'undefined' && !isNaN(final_rate) && final_rate != '') ? parseFloat(final_rate) : 0;
 
-  $('body').on('propertychange change keyup focusout past', '.discount', function() {
-      var totalamount = 0;
-      var discount = $(this).val();
-      var rate = $(this).closest('tr').find('.rate').val();
-      if(rate !== ''&& rate !== NaN && rate !== "undifined"){
-        rate = (typeof rate !== "undifined" && rate !== '' && rate !== NaN) ? rate : 0;
-        discount = (typeof discount !== "undifined" && discount !== '' && discount !== NaN) ? discount : 0;
-        var total = (parseInt(rate)-parseInt(discount));
-      }else{
-        var total = "0";
-      }
-      $(this).closest('tr').find('.f_rate').val(total);
-      $(this).closest('tr').find('.f_rate').trigger("change");
-      //$('.ammout').trigger("change");
-  });
+      var amount = ((qty+free_qty)*final_rate);
 
-  $('body').on('propertychange change keyup focusout past', '.rate', function() {
-      var totalamount = 0;
-      var rate = $(this).val();
-      var discount = $(this).closest('tr').find('.discount').val();
-      rate = (typeof rate !== "undifined" && rate !== '' && rate !== NaN) ? rate : 0;
-      discount = (typeof discount !== "undifined" && discount !== '' && discount !== NaN) ? discount : 0;
-      var total = (parseInt(rate)-parseInt(discount));
-      $(this).closest('tr').find('.f_rate').val(total);
-      $(this).closest('tr').find('.f_rate').trigger("change");
-      //$('.ammout').trigger("change");
+      total_igst += (amount*igst/100);
+      total_cgst += (amount*cgst/100);
+      total_sgst += (amount*sgst/100);
     });
+
+    $('#totalamount').val(taxable_amount.toFixed(2));
+    $('#totaligst').val(total_igst.toFixed(2));
+    $('#totalcgst').val(total_cgst.toFixed(2));
+    $('#totalsgst').val(total_sgst.toFixed(2));
+
+    $('#finalamount').val((taxable_amount+total_igst+total_cgst+total_sgst).toFixed(2));
+  }
 
 });
 

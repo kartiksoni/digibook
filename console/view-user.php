@@ -1,3 +1,4 @@
+<?php include('include/config.php');?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -67,6 +68,7 @@
                                       <th>Mobile</th>
                                       <th>Start Date</th>
                                       <th>Expiry Date</th>
+                                      <th>Type</th>
                                       
                                   </tr>
                                 </thead>
@@ -85,6 +87,7 @@
                                       <td><?php echo $row['mobile']; ?></td>
                                       <td><?php echo date("d-m-Y",strtotime($row['startdate'])); ?></td>
                                       <td><?php echo date("d-m-Y",strtotime($row['enddate'])); ?></td>
+                                      <td><?php echo $row['type']; ?></td>
                                       
                                   </tr><!-- End Row --> 	
                                 <?php $i++; } ?>
@@ -180,9 +183,6 @@
   <script>
   	 $('#order-listing1').DataTable();
   </script>
-  
-  <!-- End custom js for this page-->
-  <?php include('include/usertypecheck.php'); ?>
 </body>
 
 

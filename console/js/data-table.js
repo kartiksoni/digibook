@@ -33,5 +33,5 @@
         search: ""
       }
     });
-})(jQuery);
+ })(jQuery);
 });

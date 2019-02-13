@@ -1,4 +1,10 @@
+<?php $title = "Configuration"; ?>
 <?php include('include/usertypecheck.php'); ?>
+<?php
+if($_SESSION['auth']['user_type'] != "owner"){
+    include('include/permission.php'); 
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +12,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>Configuration</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -52,11 +58,62 @@
       <div class="main-panel">
       
         <div class="content-wrapper">
-          <?php include('include/flash.php'); ?>
           <div class="row">
+              <?php 
+             if($_SESSION['auth']['user_type'] == "owner"){
+            ?>
               <div class="col-md-3 grid-margin">
                 <div class="card">
-                  <a href="ledger-management.php">
+                  <a href="view-pharmacy-profile.php">
+                    <div class="card-body">
+                      <div class="d-flex flex-row align-items-top">
+                        <i class="mdi mdi-plus-box text-facebook icon-md"></i>
+                        <div class="ml-3 p-t-5">
+                          <h5 class="text-facebook">Pharmacy Master</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <div class="col-md-3 grid-margin">
+                <div class="card">
+                  <a href="user.php">
+                    <div class="card-body">
+                      <div class="d-flex flex-row align-items-top">
+                        <i class="fa fa-user text-facebook icon-md"></i>
+                        <div class="ml-3 p-t-5">
+                          <h5 class="text-facebook">Add User</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              
+              <!--<div class="col-md-4 grid-margin">
+                <div class="card">
+                  <a href="owner-notification.php">
+                    <div class="card-body">
+                      <div class="d-flex flex-row align-items-top">
+                        <i class="mdi mdi-bell-ring text-facebook icon-md"></i>
+                        <div class="ml-3 p-t-5">
+                          <h5 class="text-facebook">Notification Reminder Months</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>-->
+            <?php } ?>
+            <?php 
+           
+            if(isset($user_sub_module) && in_array("Ledger Management", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){
+            ?>
+              <div class="col-md-3 grid-margin">
+                <div class="card">
+                    <!--ledger-management.php-->
+                  <a href="view-ledger-management.php">
                     <div class="card-body">
                       <div class="d-flex flex-row align-items-top">
                         <i class="mdi mdi-account-multiple text-facebook icon-md"></i>
@@ -68,10 +125,13 @@
                   </a>
                 </div>
               </div>
-
+            <?php } 
+              if(isset($user_sub_module) && in_array("Product Master", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){  
+            ?>
+               <!-- product-master.php-->
               <div class="col-md-3 grid-margin">
                 <div class="card">
-                  <a href="product-master.php">
+                  <a href="view-product-master.php">
                     <div class="card-body">
                       <div class="d-flex flex-row align-items-top">
                         <i class="mdi mdi-file-powerpoint-box text-facebook icon-md"></i>
@@ -83,6 +143,9 @@
                   </a>
                 </div>
               </div>
+            <?php } 
+            if(isset($user_sub_module) && in_array("Product Type Master", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){
+            ?>
 
               <div class="col-md-3 grid-margin">
                 <div class="card">
@@ -98,6 +161,9 @@
                   </a>
                 </div>
               </div>
+            <?php } 
+            if(isset($user_sub_module) && in_array("Product Category Master", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){
+            ?>
 
               <div class="col-md-3 grid-margin">
                 <div class="card">
@@ -113,23 +179,9 @@
                   </a>
                 </div>
               </div>
-          </div>
-          <div class="row">
-              <!-- <div class="col-md-3 grid-margin">
-                <div class="card">
-                  <a href="service-master.php">
-                    <div class="card-body">
-                      <div class="d-flex flex-row align-items-top">
-                        <i class="mdi mdi-settings text-facebook icon-md"></i>
-                        <div class="ml-3 p-t-5">
-                          <h5 class="text-facebook">Service Master</h5>
-                        </div>
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              </div> -->
-
+            <?php }
+            if(isset($user_sub_module) && in_array("Financial Year Master", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){
+             ?>
               <div class="col-md-3 grid-margin">
                 <div class="card">
                   <a href="financial-year.php">
@@ -144,36 +196,29 @@
                   </a>
                 </div>
               </div>
-
+            <?php } ?>
+            
+            
+              <?php 
+                 if(isset($user_sub_module) && in_array("Bill Notes", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+              ?>
               <div class="col-md-3 grid-margin">
-                <div class="card">
-                  <a href="pharmacy-profile.php">
+                <a href="bill-note.php" class="">
+                  <div class="card">
                     <div class="card-body">
                       <div class="d-flex flex-row align-items-top">
-                        <i class="mdi mdi-plus-box text-facebook icon-md"></i>
+                        <i class="mdi mdi-note-text text-facebook icon-md"></i>
                         <div class="ml-3 p-t-5">
-                          <h5 class="text-facebook">Pharmacy Master</h5>
+                          <h5 class="text-facebook">Bill Notes</h5>
                         </div>
                       </div>
                     </div>
-                  </a>
-                </div>
-              </div>
-
-              <div class="col-md-3 grid-margin">
-              <a href="bill-note.php" class="">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex flex-row align-items-top">
-                      <i class="mdi mdi-note-text text-facebook icon-md"></i>
-                      <div class="ml-3 p-t-5">
-                        <h5 class="text-facebook">Bill Notes</h5>
-                      </div>
-                    </div>
                   </div>
-                </div>
-              </a>
-            </div>
+                </a>
+              </div>
+            <?php } 
+            if(isset($user_sub_module) && in_array("Notification Master", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+            ?>
 
               <div class="col-md-3 grid-margin">
                 <div class="card">
@@ -189,68 +234,178 @@
                   </a>
                 </div>
               </div>
-          </div>
-          <div class="row">
+            <?php } 
+            if(isset($user_sub_module) && in_array("Near Expiry Reminder", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+            ?>
             
-            <div class="col-md-3 grid-margin">
-              <a href="near-by.php" class="">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex flex-row align-items-top">
-                      <i class="mdi mdi-blur-linear text-facebook icon-md"></i>
-                      <div class="ml-3 p-t-5">
-                        <h5 class="text-facebook">Near Expiry Reminder</h5>
+              <div class="col-md-3 grid-margin">
+                <a href="near-by.php" class="">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="d-flex flex-row align-items-top">
+                        <i class="mdi mdi-blur-linear text-facebook icon-md"></i>
+                        <div class="ml-3 p-t-5">
+                          <h5 class="text-facebook">Near Expiry Reminder</h5>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </a>
+                </a>
+              </div>
+            <?php } 
+            if(isset($user_sub_module) && in_array("Comapnay Code Master", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+            ?>
+              <div class="col-md-3 grid-margin">
+                <a href="company-master.php" class="">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="d-flex flex-row align-items-top">
+                        <i class="mdi mdi-city text-facebook icon-md"></i>
+                        <div class="ml-3 p-t-5">
+                          <h5 class="text-facebook">Comapnay Name Master</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            <?php } 
+            if(isset($user_sub_module) && in_array("Docter Profile", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+            ?>
+              <div class="col-md-3 grid-margin">
+                <a href="doctor-profile.php" class="">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="d-flex flex-row align-items-top">
+                        <i class="mdi mdi-stethoscope text-facebook icon-md"></i>
+                        <div class="ml-3 p-t-5">
+                          <h5 class="text-facebook">Docter Profile</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div> 
+            <?php } 
+            
+            
+            if(isset($user_sub_module) && in_array("Transport Master", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){
+            ?>
+              <div class="col-md-3 grid-margin">
+                <a href="transport-master.php" class="">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-row align-items-top">
+                                <i class="fa fa-truck text-facebook icon-md"></i>
+                                <div class="ml-3 p-t-5">
+                                    <h5 class="text-facebook">Transport Master</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
             </div>
+            <?php } ?>
+            <?php  
+            if(isset($user_sub_module) && in_array("Expense Master", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){
+            ?>
             <div class="col-md-3 grid-margin">
-              <a href="company-master.php" class="">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex flex-row align-items-top">
-                      <i class="mdi mdi-city text-facebook icon-md"></i>
-                      <div class="ml-3 p-t-5">
-                        <h5 class="text-facebook">Comapnay Code Master</h5>
-                      </div>
+                <a href="expense-master.php" class="">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-row align-items-top">
+                                <i class="fa fa-rupee text-facebook icon-md"></i>
+                                <div class="ml-3 p-t-5">
+                                    <h5 class="text-facebook">Expense Master</h5>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                </div>
-              </a>
+                </a>
             </div>
-
+            <?php } ?>
+            <?php  
+            if(isset($user_sub_module) && in_array("Sale Pefix", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){
+            ?>
             <div class="col-md-3 grid-margin">
-              <a href="doctor-profile.php" class="">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex flex-row align-items-top">
-                      <i class="mdi mdi-stethoscope text-facebook icon-md"></i>
-                      <div class="ml-3 p-t-5">
-                        <h5 class="text-facebook">Docter Profile</h5>
-                      </div>
+                <a href="sale-pefix.php" class="">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-row align-items-top">
+                                <i class="fa fa-sellsy text-facebook icon-md"></i>
+                                <div class="ml-3 p-t-5">
+                                    <h5 class="text-facebook">Series Prefix</h5>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                </div>
-              </a>
-            </div> 
-
+                </a>
+            </div>
+            <?php } ?>
+            <?php  
+            if(isset($user_sub_module) && in_array("Sale Pefix", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){
+            ?>
             <div class="col-md-3 grid-margin">
-              <a href="doctor-profile.php" class="">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex flex-row align-items-top">
-                      <i class="mdi mdi-account text-facebook icon-md"></i>
-                      <div class="ml-3 p-t-5">
-                        <h5 class="text-facebook">Admin Rights</h5>
-                      </div>
+                <a href="gst-master.php" class="">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-row align-items-top">
+                                <i class="fa fa-money text-facebook icon-md"></i>
+                                <div class="ml-3 p-t-5">
+                                    <h5 class="text-facebook">GST Master</h5>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                </div>
-              </a>
-            </div> 
-
+                </a>
+            </div>
+            <?php } ?>
+                <?php if($_SESSION['auth']['user_type'] != "owner"){ ?>
+                    <!--<div class="col-md-3 grid-margin">
+                        <a href="view-salesman.php" class="">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex flex-row align-items-top">
+                                        <i class="fa fa fa-user-o text-facebook icon-md"></i>
+                                        <div class="ml-3 p-t-5">
+                                            <h5 class="text-facebook">Salesman</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 grid-margin">
+                        <a href="rate-group-master.php" class="">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex flex-row align-items-top">
+                                        <i class="fa fa fa-list text-facebook icon-md"></i>
+                                        <div class="ml-3 p-t-5">
+                                            <h5 class="text-facebook">Rate Group Master</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 grid-margin">
+                        <a href="rate-master.php" class="">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex flex-row align-items-top">
+                                        <i class="fa fa fa-rupee text-facebook icon-md"></i>
+                                        <div class="ml-3 p-t-5">
+                                            <h5 class="text-facebook">Rate Master</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>-->
+                <?php } ?>
           </div>
         </div>
         <!-- content-wrapper ends -->
@@ -298,6 +453,11 @@
   
   <!-- Custom js for this page-->
   <script src="js/modal-demo.js"></script>
+  
+   
+ <!-- toast notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
 </body>
 
 

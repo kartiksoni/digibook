@@ -1,3 +1,4 @@
+<?php include('include/config.php');?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -58,9 +59,8 @@
               }else{
                 $_SESSION['msg']['success'] = "StateState Added Successfully.";
               }
-              //header('Location: location-master.php');
-              //header('Location: '.$_SERVER['PHP_SELF']);exit;
-              echo "<script>window.location='location-master.php';</script>";
+              header('Location: location-master.php');exit;
+              
             }else{
                 if(isset($_REQUEST['edit']) && $_REQUEST['edit'] == 'state'){
                   $_SESSION['msg']['error'] = "State Updated Fail!.";
@@ -93,9 +93,7 @@
               }else{
                 $_SESSION['msg']['success'] = "City Added Successfully.";
               }
-              //header('Location: location-master.php');
-              //header('Location: '.$_SERVER['PHP_SELF']);exit;
-              echo "<script>window.location='location-master.php';</script>";
+              header('Location: location-master.php');exit;
             }else{
               if(isset($_REQUEST['edit']) && $_REQUEST['edit'] == 'city'){
                 $_SESSION['msg']['error'] = "City Updated Fail!.";
@@ -230,7 +228,7 @@
                     <div class="col mt-3">
                       <h4 class="card-title">View State</h4>
                       <hr class="alert-dark">
-                      <div class="row">
+                	    <div class="row">
                         <div class="col-12">
                           <table class="table datatable">
                             <thead>
@@ -486,7 +484,7 @@
   <script src="js/data-table.js"></script> 
   
   <script>
-     $('.datatable').DataTable({
+  	 $('.datatable').DataTable({
       "iDisplayLength": 5,
      });
   </script>

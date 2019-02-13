@@ -81,5 +81,101 @@
       $(".tiles").removeClass("selected");
       $(this).addClass("selected");
     });
+    
+    // For left side bar search added by gautam makwana 10-01-2019
+    /*------------------------------------------START------------------------------*/
+    var navArray = [];
+    var navHtml = $('#sidebar-menu').html();
+
+    $('#sidebar-menu .nav-item a').each(function() {
+        var text = $.trim($(this).text());
+        var url = $(this).attr('href');
+        var nav = []
+        nav['text'] = text;
+        nav['url'] = url;
+        navArray.push(nav);
+    });
+
+    $("#searchsidebar").on("keyup", function () {
+        var search = $(this).val().toLowerCase();
+        var searchArray = [];
+        if(search != ''){
+
+            $('.left-sidebar-loader').show();//loader
+
+            $.each(navArray, function(key, value){
+              var val = (value['text']).toLowerCase();
+              if(val.indexOf(search) >= 0){
+                var tmp = [];
+                tmp['text'] = value['text'];
+                tmp['url'] = value['url'];
+                if ($.inArray(value['text'], searchArray.text) == -1 && value['url'].charAt(0) != '#'){
+                  searchArray.push(tmp);
+                }
+              }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: 'ajax_second.php',
+                data: {'search':search, 'action':'getCustomerVendor'},
+                dataType: "json",
+                success: function (data) {
+                  if(data.status == true){
+                    if(data.result.length > 0){
+                      $.each(data.result, function(key, value){
+                        var res = [];
+                        res['text'] = value.name;
+                        res['url'] = (value.group_id == 10) ? 'searchledger.php?customer='+value.id : 'searchledger.php?vendor='+value.id;
+                        console.log(res);
+                        searchArray.push(res);
+                      });
+                      searchableResult(searchArray);
+                    }else{
+                      coonsole.log(searchArray);
+                      searchableResult(searchArray);
+                    }
+                  }else{
+                    searchableResult(searchArray);
+                  }
+                },
+                error: function () {
+                  searchableResult(searchArray);
+                }
+            });
+
+            function searchableResult(arrayVal = []){
+              if(arrayVal.length > 0){
+                $('#sidebar-menu').empty();
+                $.each(arrayVal, function(key, value){
+                  var append = '<li class="nav-item"><a class="nav-link" href="'+value['url']+'"><i class="fa fa-search"></i> &nbsp;&nbsp;&nbsp;<span class="menu-title">'+value['text']+'</span></a></li>';
+                  $('#sidebar-menu').append(append);
+                });
+              }else{
+                $('#sidebar-menu').empty();
+                var append = '<li class="nav-item"><a class="nav-link" href="javascript:void(0);"><span class="menu-title text-danger">No Result Found!</span></a></li>';
+                $('#sidebar-menu').append(append);
+              }
+              $('.left-sidebar-loader').hide();//loader
+            }
+
+          }else{
+            $('.left-sidebar-loader').hide();//loader
+            $('#sidebar-menu').html(navHtml);
+          }
+    });
+    /*------------------------------------------END------------------------------*/
+    
+    /*--------------------USED FOR SESSION EVENT - GAUTAM MAKWANA - 05-02-19 - START------------------*/
+    function keepAlive() {
+        var httpRequest = new XMLHttpRequest();
+        httpRequest.open('GET', "index.php");
+        httpRequest.send(null);
+        console.log('keepAlive');
+    }
+
+    setInterval(keepAlive, 600000); //My session expires at 10 minutes
+    /*--------------------USED FOR SESSION EVENT - GAUTAM MAKWANA - 05-02-19 - END------------------*/
+    
   });
 })(jQuery);

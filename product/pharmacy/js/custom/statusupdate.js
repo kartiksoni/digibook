@@ -3,9 +3,7 @@ $( document ).ready(function() {
       var table = $(this).attr('data-table');
       var id = $(this).attr('data-id');
       var status = 0;
-      var htmlsuccess = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
-      var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
-
+      
       if(!$(this).hasClass('active')){
         status = 1;
       }
@@ -17,19 +15,17 @@ $( document ).ready(function() {
           dataType: "json",
           success: function (data) {
             if(data.status == true){
-              htmlsuccess = htmlsuccess.replace("##MSG##", data.message);
+              showSuccessToast(data.message);
               $('#errormsg').html(htmlsuccess);
               $("html, body").animate({ scrollTop: 0 }, "slow");
             }else{
-              htmlerror =  htmlerror.replace("##MSG##", data.message);
-              $('#errormsg').html(htmlerror);
-              $("html, body").animate({ scrollTop: 0 }, "slow");
+                showDangerToast(data.message);
+                $("html, body").animate({ scrollTop: 0 }, "slow");
             }
           },
           error: function () {
-            htmlerror =  htmlerror.replace("##MSG##", 'Somthing Want Wrong!');
-            $('#errormsg').html(htmlerror);
-            $("html, body").animate({ scrollTop: 0 }, "slow");
+                showDangerToast('Somthing Want Wrong!');
+                $("html, body").animate({ scrollTop: 0 }, "slow");
           }
       });
 

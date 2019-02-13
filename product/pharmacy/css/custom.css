@@ -2,3 +2,20 @@
 .display-block{display: block;}
 .m-t-10{margin-top: 10px}
 .m-t-20{margin-top: 20px}
+
+/*for mc autocomplete start*/
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover{border: none !important;}
+.ui-menu .ui-menu-item:hover{background-color: #D3D3D3 !important;}
+.ui-menu .ui-menu-item-wrapper{padding: 0px !important;}
+.ui-menu .ui-state-focus, .ui-menu .ui-state-active{margin: 0px !important;}
+.ui-autocomplete{font-size: 14px !important;font-family: "opensans-regular", sans-serif !important;}
+/*for mc autocomplete end*/
+
+/*---SELECT 2 ERROR BORDER----*/
+div .parsley-error + .select2-container{
+    border: 1px solid red !important;
+    background-color: #F2DEDE !important;
+    color: #B94A48 !important;
+}
+
+.modal-content{border: 1px solid #999;}

@@ -7,7 +7,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>DigiBooks | View Product</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -49,7 +49,6 @@
       <div class="main-panel">
       
         <div class="content-wrapper">
-          <?php include('include/flash.php'); ?>
           <span id="errormsg"></span>
           
           <div class="row">
@@ -60,6 +59,7 @@
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
+                  <a href="product-master.php" class="btn btn-success p-2 pull-right" title="Add Product Master"><i class="mdi mdi-plus-circle-outline"></i>Add Product Master</a>
                   <h4 class="card-title">View Product Master</h4>
                   <hr class="alert-dark">
                   <br>
@@ -82,7 +82,8 @@
                                   <!-- Row Starts -->   
                                   <?php 
                                   $i = 1;
-                                  $financialQry = "SELECT * FROM `product_master` ORDER BY id DESC";
+                                  $pharmacy_id = (isset($_SESSION['auth']['pharmacy_id'])) ? $_SESSION['auth']['pharmacy_id'] : '';
+                                  $financialQry = "SELECT * FROM `product_master` WHERE pharmacy_id = '".$pharmacy_id."' ORDER BY id DESC";
                                   $financial = mysqli_query($conn,$financialQry);
                                   while($row = mysqli_fetch_assoc($financial)){
                                   ?>
@@ -105,7 +106,10 @@
                                         </button>
                                       </td>
                                       <td>
-                                        <a href="product-master.php?id=<?php echo $row['id']; ?>" title="edit"><i class="fa fa-edit"></i></a>
+                                        <a class="btn  btn-behance p-2" href="product-master.php?id=<?php echo $row['id']; ?>" title="edit"><i class="fa fa-pencil mr-0"></i></a>
+                                        <a class="btn  btn-warning p-2" href="product-master.php?id=<?php echo $row['id']; ?>&type=view" title="View"><i class="fa fa-eye mr-0"></i></a>
+                                        <!--<a class="btn  btn-danger p-2" href="product-master.php?delete=<?php echo $row['id']; ?>" title="Delete"><i class="fa fa-trash mr-0"></i></a>-->
+                                        <a href="javascript:void(0);" class="btn btn-danger p-2 delete" title="Delete" data-id="<?php echo $row['id']; ?>" data-action="deleteProduct"><i class="fa fa-trash-o mr-0"></i></a>
                                       </td>
                                   </tr><!-- End Row --> 
                                   <?php 
@@ -117,6 +121,9 @@
                             </div>
                           </div>
                     </div>
+                   <hr>
+                   <br>
+                   <a href="configuration.php" class="btn btn-light">Back</a>
                 </div>
               </div>
             </div>
@@ -195,16 +202,21 @@
   <script src="js/data-table.js"></script> 
   
   <script>
-  	 $('#order-listing2').DataTable();
+     $('#order-listing2').DataTable();
   </script>
   
   <script>
-  	 $('#order-listing1').DataTable();
+     $('#order-listing1').DataTable();
   </script>
   
   <!-- change status js -->
   <script src="js/custom/statusupdate.js"></script>
+  <script src="js/custom/delete.js"></script>
   
+  
+  <!--    Toast Notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
   <!-- End custom js for this page-->
 </body>
 

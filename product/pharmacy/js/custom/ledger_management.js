@@ -2,6 +2,23 @@
 // date   : 25-07-2018
 $(document).ready(function(){
 
+
+var seller =  $('#customer_role:visible').val();
+       if(seller === 'Reseller'){
+        $('.panno-div').show();
+	    	$('.gstno-div').show();
+	    	$('.bankname-div').show();
+	    	$('.bankacno-div').show();
+	    	$('.branchname-div').show();
+	    	$('.ifsccode-div').show();
+	    	$('.dlno1-div').show();
+	    	$('.dlno2-div').show();
+	    	$('.adharno-div').show();
+	    	$('.resellerprice-div').show();
+            $('.bankaccounttype-div').show(); 
+     }
+     
+     
 	$("#customer_role").change(function(){
 		var role = $(this).val();
 
@@ -16,6 +33,7 @@ $(document).ready(function(){
 	    	$('.dlno2-div').show();
 	    	$('.adharno-div').show();
 	    	$('.resellerprice-div').show();
+            $('.bankaccounttype-div').show();
 		}else{
 			$('.panno-div').hide();
 	    	$('.gstno-div').hide();
@@ -27,6 +45,7 @@ $(document).ready(function(){
 	    	$('.dlno2-div').hide();
 	    	$('.adharno-div').hide();
 	    	$('.resellerprice-div').hide();
+	    	$('.bankaccounttype-div').hide();
 		}
 
 	});
@@ -105,7 +124,10 @@ $(document).ready(function(){
               url: 'ajax.php',
               data: {'type':type, 'action':'getGroupByAccountType'},
               dataType: "json",
-              success: function (data) {console.log(data);
+              beforeSend: function() {
+          		$('.type-loader').show();
+    	      },
+              success: function (data) {
               	if(data.status == true){
               		$('#subtype').children('option:not(:first)').remove();
               		$.each(data.result, function (i, item) {
@@ -117,13 +139,146 @@ $(document).ready(function(){
               	}else{
               		$('#subtype').children('option:not(:first)').remove();
               	}
+              	$('.type-loader').hide();
               },
               error: function () {
               	$('#subtype').children('option:not(:first)').remove();
+              	$('.type-loader').hide();
               }
           	});
 		}else{
 			$('#subtype').children('option:not(:first)').remove();
+			$('.type-loader').hide();
 		}
 	});
+	
+	$(".customer_type").change(function(){
+	    var customer_type = $(this).val();
+	    $(".gstno").removeAttr('readonly');
+	    $(".gst_error").show();
+	    $(".gstno").prop('required',true);
+	    if(customer_type == "GST_unregistered"){
+	        $(".gst_error").hide();
+	        $(".gstno").attr('readonly', true);
+	        $(".gstno").removeAttr('required');
+	    }
+	    if(customer_type == "Consumer"){
+	        $(".gst_error").hide();
+	        $(".gstno").attr('readonly', true);
+	        $(".gstno").removeAttr('required');
+	    }
+	    if(customer_type == "Overseas"){
+	        $(".gst_error").hide();
+	        $(".gstno").attr('readonly', true);
+	        $(".gstno").removeAttr('required');
+	    }
+	});   
+	
+});
+
+$("#add-area-form").on("submit", function(event){
+	  event.preventDefault();
+    var data = $(this).serialize();
+    var dataarr = JSON.parse('{"' + decodeURI(data).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+    $.ajax({
+        type: "POST",
+        url: 'ajax.php',
+        data: {'action':'addarea', 'data': dataarr},
+        dataType: "json",
+        beforeSend: function() {
+          $('#btn-addarea').html('Wait.. <i class="fa fa-spin fa-refresh"></i>');
+          $('#btn-addarea').prop('disabled', true);
+        },
+        success: function (data) {
+          if(data.status == true){
+            $('#btn-addarea').html('Save');
+            $('#btn-addarea').prop('disabled', false);
+            $('#add-area-form')[0].reset();
+            
+            $('#Area').append($('<option>', { 
+                value: data.result,
+                text : dataarr.name 
+            }));
+            $('#Area').val(data.result).trigger('change');
+            $('#addarea-model').modal('hide');
+            showSuccessToast(data.message);
+          }else{
+            $('#btn-addarea').html('Save');
+            $('#btn-addarea').prop('disabled', false);
+            showDangerToast(data.message);
+          }
+        },
+        error: function () {
+          $('#btn-addarea').html('Save');
+          $('#btn-addarea').prop('disabled', false);
+          showDangerToast('Somthing Want Wrong! Try again.');
+        }
+    });
+
+});
+$("#gst_no").keyup(function(){
+    var gst_value = $(this).val();
+    if(gst_value != ''){
+        if (gst_value.match(/^([0-9]{2}[a-zA-Z]{4}([a-zA-Z]{1}|[0-9]{1})[0-9]{4}[a-zA-Z]{1}([a-zA-Z]|[0-9]){3}){0,15}$/)) {
+            $("#gst_no").removeClass("parsley-error");
+            $("#gst_no").addClass("parsley-success");
+        }else{
+            $("#gst_no").addClass("parsley-error");  
+        }
+    }else{
+        $("#gst_no").addClass("parsley-error");
+    }
+    
+});
+
+
+$("#ifsc_code").keyup(function(){
+    var ifsc_value = $(this).val();
+    if(ifsc_value != ''){
+        if (ifsc_value.match(/^([A-Z]{4}0[A-Z0-9]{6})$/)) {
+            $("#ifsc_code").removeClass("parsley-error");
+            $("#ifsc_code").addClass("parsley-success");
+        }else{
+            $("#ifsc_code").addClass("parsley-error");  
+        }
+    }else{
+        $("#ifsc_code").addClass("parsley-error");
+    }
+    
+});
+
+
+ $('body').on('change keyup', '#coname, #city',  function () {
+// $("#coname").keyup(function(){
+
+  var companyname = $('#coname').val();
+  var type = $('#ledger_type').val();
+  var detailid = $('#detailid').val();
+  var city = $('#city').val();
+  
+  console.log({companyname, type, detailid, city});
+  var action = "LedgerWiseComanyName"; 
+   if(companyname !=''){
+   $.ajax({
+    type:"POST",
+     url: "ajax.php",
+     data : {action:action ,companyname:companyname ,type:type ,city:city ,detailid:detailid},
+     success: function(data){
+        if(data == "existing"){
+          $("#nameget").show();
+          $("#coname").addClass("parsley-error");  
+          $("#submit").prop('disabled', true);
+        }else if(data == "notexisting"){
+            $("#coname").removeClass("parsley-error");
+           $("#coname").addClass("parsley-success");
+          $("#nameget").hide();
+          $("#submit").prop('disabled', false);
+        }
+      }
+   });
+  } else{
+       $("#nameget").hide();
+       $("#coname").removeClass("parsley-error");
+       $("#submit").prop('disabled', false);
+  }
 });

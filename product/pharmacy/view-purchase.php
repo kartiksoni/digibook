@@ -1,5 +1,8 @@
-<?php include('include/usertypecheck.php'); ?>
-
+<?php include('include/usertypecheck.php');?>
+<?php
+  $pharmacy_id = (isset($_SESSION['auth']['pharmacy_id'])) ? $_SESSION['auth']['pharmacy_id'] : '';
+  $financial_id = (isset($_SESSION['auth']['financial'])) ? $_SESSION['auth']['financial'] : '';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,7 +10,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>DigiBooks | View Purchase Bill</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -47,7 +50,6 @@
       <div class="main-panel">
       
         <div class="content-wrapper">
-          <?php include('include/flash.php'); ?>
           <div class="row">
             
      
@@ -56,13 +58,14 @@
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">View Purchase Profile</h4>
-                  <hr class="alert-dark">
-                  <br>
-                  <div class="col mt-3">
+                    <a href="purchase.php" class="btn btn-success p-2 pull-right" title="Add Bill"><i class="mdi mdi-plus-circle-outline"></i>Add Bill</a>
+                    <h4 class="card-title">View Purchase Profile</h4>
+                    <hr class="alert-dark">
+                    <br>
+                    <div class="col mt-3">
                        <div class="row">
                             <div class="col-12">
-                              <table id="order-listing1" class="table">
+                              <table class="table datatable">
                                 <thead>
                                   <tr>
                                       <th>Sr No</th>
@@ -76,32 +79,43 @@
                                 </thead>
                                 <tbody>
                                   <!-- Row Starts -->   
-                                  <?php 
-                                  $i = 1;
-                                  $financialQry = "SELECT * FROM `purchase` ORDER BY id DESC";
-                                  $financial = mysqli_query($conn,$financialQry);
-                                  while($row = mysqli_fetch_assoc($financial)){
+                                  <?php
+                                      $data = [];
+                                      $query = "SELECT prch.id, prch.vouchar_date, prch.voucher_no, prch.invoice_date, prch.total_total as total, lg.name as vendor_name FROM `purchase` prch INNER JOIN ledger_master lg ON prch.vendor = lg.id WHERE prch.pharmacy_id = '".$pharmacy_id."' AND prch.financial_id = '".$financial_id."' ORDER BY prch.id DESC";
+                                      
+                                      $res = mysqli_query($conn,$query);
+                                      if($res && mysqli_num_rows($res) > 0){
+                                        while ($row = mysqli_fetch_assoc($res)) {
+                                          $data[] = $row;
+                                        }
+                                      }
                                   ?>
-                                  <tr>
-                                      <td><?php echo $i; ?></td>
-                                      <td><?php echo date("d-m-Y",strtotime($row['vouchar_date'])); ?></td>
-                                      <td><?php echo $row['voucher_no']; ?></td>
-                                      <?php 
-                                      $vendorQry = "SELECT * FROM `ledger_master` WHERE id='".$row['vendor']."'";
-                                      $vendor = mysqli_query($conn,$vendorQry);
-                                      $row1 = mysqli_fetch_assoc($vendor)
-                                      ?>
-                                      <td><?php echo $row1['name']; ?></td>
-                                      <td><?php echo date("d-m-Y",strtotime($row['invoice_date'])); ?></td>
-                                      <td><?php echo $row['total_total']; ?></td>
-                                      <td>
-                                        <a class="btn  btn-behance p-2" href="purchase.php?id=<?php echo $row['id']; ?>" title="edit"><i class="fa fa-pencil mr-0"></i></a>
-                                      </td>
-                                  </tr><!-- End Row --> 
-                                  <?php 
-                                  $i++;
-                                  }
-                                  ?>  
+
+                                  <?php if(isset($data) && !empty($data)){ ?>
+                                    <?php foreach ($data as $key => $value) { ?>
+                                      <tr>
+                                          <td><?php echo $key+1; ?></td>
+                                          <td>
+                                            <?php echo (isset($value['vouchar_date']) && $value['vouchar_date'] != '') ? date('d/m/Y',strtotime($value['vouchar_date'])) : ''; ?>
+                                          </td>
+                                          <td>
+                                            <?php echo (isset($value['vouchar_date'])) ? $value['vouchar_date'] : ''; ?>
+                                          </td>
+                                          <td>
+                                            <?php echo (isset($value['vendor_name'])) ? $value['vendor_name'] : ''; ?>
+                                          </td>
+                                          <td>
+                                            <?php echo (isset($value['invoice_date']) && $value['invoice_date'] != '') ? date('d/m/Y',strtotime($value['invoice_date'])) : ''; ?>
+                                          </td>
+                                          <td class="text-right">
+                                            <?php echo (isset($value['total']) && $value['total'] != '') ? amount_format(number_format($value['total'], 2, '.', '')) : ''; ?>
+                                          </td>
+                                          <td>
+                                            <a class="btn  btn-behance p-2" href="purchase.php?id=<?php echo $value['id']; ?>" title="edit"><i class="fa fa-pencil mr-0"></i></a>
+                                          </td>
+                                      </tr>
+                                    <?php } ?>
+                                  <?php } ?>
                                 </tbody>
                               </table>
                             </div>
@@ -164,36 +178,21 @@
   
   <!-- Custom js for this page-->
   <script src="js/modal-demo.js"></script>
-  
- <script>
-    $('#datepicker-popup1').datepicker({
-      enableOnReadonly: true,
-      todayHighlight: true,
-      format: 'dd/mm/yyyy'
-    });
- </script>
- 
- <script>
-    $('#datepicker-popup2').datepicker({
-      enableOnReadonly: true,
-      todayHighlight: true,
-      format: 'dd/mm/yyyy'
-    });
- </script>
  
   <!-- Custom js for this page-->
   <script src="js/data-table.js"></script> 
   
   <script>
-  	 $('#order-listing2').DataTable();
+     $('.datatable').DataTable();
   </script>
   
-  <script>
-  	 $('#order-listing1').DataTable();
-  </script>
+  
+  <!--    Toast Notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
   
   <!-- End custom js for this page-->
-  <?php include('include/usertypecheck.php'); ?>
+  
 </body>
 
 

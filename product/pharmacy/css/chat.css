@@ -1,0 +1,157 @@
+ .content{width: 100% !important;}
+    .sender-name{max-width: 100% !important;}
+    .message_text{max-width: 100% !important;}
+    .active-user{background-color: #f3f3f3;}
+    .email-wrapper .mail-sidebar .menu-bar .profile-list-item a .user .u-name{padding-bottom: 2px !important;}
+    .email-wrapper .mail-sidebar .menu-bar .profile-list-item a .user .u-name{padding-bottom: 2px !important;}
+    .emojiPickerIconWrap{width: 100%;}
+    .emojiPickerIcon{background-color: inherit !important;}
+    .emojiPicker{top: 290px !important;}
+    #attechment-lable{
+    position: relative;
+    right: 0;
+    top: 0px;
+    padding: 0;
+    cursor: pointer;
+    background: #eee;
+    margin: 0;
+    line-height: 21px;
+    height: 54px;
+    border-radius: 6px 0 0 6px;
+	border: 2px solid #e8e8e8;
+	border-right: none;
+	}
+	#attechment-lable i{
+		color:#999999;
+	}
+    #attechment{opacity: 0;position: absolute;z-index: -1;}
+    .online-status .dropdown-menu{border: 1px solid #696969 !important;}
+    .online-status .dropdown-item:hover, .dropdown-item:focus{background-color: #DCDCDC !important;}
+    .online-status.dropdown-item.active, .dropdown-item:active{color: black !important;}
+    .chat-textarea{
+	   border: 2px solid #e8e8e8;
+    border-radius: 0 6px 6px 0;
+    font-family: "opensans-regular", sans-serif;
+    font-size: 12px;
+    padding: 17px 18px 5px;
+    line-height: 14px;
+    background: #fff;
+	}
+    .message_text{white-space:unset !important;}
+	.clear-btn{
+		padding: 1px 1px 1px 5px;
+		position: absolute;
+		top: 8px;
+		right: 14px;
+		background: #eee;
+		color: #333;
+		border: none;
+		font-size:13px;
+		padding:5px 10px;
+		border-radius:20px;
+	}
+	#chatdiv{
+		margin-top:15px;
+	}
+	.email-wrapper .mail-sidebar .menu-bar .online-status .chat-offline {
+    font-size: 0.875rem;
+    color: #1094f7;
+    margin-bottom: 0;
+    font-family: "opensans-regular", sans-serif;
+    font-weight: 500;
+	}
+	.email-wrapper .mail-sidebar .menu-bar .online-status .chat-offline i {
+		color:#999999;
+		font-size:10px;
+		position: relative;
+		top: -1px;
+		margin-right: 4px;
+	}
+	.attachment-icon{
+		font-size: 22px;
+		margin-right: 5px;
+		top: 13px;
+		position: relative;
+		left: 13px;
+	}
+	.file-upload-name{
+	    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 80px;
+    color: #7a808d;
+    font-family: inherit;
+    font-size: .875rem;
+    font-weight: 400;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    top: 14px;
+    flex: 1;
+	}
+	.s-file-upload__close-icon {
+	width: 32px;
+    height: 46px;
+    display: -ms-flexbox;
+    display: inline-block;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    z-index: 4;
+    cursor: pointer;
+	position: relative;
+    top: -4px;
+    right: 0;
+	
+}
+.s-file-upload__close-icon svg {
+	top: 10px;
+    width: 15px;
+    height: 17px;
+    position: relative;
+    left: 7px;
+}
+.attachment-wrap{
+	width: 48px;
+    height: 47px;
+    display: inline-block;
+    position: relative;
+    top: 0;
+}
+
+
+
+.emoji-icon-textarea{
+	height: 26px;
+    width: 37px;
+    background-color: rgb(238, 238, 238) !important;
+    top: 14px;
+    display: inline-block;
+    right: 7px;
+}
+.btn-send{
+ right: 15px;
+    position: absolute;
+    bottom: 17px;
+    padding: 6px 8px;
+    font-size: 13px;
+    border: 1px solid #2daa5c;
+    color: #2daa5c !important;
+}
+.btn-send:hover{ 
+	background:#2daa5c  !important;
+    color: #FFF !important;
+	border: 1px solid #2daa5c;
+}
+.s-message-form {
+    display: flex;
+}
+.file-upload-wrap {
+    display: flex;
+}
+.textarea-wrap{
+	flex: 1;
+}
+.file-send-wrap{
+}

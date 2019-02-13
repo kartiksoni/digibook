@@ -1,26 +1,45 @@
 <?php include('include/usertypecheck.php');
-define('BASE_URL', 'http://localhost/digibook/product/api/api.php' );
+//define('BASE_URL', 'http://localhost/digibook/product/api/api.php' );
+//define('BASE_URL', 'http://digibooks.cloud/product/api/api.php' );
 if(isset($_GET['id'])){
   $id = $_GET['id'];
   $url= BASE_URL."?action=edit_user&id=".$id."";  
   $edit_data = file_get_contents($url);
   $edit = json_decode($edit_data,true);
+
 }
 
 
 if(isset($_POST['submit'])){
   $owner_id = $_SESSION['auth']['id'];
-  $pharmacy_id = $_REQUEST['pharmacy_id'];
+  $pharmacy_id = $_POST['pharmacy_id'];
   $user_name = $_POST['user_name'];
   $email = $_POST['email'];
   $mobile = $_POST['mobile'];
   $password = md5($_POST['password']);
   $status = $_POST['status'];
-  $url = BASE_URL."?action=add_user&name=$user_name&owner_id=$owner_id&pharmacy_id=$pharmacy_id&user_type=admin&user_name=$user_name&email=$email&mobile=$mobile&password=$password&type=PHARMACY&status=$status";
-
+  $url = BASE_URL."?action=add_user&name=$user_name&owner_id=$owner_id&pharmacy_id=$pharmacy_id&multiple_pharmacy_id=$pharmacy_id&user_type=admin&user_name=$user_name&email=$email&mobile=$mobile&password=$password&type=PHARMACY&status=$status";
   $data = file_get_contents($url);
   
   if($data){
+      
+      $html ="<html><head>
+           <title>User Details</title>
+           </head>
+           <body>";
+        $html .= "<h3>Welcome ".$user_name."</h3>";
+        $html .= "<h4>Thank You For Registration</h4>";
+        $html .= "<p>For Reference, Here's Your Login Information:</p>";
+        $html .= "<p>Login Page : <a href=". $_SERVER['SERVER_NAME']."/product/login.php>". $_SERVER['SERVER_NAME']."/product/login.php</a>";
+        $html .= "<p>Email : ".$_POST['email']."</p>";
+        $html .= "<p>Password : ".$_POST['password']."</p>";
+        $html .= "<p>All The Best,</p>";
+        $html .= "<p>The Digibooks Team.</p>";
+        $html .= "</body></html>";
+        
+       smtpmail($email, '', '', 'Digibook User Details', $html, '', '');
+      
+     
     $_SESSION['msg']['success'] = "Admin Add successfully.";
     header('location:user.php?pharmacy_id='.$pharmacy_id.'');exit;
   }else{
@@ -30,7 +49,7 @@ if(isset($_POST['submit'])){
 }
 
 if(isset($_POST['edit'])){
-  $pharmacy_id = $_REQUEST['pharmacy_id'];
+  $pharmacy_id = $_POST['pharmacy_id'];
   $id = $_REQUEST['id'];
   $user_name = $_POST['user_name'];
   $email = $_POST['email'];
@@ -103,7 +122,6 @@ if(isset($_POST['edit'])){
       <div class="main-panel">
       
         <div class="content-wrapper">
-          <?php include('include/flash.php'); ?>
           <span id="errormsg"></span>
           <div class="row">
             
@@ -116,26 +134,41 @@ if(isset($_POST['edit'])){
                   <h4 class="card-title">User Profile</h4>
                   <hr class="alert-dark">
                   <br>
-                  <form class="forms-sample" class="" method="post" action="">
+                  <form class="forms-sample" class="" method="post" action="" autocomplete="off">
                   
                   <div class="form-group row">
+                    <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Select Pharmacy<span class="text-danger">*</span></label>
+                        <select name="pharmacy_id" class="js-example-basic-single" required style="width:100%"> 
+                            <option value="">Select Pharmacy</option>
+                            <?php 
+                            $financialQry = "SELECT * FROM `pharmacy_profile` WHERE created_by='".$_SESSION['auth']['id']."' ORDER BY id DESC";
+                            $financial = mysqli_query($conn,$financialQry);
+                            while($row = mysqli_fetch_assoc($financial)){
+                            ?>
+                            <option <?php if(isset($edit['pharmacy_id']) && $edit['pharmacy_id'] == $row['id']){echo "selected";} ?> value="<?php echo $row['id']; ?>"><?php echo $row['pharmacy_name']; ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
                       <div class="col-12 col-md-4">
                         <label for="user_name">User Name<span class="text-danger">*</span></label>
                         <input type="text" required name="user_name" value="<?php echo (isset($edit['username'])) ? $edit['username'] : ''; ?>" class="form-control" id="user_name" placeholder="User Name">
                       </div>
                       <div class="col-12 col-md-4">
                         <label for="email">Email<span class="text-danger">*</span></label>
-                      <input type="text" required name="email" value="<?php echo (isset($edit['email'])) ? $edit['email'] : ''; ?>" class="form-control" id="email" placeholder="Email">
+                      <input type="email" required name="email" value="<?php echo (isset($edit['email'])) ? $edit['email'] : ''; ?>" class="form-control" id="email" placeholder="Email">
                       </div> 
 
-                      <div class="col-12 col-md-4">
-                        <label for="email">Mobile<span class="text-danger">*</span></label>
-                      <input type="text" required name="mobile" value="<?php echo (isset($edit['mobile'])) ? $edit['mobile'] : ''; ?>" class="form-control" id="mobile" placeholder="Mobile">
-                      </div> 
+                      
                   </div>
                     
                   <div class="form-group row">
                     
+                      <div class="col-12 col-md-4">
+                        <label for="email">Mobile<span class="text-danger">*</span></label>
+                      <input type="text" required name="mobile" minlength="10" maxlength ="10" value="<?php echo (isset($edit['mobile'])) ? $edit['mobile'] : ''; ?>" class="form-control onlynumber" id="mobile" placeholder="Mobile" data-parsley-length="[10, 10]" data-parsley-length-message = "Mobile No should be 10 charatcers long.">
+                      </div> 
+                      
                       <div class="col-12 col-md-4">
                         <label for="password">Password<span class="text-danger">*</span></label>
                         <input type="password" required name="password" value="<?php echo (isset($edit['password'])) ? $edit['password'] : ''; ?>" class="form-control" id="password" placeholder="Password">
@@ -173,7 +206,7 @@ if(isset($_POST['edit'])){
                       </div>
                     
                     <br>
-                    <a href="service-master.php" class="btn btn-light">Cancel</a>
+                    <a href="configuration.php" class="btn btn-light">Cancel</a>
                     <?php 
                       if(isset($_GET['id'])){
                         ?>
@@ -195,6 +228,7 @@ if(isset($_POST['edit'])){
                                 <thead>
                                   <tr>
                                       <th>Sr No</th>
+                                      <th>Pharmacy Name</th>
                                       <th>User Name</th>
                                       <th>Email</th>
                                       <th>Mobile</th>
@@ -206,20 +240,30 @@ if(isset($_POST['edit'])){
                                 <tbody>
                                   <!-- Row Starts -->   
                                   <?php 
-                                  $url = BASE_URL."?action=view_user&pharmacy_id=".$_GET['pharmacy_id']."&owner_id=".$_SESSION['auth']['id']."";
+                                  $url = BASE_URL."?action=view_user&owner_id=".$_SESSION['auth']['id']."";
                                   $data = file_get_contents($url);
                                   $data_array = json_decode($data,true);
                                   foreach ($data_array as $key => $value) {
                                   ?>
                                   <tr>
                                       <td><?php echo $key+1; ?></td>
+                                      <?php 
+                                      $selectQry = "SELECT pharmacy_name FROM `pharmacy_profile` WHERE id='".$value['pharmacy_id']."'";
+		                              $res = mysqli_query($conn, $selectQry);
+		                              $row = mysqli_fetch_assoc($res);
+                                      ?>
+                                      <td><?php echo $row['pharmacy_name']; ?></td>
                                       <td><?php echo $value['username']; ?></td>
                                       <td><?php echo $value['email']; ?></td>
                                       <td><?php echo $value['mobile']; ?></td>
                                       <td><?php echo $value['user_type']; ?></td>
                                       <td>
-                                        <a href="user.php?pharmacy_id=<?php echo $_GET['pharmacy_id'];?>&id=<?php echo $value['id'] ?>" title="edit"><i class="fa fa-edit"></i></a>
-                                        <a href="admin_rights.php?pharmacy_id=<?php echo $_GET['pharmacy_id']; ?>&user_id=<?php echo $value['id']; ?>">admin rights </a>
+                                        <a class="btn btn-behance p-2" href="user.php?id=<?php echo $value['id'] ?>" title="edit"><i class="fa fa-pencil mr-0"></i></a>
+                                        <a href="javascript:void(0);" class="btn btn-danger p-2 delete" title="Delete" data-id="<?php echo $value['id']; ?>" data-action="deleteAdmin"><i class="fa fa-trash-o mr-0"></i></a>
+                                        <a class="btn btn-info p-2" href="admin_rights.php?user_id=<?php echo $value['id']; ?>" title="Admin Rights">Admin Rights</a>
+                                          
+                                        <!--<a href="user.php?pharmacy_id=<?php //echo $value['pharmacy_id'];?>&id=<?php //echo $value['id'] ?>" title="edit"><i class="fa fa-edit"></i></a>
+                                        <a href="admin_rights.php?pharmacy_id=<?php //echo $value['pharmacy_id']; ?>&user_id=<?php //echo $value['id']; ?>">admin rights </a>-->
                                       </td>
                                   </tr><!-- End Row --> 
                                 <?php } ?>
@@ -320,7 +364,13 @@ if(isset($_POST['edit'])){
   
   <!-- change status js -->
   <script src="js/custom/statusupdate.js"></script>
+  <script src="js/custom/onlynumber.js"></script>
+  <script src="js/custom/delete.js"></script>
   
+   
+ <!-- toast notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
   
   <!-- End custom js for this page-->
   

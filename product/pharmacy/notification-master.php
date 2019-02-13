@@ -1,60 +1,52 @@
-<?php include('include/usertypecheck.php'); ?>
-<!DOCTYPE html>
-<html lang="en">
-<?php 
-
-  $id = $_GET['id'];
-  $editQry = "SELECT * FROM `notification_master`ORDER BY id DESC LIMIT 1";
-  $edit = mysqli_query($conn,$editQry);
-  $edit = mysqli_fetch_assoc($edit);
- 
-
-
-if(isset($_POST['submit'])){
-  $user_id = $_SESSION['auth']['id'];
-  $customer_reminder = $_POST['customer_reminder'];
-  $vender_reminder = $_POST['vender_reminder'];
-
-  $insQry = "INSERT INTO `notification_master` (`customer_reminder`, `vender_reminder`, `created_at`, `cretaed_by`) VALUES ('".$customer_reminder."', '".$vender_reminder."', '".date('Y-m-d H:i:s')."', '".$user_id."')";
-  $queryInsert = mysqli_query($conn,$insQry);
-  if($queryInsert){
-    $_SESSION['msg']['success'] = "Notification Master Added Successfully.";
-    header('location:notification-master.php');exit;
-  }else{
-    $_SESSION['msg']['fail'] = "Notification Master Not Added.";
-    header('location:notification-master.php');exit;
-  }
-}
-
-
-
-if(isset($_POST['edit'])){
-  $user_id = $_SESSION['auth']['id'];
-  $customer_reminder = $_POST['customer_reminder'];
-  $vender_reminder = $_POST['vender_reminder'];
-  $editQry = "SELECT * FROM `notification_master`ORDER BY id DESC LIMIT 1";
-  $edit = mysqli_query($conn,$editQry);
-  $edit = mysqli_fetch_assoc($edit);
-
-  $updateQry = "UPDATE `notification_master` SET `customer_reminder`='".$customer_reminder."',`vender_reminder`='".$vender_reminder."',`updated_at`='".date('Y-m-d H:i:s')."',`updated_by`='".$user_id."' WHERE id='".$edit['id']."'";
-  
-  $updateInsert = mysqli_query($conn,$updateQry);
-
-  if($updateInsert){
-    $_SESSION['msg']['success'] = "Notification Master Updated Successfully.";
-    header('location:notification-master.php');exit;
-  }else{
-    $_SESSION['msg']['fail'] = "Notification Master Updated Not Updated.";
-    header('location:notification-master.php');exit;
-  }
-}
+<?php $title = "Notification Master";?>
+<?php include('include/usertypecheck.php');?>
+<?php include('include/permission.php');?>
+<?php
+    $owner_id = (isset($_SESSION['auth']['owner_id'])) ? $_SESSION['auth']['owner_id'] : '';
+    $admin_id = (isset($_SESSION['auth']['admin_id'])) ? $_SESSION['auth']['admin_id'] : '';
+    $pharmacy_id = (isset($_SESSION['auth']['pharmacy_id'])) ? $_SESSION['auth']['pharmacy_id'] : '';
+    $financial_id = (isset($_SESSION['auth']['financial'])) ? $_SESSION['auth']['financial'] : '';
+    $user_id = (isset($_SESSION['auth']['id'])) ? $_SESSION['auth']['id'] : '';
+    $date = date('Y-m-d H:i:s');
+    
+    if(isset($_POST['submit'])){
+        $customer_reminder = (isset($_POST['customer_reminder']) && $_POST['customer_reminder'] != '') ? $_POST['customer_reminder'] : 0;
+        $vender_reminder = (isset($_POST['vender_reminder']) && $_POST['vender_reminder'] != '') ? $_POST['vender_reminder'] : 0;
+      
+        $existQ = "SELECT id FROM notification_master WHERE pharmacy_id = '".$pharmacy_id."'";
+        $existR = mysqli_query($conn, $existQ);
+        if($existR && mysqli_num_rows($existR) > 0){
+            $existRow = mysqli_fetch_assoc($existR);
+            $updateQ = "UPDATE notification_master SET customer_reminder = '".$customer_reminder."', vender_reminder = '".$vender_reminder."', modified = '".$date."', modifiedby = '".$user_id."' WHERE id = '".$existRow['id']."'";
+            $updateR = mysqli_query($conn, $updateQ);
+            if($updateR){
+                $_SESSION['msg']['success'] = "Notification Reminder Update Successfully.";
+            }else{
+                $_SESSION['msg']['fail'] = "Notification Reminder Update Fail!";
+            }
+        }else{
+            $insertQ = "INSERT INTO notification_master SET financial_id = '".$financial_id."', owner_id = '".$owner_id."', admin_id = '".$admin_id."', pharmacy_id = '".$pharmacy_id."', customer_reminder = '".$customer_reminder."', vender_reminder = '".$vender_reminder."', created = '".$date."', createdby = '".$user_id."'";
+            $insertR = mysqli_query($conn, $insertQ);
+            if($insertR){
+                $_SESSION['msg']['success'] = "Notification Reminder Added Successfully.";
+            }else{
+                $_SESSION['msg']['fail'] = "Notification Reminder Added Fail!";
+            }
+        }
+        header('location:notification-master.php');exit;
+    }
+    $getReminderQ = "SELECT id,customer_reminder,vender_reminder FROM notification_master WHERE pharmacy_id = '".$pharmacy_id."'";
+    $getReminderR = mysqli_query($conn, $getReminderQ);
+    if($getReminderR && mysqli_num_rows($getReminderR) > 0){
+        $editData = mysqli_fetch_assoc($getReminderR);
+    }
 ?>
 
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>Digibooks | Notification Master</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -97,53 +89,31 @@ if(isset($_POST['edit'])){
       <div class="main-panel">
       
         <div class="content-wrapper">
-          <?php include('include/flash.php'); ?>
           <div class="row">
             
        
             
             <!-- Financial Year Form -->
             <div class="col-md-12 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                  <h4 class="card-title">Notification Master</h4>
-                  <hr class="alert-dark">
-                  <br>
-                  <form id="commentForm" class="" method="post" action="">
-                    <div class="form-group row">
-                        <div class="col-12 col-md-4">
-                          <label for="customer_reminder">Customer Reminder Days</label>
-                          <input data-parsley-type="number" type="text" class="form-control" name="customer_reminder" id="customer_reminder" placeholder="Customer Reminder Days" value="<?php echo $edit['customer_reminder']; ?>" required="">
-                        </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Notification Master</h4><hr class="alert-dark"><br>
+                        <form  method="post" autocomplete="off">
+                            <div class="form-group row">
+                                <div class="col-12 col-md-4">
+                                  <label for="customer_reminder">Customer Reminder Days <span class="text-danger">*</span></label>
+                                  <input data-parsley-type="number" type="text" class="form-control onlynumber" name="customer_reminder" id="customer_reminder" placeholder="Customer Reminder Days" value="<?php echo (isset($editData['customer_reminder'])) ? $editData['customer_reminder'] : ''; ?>" required="">
+                                </div>
+                                <div class="col-12 col-md-4">
+                                  <label for="vender_reminder">Vender Reminder Days <span class="text-danger">*</span></label>
+                                  <input data-parsley-type="number" type="text" class="form-control onlynumber" name="vender_reminder" id="vender_reminder" placeholder="Vender Reminder Days" value="<?php echo isset($editData['vender_reminder']) ? $editData['vender_reminder'] : ''; ?>" required="">
+                                </div>
+                            </div>
+                            <a href="configuration.php" class="btn btn-light">Back</a>
+                            <button name="submit" type="submit" class="btn btn-success mr-2">Submit</button>
+                        </form>
                     </div>
-                    <div class="form-group row">
-                        <div class="col-12 col-md-4">
-                          <label for="vender_reminder">Vender Reminder Days</label>
-                          <input data-parsley-type="number" type="text" class="form-control" name="vender_reminder" id="vender_reminder" placeholder="Vender Reminder Days" value="<?php echo $edit['vender_reminder']; ?>" required="">
-                        </div>
-                    </div>
-                      
-                   
-                      <br>
-                      
-                      <a href="" class="btn btn-light">Cancel</a>
-                      <?php 
-                      if(isset($edit['customer_reminder'])){
-                        ?>
-                      <button name="edit" type="submit" class="btn btn-success mr-2">Edit</button>
-                        <?php
-                      }else{
-                      ?>
-                      <button name="submit" type="submit" class="btn btn-success mr-2">Submit</button>
-                      <?php } ?>
-                      
-                    
-                  </form>
-                  
                 </div>
-
-              </div>
-
             </div>
           </div>
         </div>
@@ -199,36 +169,14 @@ if(isset($_POST['edit'])){
   </script>
   <!-- Custom js for this page-->
   <script src="js/modal-demo.js"></script>
+  <script src="js/custom/onlynumber.js"></script>
   
- <script>
-    $('#datepicker-popup1').datepicker({
-      enableOnReadonly: true,
-      todayHighlight: true,
-      format: 'dd/mm/yyyy'
-    });
- </script>
- 
- <script>
-    $('#datepicker-popup2').datepicker({
-      enableOnReadonly: true,
-      todayHighlight: true,
-      format: 'dd/mm/yyyy'
-    });
- </script>
- 
-  <!-- Custom js for this page-->
-  <script src="js/data-table.js"></script> 
   
-  <script>
-     $('#order-listing2').DataTable();
-  </script>
-  
-  <script>
-     $('#order-listing1').DataTable();
-  </script>
+  <!--    Toast Notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
   
   <!-- End custom js for this page-->
-  <?php include('include/usertypecheck.php'); ?>
 </body>
 
 

@@ -1,4 +1,10 @@
+<?php $title = "Purchase Return List"; ?>
 <?php include('include/usertypecheck.php');?>
+<?php include('include/permission.php'); ?>
+<?php 
+  $pharmacy_id = (isset($_SESSION['auth']['pharmacy_id'])) ? $_SESSION['auth']['pharmacy_id'] : '';
+  $financial_id = (isset($_SESSION['auth']['financial'])) ? $_SESSION['auth']['financial'] : '';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +12,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>Digibooks | View Purchase Return</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -49,97 +55,13 @@
       <div class="main-panel">
       
         <div class="content-wrapper">
-          <?php include('include/flash.php'); ?>
           <span id="errormsg"></span>
           <div class="row">
-           <!-- Bank Management Form -->
+            <?php include "include/purchase_header.php"; ?>
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                
-                  <!-- Main Catagory -->
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="purchase-top-btns">
-                          <a href="purchase.php" class="btn btn-dark active">Purchase Bill</a>
-                          <a href="purchase-return.php" class="btn btn-dark">Purchase Return</a>
-                          <a href="purchase-return-list.php" class="btn btn-dark">Purchase Return List</a>
-                          <a href="#" class="btn btn-dark btn-fw">Cancel List</a>
-                          <a href="purchase-history.php" class="btn btn-dark btn-fw">History</a>
-                          <a href="#" class="btn btn-dark btn-fw">Settings</a>
-                      </div>   
-                    </div> 
-                  </div>
-
-                  <hr/>
-                  <br/>
-                  <form class="forms-sample" method="POST">
-                  
-                    <div class="form-group row">
-                    
-                      <div class="col-12 col-md-3">
-                        <label for="exampleInputName1">Vendor Name</label>
-                        <select class="js-example-basic-single" style="width:100%" name="vendor_id"> 
-                            <option value="">Select Vendor</option>
-                            <?php 
-                              $vendorQuery = "SELECT id, name FROM ledger_master WHERE group_id = 14 AND status = 1 ORDER BY name"; 
-                              $vendorRes = mysqli_query($conn, $vendorQuery);
-                              if($vendorRes && mysqli_num_rows($vendorRes)){
-                                while ($vendorRow = mysqli_fetch_array($vendorRes)) {
-                            ?>
-                              <option value="<?php echo $vendorRow['id']; ?>" <?php echo (isset($_POST['vendor_id']) && $_POST['vendor_id'] == $vendorRow['id']) ? 'selected' : ''; ?>><?php echo $vendorRow['name']; ?></option>
-                            <?php } } ?>
-                        </select>
-                      </div>
-                        
-                      <!-- <div class="col-12 col-md-2">
-                       <label for="invoice_no">Invoice Number</label>
-                       <input type="text" name="invoice_no" class="form-control" placeholder="Invoice Number">
-                      </div> -->
-                        
-                      <div class="col-12 col-md-3">
-                       <label for="product">Product</label>
-                       <input type="text" class="form-control tags" name="product" value="<?php echo (isset($_POST['product']) && $_POST['product'] != '') ? $_POST['product'] : ''; ?>" id="product" placeholder="Product" id="product">
-                       <input type="hidden" class="pr_id" name="pr_id">
-                       <small class="text-danger empty-message0"></small>
-                      </div>
-                        
-                      <!-- <div class="col-12 col-md-2">
-                       <label for="gr_no">GR.No</label>
-                       <input type="text" class="form-control" id="gr_no" name="gr_no" placeholder="GR.No">
-                      </div> -->
-
-                      <!-- <div class="col-12 col-md-2">
-                       <label for="batch">Batch</label>
-                       <input type="text" class="form-control" id="batch" name="batch" placeholder="Batch Number">
-                      </div> -->
-                        
-                      <div class="col-12 col-md-2">
-                       <label for="return_date">Returned Date</label>
-                         <div class="input-group date datepicker">
-                            <input type="text" class="form-control border datepicker" name="return_date" value="<?php echo (isset($_POST['return_date']) && $_POST['return_date'] != '') ? $_POST['return_date'] : ''; ?>" autocomplete="off">
-                            <span class="input-group-addon input-group-append border-left">
-                              <span class="mdi mdi-calendar input-group-text"></span>
-                            </span>
-                          </div>
-                      </div>
-                        
-                      <div class="col-12 col-md-12">
-                        <button type="submit" class="btn btn-success mt-30 pull-right">Submit</button>
-                      </div>
-
-                    </div> 
-                  </form>
-                </div>
-              </div>
-            </div>
-            
-             <!-- Table ------------------------------------------------------------------------------------------------------>
-            
-            <div class="col-md-12 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-              
+                <h4 class="card-title">View Purchase Return</h4><hr class="alert-dark"><br>
                 <!-- TABLE Filters btn -->
                   
                   <!-- TABLE STARTS -->
@@ -149,23 +71,21 @@
                         <table class="table datatable">
                           <thead>
                             <tr>
-                                <th>Return No</th>
-                                <th>Return Date</th>
-                                <!-- <th>Invoice/GR</th> -->
-                                <!-- <th>Invoice Date</th> -->
+                                <th>Debit Note No</th>
+                                <th>Debit Note Date</th>
                                 <th>Vendor</th>
                                 <th>Mobile</th>
-                                <th>Reason</th>
+                                <th>Taxable Amount</th>
+                                <th>Tax Amount</th>
+                                <th>Final Amount</th>
                                 <th>Status</th>
-                                <!-- <th>Payment Status</th>
-                                <th>Payment Remarks</th> -->
                                 <th>Action</th>
                             </tr>
                           </thead>
                           <tbody>
                             <!-- Row Starts -->
                             <?php 
-                              $getAllDataQuery = "SELECT pr.id, pr.debit_note_date, pr.debit_note_no, pr.remarks, pr.debit_note_settle, lgr.name as vendor_name, lgr.mobile FROM purchase_return pr INNER JOIN ledger_master lgr ON pr.vendor_id = lgr.id ";
+                              $getAllDataQuery = "SELECT pr.id, pr.debit_note_date, pr.debit_note_no, pr.remarks,pr.totalamount,(pr.igst + pr.cgst + pr.sgst) as tax_amount,pr.finalamount, pr.debit_note_settle, lgr.name as vendor_name, lgr.id as lg_id, lgr.mobile FROM purchase_return pr INNER JOIN ledger_master lgr ON pr.vendor_id = lgr.id ";
 
                               $where = array();
 
@@ -174,16 +94,14 @@
                                 }
                                 if(isset($_POST['return_date']) && $_POST['return_date'] != ''){
                                   $where[] .= "pr.debit_note_date='".date('Y-m-d',strtotime(str_replace('/','-',$_POST['return_date'])))."'";
-                                  
                                 }
-                                if(isset($_POST['pr_id']) && $_POST['pr_id'] != ''){
-                                  $where[] .= "pr.id=".$_POST['pr_id'];
-                                }
-                                
+                              $where[] .= "pr.pharmacy_id = '".$pharmacy_id."'";
+                              $where[] .= "pr.financial_id = '".$financial_id."'";
                               if(!empty($where)){
                                 $where = implode(" AND ",$where);
                                 $getAllDataQuery .="WHERE ".$where;
                               }
+
                               $getAllDataQuery .= " ORDER BY pr.id DESC";
                               $getAllDataRes = mysqli_query($conn, $getAllDataQuery );
                             ?>
@@ -197,27 +115,28 @@
                                     </td>
                                     <td><?php echo (isset($row['vendor_name'])) ? $row['vendor_name'] : ''; ?></td>
                                     <td><?php echo (isset($row['mobile'])) ? $row['mobile'] : ''; ?></td>
-                                    <td><?php echo (isset($row['remarks'])) ? $row['remarks'] : ''; ?></td>
+                                    <td class="text-right"><?php echo (isset($row['totalamount']) && $row['totalamount'] != '') ? amount_format(number_format($row['totalamount'], 2, '.', '')) : ''; ?></td>
+                                    <td class="text-right"><?php echo (isset($row['tax_amount']) && $row['tax_amount'] != '') ? amount_format(number_format($row['tax_amount'], 2, '.', '')) : ''; ?></td>
+                                    <td class="text-right"><?php echo (isset($row['finalamount']) && $row['finalamount'] != '') ? amount_format(number_format($row['finalamount'], 2, '.', '')) : ''; ?></td>
+                                    <!--<td><?php echo (isset($row['remarks'])) ? $row['remarks'] : ''; ?></td>-->
                                     <td>
                                       <span class="status">
                                         <?php 
-                                          if(isset($row['debit_note_settle']) && $row['debit_note_settle'] == 0){
+                                          if(isset($row['debit_note_settle']) && $row['debit_note_settle'] == 1){
                                             echo '<div class="badge badge-outline-warning">On Hold</div>';
-                                          }elseif(isset($row['debit_note_settle']) && $row['debit_note_settle'] == 1){
+                                          }elseif(isset($row['debit_note_settle']) && $row['debit_note_settle'] == 0){
                                             echo '<div class="badge badge-outline-success">Effect In Party Ledger</div>';
-                                          }else{
-                                            echo '<div class="badge badge-outline-danger">Close</div>';
                                           } 
                                         ?>
                                       </span>
                                     </td>
-                                    <!-- <td>-</td>
-                                    <td>-</td> -->
+                                    <!--<td>-</td>
+                                    <td>-</td>-->
                                     <td>
-                                      <a href="purchase-return-print.php?id=<?php echo $row['id']; ?>" class="btn  btn-behance p-2"><i class="fa fa-print mr-0"></i></a>
+                                      <a href="purchase-return-print.php?id=<?php echo $row['lg_id']; ?>" class="btn  btn-behance p-2"><i class="fa fa-print mr-0"></i></a>
                                       <a href="purchase-return.php?id=<?php echo $row['id']; ?>" class="btn  btn-behance p-2"><i class="fa fa-pencil mr-0"></i></a>
                                       <a href="#" class="btn  btn-danger p-2">Cancel</a>
-                                      <button class="btn btn-primary p-2 btn-applycr" data-id="<?php echo $row['id']; ?>">Apply Credit Note</button>
+                                      <!--<button class="btn btn-primary p-2 btn-applycr" data-id="<?php //echo $row['id']; ?>">Apply Credit Note</button>-->
                                     </td>
                                 </tr><!-- End Row -->
                               <?php } ?>  
@@ -299,16 +218,21 @@
  
   <!-- Custom js for this page Datatables-->
   <script src="js/data-table.js"></script> 
+  <script src="js/jquery-ui.js"></script>
   
   <script>
      $('.datatable').DataTable();
   </script>
-  <script src="js/jquery-ui.js"></script>
+
   <script src="js/parsley.min.js"></script>
   <script type="text/javascript">
     $('form').parsley();
   </script>
   <script src="js/custom/purchase-return-list.js"></script>
+  
+  <!--    Toast Notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
   <!-- End custom js for this page-->
 </body>
 

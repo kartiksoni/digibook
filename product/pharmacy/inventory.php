@@ -1,6 +1,11 @@
+<?php $title = "Inventory"; ?>
 <?php include('include/usertypecheck.php');
 
-  $getExpiryMonthQuery = "SELECT near_by FROM general_settings ORDER BY id DESC LIMIT 1";
+include('include/permission.php');
+$pharmacy_id = (isset($_SESSION['auth']['pharmacy_id'])) ? $_SESSION['auth']['pharmacy_id'] : '';
+$financial_id = (isset($_SESSION['auth']['financial'])) ? $_SESSION['auth']['financial'] : '';
+
+  $getExpiryMonthQuery = "SELECT near_by FROM general_settings WHERE pharmacy_id = '".$pharmacy_id."' ORDER BY id DESC LIMIT 1";
   $getExpiryMonthRes = mysqli_query($conn, $getExpiryMonthQuery);
   if($getExpiryMonthRes){
     $fetchMonth = mysqli_fetch_array($getExpiryMonthRes);
@@ -20,6 +25,13 @@
           unset($_SESSION['inventory_alphabet']);
           $_SESSION['product'] = $_GET['product'];
         }
+
+        // reset non moving month when select all product
+        if(isset($_GET['product']) && $_GET['product'] == 'all'){
+          $_SESSION['month'] = 1;
+          $_SESSION['percentage'] = 60;
+        }
+
         // set selectsearch in session [Product, MRP, Generic]
         if(isset($_GET['selectsearch']) && $_GET['selectsearch'] != ''){
           $_SESSION['selectsearch'] = $_GET['selectsearch'];
@@ -74,7 +86,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>Digibooks | Inventory</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -123,21 +135,12 @@
                     <br>
                 
                     <div class="row">
-                    
-                      <div class="col-12 col-md-10 col-sm-12">
-                          <div class="enventory">
-                              <a href="#" class="btn btn-dark active">Inventory</a>
-                              <a href="inventory-adjustment.php" class="btn btn-dark active">Inventory Adjustment</a>
-                              <a href="#" class="btn btn-dark">Update Inventory </a>
-                              <a href="#" class="btn btn-dark">Inventory Setting </a>
-                              <a href="product-master.php" class="btn btn-dark">Product Master </a>
-                              <a href="inventory-self-consumption.php" class="btn btn-dark">Self Consumption </a>
-                          </div>          
-                      </div> 
+                        
+                        <?php include "include/inventory_header.php" ?>
                       
-                      <div class="col-12 col-md-2">
+                     <!-- <div class="col-12 col-md-2">
                         <button type="button" class="btn btn-grey-1 btn-rounded pull-right"><strong>*HSN Code Reference</strong></button>
-                      </div>
+                      </div>-->
                     
                     </div>
 
@@ -171,7 +174,7 @@
                                       $lbl = 'Enter Product Name';
                                     }
                                   ?>
-                                  <label id="search-lable"><?php echo $lbl; ?></label>
+                                  <label id="search-lable"><?php echo $lbl; ?><span class="text-danger">*</span></label>
                                   <div id="bloodhound">
                                     <input class="form-control" name="search" id="search" type="text" placeholder="Start typing.." value="<?php echo (isset($_SESSION['search'])) ? $_SESSION['search'] : ''; ?>" required>
                                     <input type="hidden" name="searchid" id="searchid" value="<?php echo (isset($_SESSION['searchid'])) ? $_SESSION['searchid'] : ''; ?>">
@@ -235,13 +238,13 @@
                     <div class="col mt-4">
                         <?php $product_all = 0; $product_available = 0; $product_expiry = 0 ?>
                         <?php
-                          $allQuery = "SELECT id FROM product_master WHERE status = 1";
+                          $allQuery = "SELECT id FROM product_master WHERE status = 1 AND pharmacy_id = '".$pharmacy_id."'";
                           $allRes = mysqli_query($conn, $allQuery);
                           $product_all = ($allRes) ? mysqli_num_rows($allRes) : 0;
                         ?>
                         <a href="?product=all" class="btn btn-sm <?php echo (!isset($_SESSION['product']) || (isset($_SESSION['product']) && $_SESSION['product'] == '') || (isset($_SESSION['product']) && $_SESSION['product'] == 'all')) ? 'btn-success' : 'btn-outline-success'; ?>">All (<?php echo $product_all; ?>)</a>
                         <?php
-                          $availableQuery = "SELECT id FROM product_master WHERE status = 1 AND ex_date >= '".date('Y-m-d')."'";
+                          $availableQuery = "SELECT id FROM product_master WHERE pharmacy_id = '".$pharmacy_id."' AND status = 1 AND (ex_date >= '".date('Y-m-d')."' OR ex_date IS NULL OR ex_date = '0000-00-00')";
                           $availableRes = mysqli_query($conn, $availableQuery);
                           $product_available = ($availableRes) ? mysqli_num_rows($availableRes) : 0;
                         ?>
@@ -250,9 +253,9 @@
                         <?php
                           $nearExpiry = 0;
                           if(isset($nearExpiryMonth) && $nearExpiryMonth != '' && is_numeric($nearExpiryMonth)){
-                            $nearExpiryMonthC = '-'.$nearExpiryMonth.' months';
+                            $nearExpiryMonthC = '+'.$nearExpiryMonth.' months';
                             $nearExpiryDate = date('Y-m-d', strtotime($nearExpiryMonthC));
-                            $nearExpiryCountQuery = "SELECT * FROM product_master WHERE ex_date >= '".$nearExpiryDate."' AND ex_date <= '".date('Y-m-d')."'";
+                            $nearExpiryCountQuery = "SELECT * FROM product_master WHERE ex_date <= '".$nearExpiryDate."' AND ex_date >= '".date('Y-m-d')."' AND ex_date IS NOT NULL AND ex_date != '0000-00-00' AND pharmacy_id = '".$pharmacy_id."' AND status = 1";
                             $nearExpiryCountRes = mysqli_query($conn, $nearExpiryCountQuery);
                             $nearExpiry = ($nearExpiryCountRes) ? mysqli_num_rows($nearExpiryCountRes) : 0;
                           }
@@ -262,18 +265,76 @@
 
                         <?php
 
-                          $expiryQuery = "SELECT id FROM product_master WHERE status = 1 AND ex_date < '".date('Y-m-d')."'";
+                          $expiryQuery = "SELECT id FROM product_master WHERE pharmacy_id = '".$pharmacy_id."' AND status = 1 AND ex_date < '".date('Y-m-d')."' AND ex_date IS NOT NULL AND ex_date != '0000-00-00'";
                           $expiryRes = mysqli_query($conn, $expiryQuery);
                           $product_expiry = ($expiryRes) ? mysqli_num_rows($expiryRes) : 0;
                         ?> 
                         <a href="?product=expired" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'expired') ? 'btn-success' : 'btn-outline-success'; ?>">Expired (<?php echo $product_expiry; ?>)</a>
-
-                        <a href="?product=zerostock" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'zerostock') ? 'btn-success' : 'btn-outline-success'; ?>">Zero Stock (0)</a>   
-                        <a href="?product=overstock" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'overstock') ? 'btn-success' : 'btn-outline-success'; ?>">Over Stock (0)</a>
+                        <?php 
+                          $zerostock = 0;
+                          $zerostockData = getAllProductWithCurrentStock();
+                          if(!empty($zerostockData)){
+                            foreach ($zerostockData as $key => $value) {
+                              if(isset($value['currentstock']) && $value['currentstock'] <= 0){
+                                $zerostock++;
+                              }
+                            }
+                          }
+                        ?>
+                        <a href="?product=zerostock" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'zerostock') ? 'btn-success' : 'btn-outline-success'; ?>">Zero Stock (<?php echo (isset($zerostock)) ? $zerostock : 0; ?>)</a>   
+                        <a href="?product=overstock" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'overstock') ? 'btn-success' : 'btn-outline-success'; ?>">Over Stock</a>
                         <a href="?product=nonmovingstock" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'nonmovingstock') ? 'btn-success' : 'btn-outline-success'; ?>">Non Moving Stock</a>   
                         <a href="?product=reorder" class="btn btn-sm <?php echo (isset($_SESSION['product']) && $_SESSION['product'] == 'reorder') ? 'btn-success' : 'btn-outline-success'; ?>">Reorder</a>
                     </div>
-                    <hr>
+                    <hr/>
+
+                    <!-- NON Moving stock month dropdown start -->
+                    <?php if(isset($_SESSION['product']) && $_SESSION['product'] == 'nonmovingstock'){ ?>
+                      <form method="GET">
+                        <div class="col">
+                          <div class="form-group row">
+                            <div class="col-12 col-md-4">
+                              <label>Select Month</label>
+                              <select class="js-example-basic-single" style="width:100%" name="month">
+                                <?php for ($i=0; $i < 12; $i++) { ?>
+                                  <option value="<?php echo $i+1; ?>" <?php echo (isset($_SESSION['month']) && $_SESSION['month'] == $i+1) ? 'selected' : ''; ?> ><?php echo $i+1; ?> Month</option>
+                                <?php } ?>
+                              </select>
+                            </div>
+                            <div class="col-6 col-md-4 mt-4">
+                              <button type="submit" class="btn btn-success mt-1">Search</button>
+                            </div>
+                          </div> 
+                        </div>
+                      </form>
+                      <hr/>
+                    <?php } ?>
+                    <!-- NON Moving stock month dropdown end -->
+
+                    <!-- Over stock percentage dropdown start -->
+                    <?php if(isset($_SESSION['product']) && $_SESSION['product'] == 'overstock'){ ?>
+                      <form method="GET">
+                        <div class="col">
+                          <div class="form-group row">
+                            <div class="col-12 col-md-4">
+                              <label>Sales Percentage wise</label>
+                              <select class="js-example-basic-single" style="width:100%" name="percentage">
+                                  <option value="60" <?php echo (isset($_SESSION['percentage']) && $_SESSION['percentage'] == 60) ? 'selected' : ''; ?> >60</option>
+                                  <option value="75" <?php echo (isset($_SESSION['percentage']) && $_SESSION['percentage'] == 75) ? 'selected' : ''; ?> >75</option>
+                                  <option value="90" <?php echo (isset($_SESSION['percentage']) && $_SESSION['percentage'] == 90) ? 'selected' : ''; ?> >90</option>
+                              </select>
+                            </div>
+                            <div class="col-6 col-md-4 mt-4">
+                              <button type="submit" class="btn btn-success mt-1">Search</button>
+                            </div>
+                          </div> 
+                        </div>
+                      </form>
+                      <hr/>
+                    <?php } ?>
+                    <!-- Over stock percentage dropdown start -->
+                    
+                  
                     
                     <!-- INVENTORY TABLE STARTS -->
                     <div class="col mt-3">
@@ -287,6 +348,7 @@
                                     <th>Sr No</th>
                                     <th>Product</th>
                                     <th>MRP</th>
+                                    <th>GST</th>
                                     <th>MFG. Co.</th>
                                     <th>Batch</th>
                                     <th>Expiry</th>
@@ -294,11 +356,154 @@
                                     <th>Rack No.</th>
                                     <th>Self No.</th>
                                     <th>Box No.</th>
+                                    <?php if(isset($_SESSION['product']) && $_SESSION['product'] == 'reorder'){ ?>
+                                      <th>Avg</th>
+                                      <th>Order</th>
+                                    <?php } ?>
                                 </tr>
                               </thead>
                               <tbody>
                                 <?php
-                                    $allProductQry = "SELECT id, product_name, generic_name, mfg_company, batch_no, ex_date, give_mrp, ex_date, rack_no, self_no, box_no, min_qty, max_qty FROM product_master ";
+                                  $data = [];
+
+                                  if(isset($_SESSION['product']) && $_SESSION['product'] == 'nonmovingstock'){
+                                    // query for non moving stock
+                                    $nonmoving_month = (isset($_SESSION['month']) && $_SESSION['month'] != '') ? $_SESSION['month'] : 1;
+                                    
+                                    $nonmovingQ = "SELECT pd.*,ps.vouchar_date,DATE_ADD(ps.vouchar_date, INTERVAL ".$nonmoving_month." MONTH) as end_date FROM purchase_details pd JOIN purchase ps ON ps.id = pd.purchase_id WHERE ps.pharmacy_id ='".$pharmacy_id."' AND ps.financial_id = '".$financial_id."' GROUP BY pd.product_id ";
+                                    $nonmovingR = mysqli_query($conn, $nonmovingQ);
+
+                                    if($nonmovingR && mysqli_num_rows($nonmovingR) > 0){
+                                      while ($nonmovingRow = mysqli_fetch_array($nonmovingR)) {
+                                        // check product exist  or not
+                                        //$existQ = "SELECT id FROM tax_billing_details WHERE product_id = '".$nonmovingRow['product_id']."'";
+                                        $existQ = "SELECT td.id FROM tax_billing_details td INNER JOIN tax_billing tb ON td.tax_bill_id = tb.id WHERE td.product_id='".$nonmovingRow['product_id']."' AND tb.pharmacy_id ='".$pharmacy_id."' AND tb.financial_id = '".$financial_id."'";
+                                        $existR = mysqli_query($conn, $existQ);
+                                        $existRow = ($existR) ? mysqli_num_rows($existR) : 0;
+                                        if($existRow > 0){
+                                          //$nonmoving_subQ = "SELECT pm.* FROM tax_billing_details tbd INNER JOIN tax_billing tb ON tbd.tax_bill_id = tb.id INNER JOIN product_master pm ON tbd.product_id = pm.id WHERE tb.invoice_date > CAST('".$nonmovingRow['end_date']."' as DATE) AND tbd.product_id = '".$nonmovingRow['product_id']."'";
+                                          $nonmoving_subQ = "SELECT pm.* FROM tax_billing_details tbd INNER JOIN tax_billing tb ON tbd.tax_bill_id = tb.id INNER JOIN product_master pm ON tbd.product_id = pm.id WHERE tb.invoice_date > CAST('".$nonmovingRow['end_date']."' as DATE) AND tbd.product_id = '".$nonmovingRow['product_id']."' AND tb.pharmacy_id='".$pharmacy_id."' AND tb.financial_id = '".$financial_id."'";
+                                            if(isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] != ''){
+                                              $nonmoving_subQ .= " AND LOWER(pm.product_name) LIKE '".strtolower($_SESSION['inventory_alphabet'])."%'";
+                                            }
+                                          $nonmoving_subR = mysqli_query($conn, $nonmoving_subQ);
+                                        }else{
+                                          //$nonmoving_subQ = "SELECT * FROM product_master WHERE id = '".$nonmovingRow['product_id']."'";
+                                          $nonmoving_subQ = "SELECT * FROM product_master WHERE id = '".$nonmovingRow['product_id']."' AND pharmacy_id='".$pharmacy_id."'";
+
+                                          if(isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] != ''){
+                                            $nonmoving_subQ .= " AND LOWER(product_name) LIKE '".strtolower($_SESSION['inventory_alphabet'])."%'";
+                                          }
+                                          
+                                          $nonmoving_subR = mysqli_query($conn, $nonmoving_subQ);
+                                        }
+
+                                          if($nonmoving_subR && mysqli_num_rows($nonmoving_subR) > 0){
+                                            while ($nonmoving_subRow = mysqli_fetch_array($nonmoving_subR)) {
+                                              $detail['id'] = (isset($nonmoving_subRow['id'])) ? $nonmoving_subRow['id'] : '';
+                                              $detail['product_name'] = (isset($nonmoving_subRow['product_name'])) ? $nonmoving_subRow['product_name'] : '';
+                                              $detail['mrp'] = (isset($nonmoving_subRow['mrp'])) ? $nonmoving_subRow['mrp'] : '';
+                                              $detail['mfg_company'] = (isset($nonmoving_subRow['mfg_company'])) ? $nonmoving_subRow['mfg_company'] : '';
+                                              $detail['ex_date'] = (isset($nonmoving_subRow['ex_date']) && $nonmoving_subRow['ex_date'] != '') ? date('d/m',strtotime($nonmoving_subRow['ex_date'])) : '';
+                                              $detail['max_qty'] = (isset($nonmoving_subRow['max_qty'])) ? $nonmoving_subRow['max_qty'] : '';
+                                              $detail['rack_no'] = (isset($nonmoving_subRow['rack_no']) && $value['rack_no'] != '') ? $nonmoving_subRow['rack_no'] : '-';
+                                              $detail['self_no'] = (isset($nonmoving_subRow['self_no']) && $value['self_no'] != '') ? $nonmoving_subRow['self_no'] : '';
+                                              $detail['box_no'] = (isset($nonmoving_subRow['box_no']) && $value['box_no'] != '') ? $nonmoving_subRow['box_no'] : '';
+                                              $detail['batch_no'] = (isset($nonmoving_subRow['batch_no'])) ? $nonmoving_subRow['batch_no'] : '';
+                                              $detail['currentstock'] = (isset($value['currentstock']) && $value['currentstock'] != '') ? $value['currentstock'] : 0;
+                                              $detail['gst_name'] = (isset($value['gst_name'])) ? $value['gst_name'] : '';
+                                              $data[] = $detail;
+                                            }
+                                          }
+
+                                      }
+
+                                    }
+
+
+                                  }elseif(isset($_SESSION['product']) && $_SESSION['product'] == 'zerostock'){
+                                    $stock = getAllProductWithCurrentStock((isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] != '') ? $_SESSION['inventory_alphabet'] : '');
+                                    if(isset($stock) && !empty($stock)){
+                                      foreach ($stock as $key => $value) {
+                                        if(isset($value['currentstock']) && $value['currentstock'] <= 0){
+                                          $detail['id'] = (isset($value['id'])) ? $value['id'] : '';
+                                          $detail['product_name'] = (isset($value['product_name'])) ? $value['product_name'] : '';
+                                          $detail['mrp'] = (isset($value['mrp'])) ? $value['mrp'] : '';
+                                          $detail['mfg_company'] = (isset($value['mfg_company'])) ? $value['mfg_company'] : '';
+                                          $detail['ex_date'] = (isset($value['ex_date']) && $value['ex_date'] != '') ? date('d/m',strtotime($value['ex_date'])) : '';
+                                          $detail['max_qty'] = (isset($value['max_qty'])) ? $value['max_qty'] : '';
+                                          $detail['rack_no'] = (isset($value['rack_no']) && $value['rack_no'] != '') ? $value['rack_no'] : '-';
+                                          $detail['self_no'] = (isset($value['self_no']) && $value['self_no'] != '') ? $value['self_no'] : '';
+                                          $detail['box_no'] = (isset($value['box_no']) && $value['box_no'] != '') ? $value['box_no'] : '';
+                                          $detail['batch_no'] = (isset($value['batch_no'])) ? $value['batch_no'] : '';
+                                          $detail['currentstock'] = (isset($value['currentstock']) && $value['currentstock'] != '') ? $value['currentstock'] : 0;
+                                          $detail['gst_name'] = (isset($value['gst_name'])) ? $value['gst_name'] : '';
+                                          $data[] = $detail;
+                                        }
+                                      }
+                                    }
+                                  }elseif(isset($_SESSION['product']) && $_SESSION['product'] == 'overstock'){
+                                    $overstock = getAllProductWithCurrentStock((isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] != '') ? $_SESSION['inventory_alphabet'] : '');
+                                    if(isset($overstock) && !empty($overstock)){
+                                      $calper = (isset($_SESSION['percentage']) && $_SESSION['percentage'] != '') ? $_SESSION['percentage'] : 60;
+                                      foreach ($overstock as $key => $value) {
+                                         if(isset($value['currentstock']) && $value['currentstock'] > 0){
+                                            $curstock = ($value['currentstock']-$value['sale']);
+                                            $stockper = (100*$curstock/$value['currentstock']);
+    
+                                            if($stockper >= $calper){
+                                              $detail['id'] = (isset($value['id'])) ? $value['id'] : '';
+                                              $detail['product_name'] = (isset($value['product_name'])) ? $value['product_name'] : '';
+                                              $detail['mrp'] = (isset($value['mrp'])) ? $value['mrp'] : '';
+                                              $detail['mfg_company'] = (isset($value['mfg_company'])) ? $value['mfg_company'] : '';
+                                              $detail['ex_date'] = (isset($value['ex_date']) && $value['ex_date'] != '') ? date('d/m',strtotime($value['ex_date'])) : '';
+                                              $detail['max_qty'] = (isset($value['max_qty'])) ? $value['max_qty'] : '';
+                                              $detail['rack_no'] = (isset($value['rack_no']) && $value['rack_no'] != '') ? $value['rack_no'] : '-';
+                                              $detail['self_no'] = (isset($value['self_no']) && $value['self_no'] != '') ? $value['self_no'] : '';
+                                              $detail['box_no'] = (isset($value['box_no']) && $value['box_no'] != '') ? $value['box_no'] : '';
+                                              $detail['batch_no'] = (isset($value['batch_no'])) ? $value['batch_no'] : '';
+                                              $detail['currentstock'] = (isset($value['currentstock']) && $value['currentstock'] != '') ? $value['currentstock'] : 0;
+                                              $detail['gst_name'] = (isset($value['gst_name'])) ? $value['gst_name'] : '';
+                                              $data[] = $detail;
+                                            }
+                                         }
+                                      }
+                                    }
+                                  }elseif(isset($_SESSION['product']) && $_SESSION['product'] == 'reorder'){
+                                    $reorder = getAllProductWithCurrentStock((isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] != '') ? $_SESSION['inventory_alphabet'] : '');
+                                    if(isset($reorder) && !empty($reorder)){
+                                      foreach ($reorder as $key => $value) {
+                                        $r_openingstock = (isset($value['opening_qty']) && $value['opening_qty'] != '') ? $value['opening_qty'] : 0;
+                                        $r_purchase = (isset($value['purchase']) && $value['purchase'] != '') ? $value['purchase'] : 0;
+                                        $r_sale = (isset($value['sale']) && $value['sale'] != '') ? $value['sale'] : 0;
+                                        $r_clearstock = ($r_openingstock+$r_purchase)-($r_sale);
+
+                                        $r_avg = ($r_sale/3);//for 3 month sale average
+                                        $sudgest_order = ($r_sale*1.5)-($r_clearstock);//for suggest order qty
+                                        $sudgest_order = ($sudgest_order > 0) ? $sudgest_order : 0;
+
+
+                                        $detail['id'] = (isset($value['id'])) ? $value['id'] : '';
+                                        $detail['product_name'] = (isset($value['product_name'])) ? $value['product_name'] : '';
+                                        $detail['mrp'] = (isset($value['mrp'])) ? $value['mrp'] : '';
+                                        $detail['mfg_company'] = (isset($value['mfg_company'])) ? $value['mfg_company'] : '';
+                                        $detail['ex_date'] = (isset($value['ex_date']) && $value['ex_date'] != '') ? date('d/m',strtotime($value['ex_date'])) : '';
+                                        $detail['max_qty'] = (isset($value['max_qty'])) ? $value['max_qty'] : '';
+                                        $detail['rack_no'] = (isset($value['rack_no']) && $value['rack_no'] != '') ? $value['rack_no'] : '-';
+                                        $detail['self_no'] = (isset($value['self_no']) && $value['self_no'] != '') ? $value['self_no'] : '';
+                                        $detail['box_no'] = (isset($value['box_no']) && $value['box_no'] != '') ? $value['box_no'] : '';
+                                        $detail['batch_no'] = (isset($value['batch_no'])) ? $value['batch_no'] : '';
+                                        $detail['currentstock'] = (isset($value['currentstock']) && $value['currentstock'] != '') ? $value['currentstock'] : 0;
+                                        // new extra field
+                                        $detail['average'] = (isset($r_avg) && $r_avg != '') ? round($r_avg, 2) : 0;
+                                        $detail['suggest_order'] = (isset($sudgest_order) && $sudgest_order != '') ? round($sudgest_order, 2) : 0;
+                                        $detail['gst_name'] = (isset($value['gst_name'])) ? $value['gst_name'] : '';
+                                        $data[] = $detail;
+
+                                      }
+                                    }
+                                  }else{
+                                    $allProductQry = "SELECT id FROM product_master ";
                                     $where = array();
                                       if(isset($_SESSION['searchid']) && $_SESSION['searchid'] != ''){
                                         $where[] = "id = '".$_SESSION['searchid']."'";
@@ -306,48 +511,83 @@
                                       if(isset($_SESSION['inventory_alphabet']) && $_SESSION['inventory_alphabet'] != ''){
                                         $where[] = "LOWER(product_name) LIKE '".strtolower($_SESSION['inventory_alphabet'])."%'";
                                       }
-                                      if(isset($_SESSION['product']) && $_SESSION['product'] == 'available'){
+                                      /*if(isset($_SESSION['product']) && $_SESSION['product'] == 'available'){
                                         $where[] = "ex_date >= '".date('Y-m-d')."'";
-                                      }
+                                      }*/
                                       if(isset($_SESSION['product']) && $_SESSION['product'] == 'expired'){
-                                        $where[] = "ex_date < '".date('Y-m-d')."'";
+                                        $where[] = "ex_date < '".date('Y-m-d')."' AND ex_date IS NOT NULL AND ex_date != '0000-00-00'";
                                       }
                                       if(isset($_SESSION['product']) && $_SESSION['product'] == 'nearexpiry'){
                                         if(isset($nearExpiryMonth) && $nearExpiryMonth != '' && is_numeric($nearExpiryMonth)){
-                                          $nearExpiryMonthList = '-'.$nearExpiryMonth.' months';
+                                          $nearExpiryMonthList = '+'.$nearExpiryMonth.' months';
                                           $nearExpiryDateList = date('Y-m-d', strtotime($nearExpiryMonthList));
-                                          $where[] = "ex_date >= '".$nearExpiryDateList."' AND ex_date <= '".date('Y-m-d')."'";
+                                          $where[] = "ex_date <= '".$nearExpiryDateList."' AND ex_date >= '".date('Y-m-d')."' AND ex_date IS NOT NULL AND ex_date != '0000-00-00'";
                                         }
                                       }
                                       $where[] = "status = 1";
-
+                                      $where[] = "pharmacy_id = '".$pharmacy_id."'";
 
                                       if(!empty($where)){
                                         $where = implode(" AND ",$where);
                                         $allProductQry .="WHERE ".$where;
                                       }
+                                      if(isset($_SESSION['product']) && $_SESSION['product'] == 'available'){
+                                          $allProductQry .= " AND (ex_date >= '".date('Y-m-d')."' OR ex_date IS NULL OR ex_date = '0000-00-00')";
+                                      }
                                       $allProductQry .=' ORDER BY id DESC';
-                                    $allProductRes = mysqli_query($conn, $allProductQry);
+                                      $allProductRes = mysqli_query($conn, $allProductQry);
+
+                                      if($allProductRes && mysqli_num_rows($allProductRes) > 0){
+                                        $data_id = [];
+                                          while ($productRow = mysqli_fetch_array($allProductRes)) {
+                                            if(isset($productRow['id']) && $productRow['id'] != ''){
+                                              $data_id[] = $productRow['id'];
+                                            }
+                                          }
+                                          if(isset($data_id) && !empty($data_id)){
+                                            $geAllProduct = getAllProductWithCurrentStock('','',0,$data_id);
+                                            if(!empty($geAllProduct)){
+                                              foreach ($geAllProduct as $key => $value) {
+                                                $detail['id'] = (isset($value['id'])) ? $value['id'] : '';
+                                                $detail['product_name'] = (isset($value['product_name'])) ? $value['product_name'] : '';
+                                                $detail['mrp'] = (isset($value['mrp'])) ? $value['mrp'] : '';
+                                                $detail['mfg_company'] = (isset($value['mfg_company'])) ? $value['mfg_company'] : '';
+                                                $detail['ex_date'] = (isset($value['ex_date']) && $value['ex_date'] != '' && $value['ex_date'] != '0000-00-00') ? date('d/m',strtotime($value['ex_date'])) : '';
+                                                $detail['max_qty'] = (isset($value['max_qty'])) ? $value['max_qty'] : '';
+                                                $detail['rack_no'] = (isset($value['rack_no']) && $value['rack_no'] != '') ? $value['rack_no'] : '-';
+                                                $detail['self_no'] = (isset($value['self_no']) && $value['self_no'] != '') ? $value['self_no'] : '';
+                                                $detail['box_no'] = (isset($value['box_no']) && $value['box_no'] != '') ? $value['box_no'] : '';
+                                                $detail['batch_no'] = (isset($value['batch_no'])) ? $value['batch_no'] : '';
+                                                $detail['currentstock'] = (isset($value['currentstock']) && $value['currentstock'] != '') ? $value['currentstock'] : 0;
+                                                $detail['gst_name'] = (isset($value['gst_name'])) ? $value['gst_name'] : '';
+                                                $data[] = $detail;
+                                              }
+                                            }
+                                          }
+                                      }
+                                  }
                                 ?>
-                                  <?php if($allProductRes && mysqli_num_rows($allProductRes)){ ?>
-                                    <?php
-                                        $countproduct = 1;
-                                        while ($productRow = mysqli_fetch_array($allProductRes)) { 
-                                    ?>
-                                      <tr>
-                                        <td><?php echo $countproduct; ?></td>
-                                        <td><?php echo (isset($productRow['product_name'])) ? $productRow['product_name'] : ''; ?></td>
-                                        <td><?php echo (isset($productRow['give_mrp'])) ? $productRow['give_mrp'] : ''; ?></td>
-                                        <td><?php echo (isset($productRow['mfg_company'])) ? $productRow['mfg_company'] : ''; ?></td>
-                                        <td><?php echo (isset($productRow['batch_no'])) ? $productRow['batch_no'] : ''; ?></td>
-                                        <td><?php echo (isset($productRow['ex_date']) && $productRow['ex_date'] != '') ? date('d/m',strtotime($productRow['ex_date'])) : ''; ?></td>
-                                        <td><?php echo (isset($productRow['max_qty'])) ? $productRow['max_qty'] : ''; ?></td>
-                                        <td><?php echo (isset($productRow['rack_no'])) ? $productRow['rack_no'] : ''; ?></td>
-                                        <td><?php echo (isset($productRow['self_no'])) ? $productRow['self_no'] : ''; ?></td>
-                                        <td><?php echo (isset($productRow['box_no'])) ? $productRow['box_no'] : ''; ?></td>
-                                      </tr>
-                                    <?php $countproduct++; } ?>
+                                <?php if(isset($data) && !empty($data)){ ?>
+                                  <?php foreach ($data as $key => $value) { ?>
+                                    <tr>
+                                      <td><?php echo $key+1; ?></td>
+                                      <td><?php echo (isset($value['product_name'])) ? $value['product_name'] : ''; ?></td>
+                                      <td class="text-right"><?php echo (isset($value['mrp']) && $value['mrp'] != '') ? amount_format(number_format($value['mrp'], 2, '.', '')) : ''; ?></td>
+                                      <td><?php echo (isset($value['gst_name']) && $value['gst_name'] != '') ? $value['gst_name'] : '-'; ?></td>
+                                      <td><?php echo (isset($value['mfg_company']) && $value['mfg_company'] != '') ? $value['mfg_company'] : '-'; ?></td>
+                                      <td><?php echo (isset($value['batch_no']) && $value['batch_no'] != 'undefined' && $value['batch_no'] != '') ? $value['batch_no'] : '-'; ?></td>
+                                      <td><?php echo (isset($value['ex_date']) && $value['ex_date'] != '') ? $value['ex_date'] : '-'; ?></td>
+                                      <td><?php echo (isset($value['currentstock'])) ? $value['currentstock'] : ''; ?></td>
+                                      <td><?php echo (isset($value['rack_no']) && $value['rack_no'] != '') ? $value['rack_no'] : '-'; ?></td>
+                                      <td><?php echo (isset($value['self_no']) && $value['self_no'] != '') ? $value['self_no'] : '-'; ?></td>
+                                      <td><?php echo (isset($value['box_no']) && $value['box_no'] != '') ? $value['box_no'] : '-'; ?></td>
+                                      <?php if(isset($_SESSION['product']) && $_SESSION['product'] == 'reorder'){ ?>
+                                        <td><?php echo (isset($value['average'])) ? $value['average'] : 0; ?></td>
+                                        <td><?php echo (isset($value['suggest_order'])) ? $value['suggest_order'] : 0; ?></td>
+                                      <?php } ?>
+                                    </tr>
                                   <?php } ?>
+                                <?php } ?>
                               </tbody>
                             </table>
                           </div>

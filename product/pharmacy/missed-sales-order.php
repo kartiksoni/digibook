@@ -1,4 +1,7 @@
+<?php $title = "Missed Sales Order"; ?>
 <?php include('include/usertypecheck.php');?>
+<?php include('include/permission.php'); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +9,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>Digibooks | Missed Sales Order</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -53,63 +56,82 @@
            <!-- Inventory Form ------------------------------------------------------------------------------------------------------>
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
-                	<div class="card-body">
-	                    <div class="row">
-		                    <div class="col-12">
-		                        <div class="enventory">
-		                            <a href="order.php" class="btn btn-dark btn-fw active">Order</a>
-		                            <a href="order-list-tab.php" class="btn btn-dark btn-fw">List</a>
-		                            <a href="missed-sales-order.php" class="btn btn-dark btn-fw">Missed Sales Order</a>
-		                            <a href="#" class="btn btn-dark btn-fw">Settings</a>
-		                        </div>  
-		                    </div> 
-	                    </div>
-                	</div>
-               	</div>
+                  <div class="card-body">
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="enventory">
+                            <?php 
+                            if(isset($user_sub_module) && in_array("Order", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+                            ?>
+                              <a href="order.php" class="btn btn-dark btn-fw active">Order</a>
+                            <?php } 
+                            if(isset($user_sub_module) && in_array("List", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+                            ?>
+                              <a href="order-list-tab.php" class="btn btn-dark btn-fw ">List</a>
+                            <?php } 
+                            if(isset($user_sub_module) && in_array("Missed Sales Order", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+                            ?>
+                              <a href="missed-sales-order.php" class="btn btn-dark btn-fw ">Missed Sales Order</a>
+                            <?php } 
+                            //if(isset($user_sub_module) && in_array("Settings", $user_sub_module)){ 
+                            ?>
+                              <!--<a href="#" class="btn btn-dark btn-fw ">Settings</a>-->
+                            <?php //} ?>
+                          </div>  
+                      </div>  
+                      </div>
+                  </div>
+                </div>
             </div>
             
              <!-- Table ------------------------------------------------------------------------------------------------------>
             
             <div class="col-md-12 grid-margin stretch-card">
-              	<div class="card">
-	                <div class="card-body">
-	                    <div class="col mt-3">
-		                	<div class="row">
-		                    	<div class="col-12">
-		                          <table class="table datatable">
-		                            <thead>
-		                              <tr>
-		                                  <th>Sr. No</th>
-		                                  <th>Date</th>
-		                                  <th>Product Name</th>
-		                                  <th>Quantity</th>
-		                                  <th>Unit/Strip</th>
-		                              </tr>
-		                            </thead>
-		                            <tbody>
-		                            	<?php 
-		                            		$query = "SELECT mi.id, mi.qty, mi.unit, mi.created, pm.product_name FROM missed_order mi INNER JOIN product_master pm ON mi.product_id = pm.id ORDER BY mi.id DESC";
-		                            		
-		                            		$res = mysqli_query($conn, $query);
-		                            		if($res && mysqli_num_rows($res) > 0){
-		                            			$i = 1;
-		                            			while ($row = mysqli_fetch_array($res)) {
-		                            	?>
-		                            		<tr>
-		                            			<td><?php echo $i; ?></td>
-		                            			<td><?php echo (isset($row['created']) && $row['created'] != '') ? date('d/m/Y', strtotime($row['created'])) : ''; ?></td>
-		                            			<td><?php echo (isset($row['product_name'])) ? $row['product_name'] : ''; ?></td>
-		                            			<td><?php echo (isset($row['qty'])) ? $row['qty'] : ''; ?></td>
-		                            			<td><?php echo (isset($row['unit'])) ? $row['unit'] : ''; ?></td>
-		                            		</tr>
-		                            	<?php $i++; } } ?>
-		                            </tbody>
-		                          </table>
-		                        </div>
-		                     </div>
-	                    </div>
-	                    <hr>
-	                </div>
+                <div class="card">
+                  <div class="card-body">
+                      <div class="col mt-3">
+                      <div class="row">
+                          <div class="col-12">
+                              <table class="table datatable">
+                                <thead>
+                                  <tr>
+                                      <th>Sr. No</th>
+                                      <th>Date</th>
+                                      <th>Product Name</th>
+                                      <!--<th>Batch No.</th>
+                                      <th>Quantity</th>
+                                      <th>Unit/Strip</th>!-->
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <?php
+                                    $p_id = (isset($_SESSION['auth']['pharmacy_id'])) ? $_SESSION['auth']['pharmacy_id'] : '';
+                                    $f_id = (isset($_SESSION['auth']['financial'])) ? $_SESSION['auth']['financial'] : '';
+
+                                    //$query = "SELECT mi.id, mi.qty, mi.unit, mi.created, pm.product_name, pm.batch_no FROM missed_order mi INNER JOIN product_master pm ON mi.product_id = pm.id WHERE mi.pharmacy_id = '".$p_id."' AND mi.financial_id = '".$f_id."' ORDER BY mi.id DESC";
+                                    
+                                    $query = "SELECT * FROM missed_order WHERE pharmacy_id = '".$p_id."' AND financial_id = '".$f_id."' ORDER BY id DESC";
+                                    
+                                    $res = mysqli_query($conn, $query);
+                                    if($res && mysqli_num_rows($res) > 0){
+                                      $i = 1;
+                                      while ($row = mysqli_fetch_array($res)) {
+                                  ?>
+                                    <tr>
+                                      <td><?php echo $i; ?></td>
+                                      <td><?php echo (isset($row['created']) && $row['created'] != '') ? date('d/m/Y', strtotime($row['created'])) : ''; ?></td>
+                                      <td><?php echo (isset($row['product_id'])) ? $row['product_id'] : ''; ?></td>
+                                      <!--<td><?php echo (isset($row['batch_no'])) ? $row['batch_no'] : ''; ?></td>
+                                      <td><?php echo (isset($row['qty'])) ? $row['qty'] : ''; ?></td>
+                                      <td><?php echo (isset($row['unit'])) ? $row['unit'] : ''; ?></td>!-->
+                                    </tr>
+                                  <?php $i++; } } ?>
+                                </tbody>
+                              </table>
+                            </div>
+                         </div>
+                      </div>
+                  </div>
                 </div>
             </div>  
                 
@@ -178,7 +200,7 @@
   <script src="js/data-table.js"></script> 
   
   <script>
-  	 $('.datatable').DataTable();
+     $('.datatable').DataTable();
   </script>
   
   

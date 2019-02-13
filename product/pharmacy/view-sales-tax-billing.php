@@ -7,7 +7,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>DigiBooks | View Sale Tax Bill</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -47,20 +47,19 @@
       <div class="main-panel">
       
         <div class="content-wrapper">
-          <?php include('include/flash.php'); ?>
           <span id="errormsg"></span>
           <div class="row">
-            
-     
+              <?php include "include/sale_header.php"; ?>
             
             <!-- Product Master Form -->
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
+                  <!--<a href="sales-tax-billing.php" class="btn btn-success p-2 pull-right" title="Add Bill"><i class="mdi mdi-plus-circle-outline"></i>Add Bill</a>-->
                   <h4 class="card-title">View Tax Billing</h4>
                   <hr class="alert-dark">
                   <br>
-                  <div class="col mt-3">
+                  <div class="col">
                        <div class="row">
                             <div class="col-12">
                               <div class="table-responsive">
@@ -78,21 +77,51 @@
                                   </thead>
                                   <tbody>
                                     <?php
-                                      $qry = "SELECT tb.id, tb.invoice_date, tb.invoice_no, tb.bill_type, tb.final_amount, lgr.name as customer_name FROM tax_billing tb INNER JOIN ledger_master lgr ON tb.customer_id = lgr.id ORDER BY tb.id DESC";
+                                      $pharmacy_id = (isset($_SESSION['auth']['pharmacy_id'])) ? $_SESSION['auth']['pharmacy_id'] : '';
+                                      $financial_id = (isset($_SESSION['auth']['financial'])) ? $_SESSION['auth']['financial'] : '';
+
+                                      $qry = "SELECT tb.id, tb.invoice_date, tb.invoice_no, tb.bill_type, tb.final_amount, lgr.persional_title, lgr.name as customer_name FROM tax_billing tb LEFT JOIN ledger_master lgr ON tb.customer_id = lgr.id WHERE tb.pharmacy_id = '".$pharmacy_id."' AND tb.financial_id = '".$financial_id."' ORDER BY tb.id DESC";
                                       $res = mysqli_query($conn, $qry);
                                       if($res){
                                         $i = 1;
                                         while ($row = mysqli_fetch_array($res)) {
+                                        $persion = $row['persional_title'];
+                                          if(isset($persion) && $persion != ''){
+                                            $customer_name = $row['customer_name'];
+                                            $fullname = $persion .'. '. $customer_name;
+                                          }else{
+                                            $customer_name = $row['customer_name'];
+                                            $fullname =$customer_name;
+                                          }
                                     ?>
                                       <tr>
                                           <td><?php echo $i; ?></td>
                                           <td><?php echo (isset($row['invoice_date']) && $row['invoice_date'] != '') ? date('d/m/Y',strtotime($row['invoice_date'])) : ''; ?></td>
-                                          <td><?php echo (isset($row['customer_name']) && $row['customer_name'] != '') ? ucwords(strtolower($row['customer_name'])) : ''; ?></td>
+                                          <td><?php echo (isset($fullname) && $fullname != '') ? ucwords(strtolower($fullname)) : 'Unknown Customer'; ?></td>
                                           <td><?php echo (isset($row['invoice_no'])) ? $row['invoice_no'] : ''; ?></td>
                                           <td><?php echo (isset($row['bill_type'])) ? $row['bill_type'] : ''; ?></td>
-                                          <td><?php echo (isset($row['final_amount'])) ? $row['final_amount'] : ''; ?></td>
-                                          <td>
+                                          <td class="text-right"><?php echo (isset($row['final_amount']) && $row['final_amount'] != '') ? amount_format(number_format($row['final_amount'], 2, '.', '')) : ''; ?></td>
+                                          <td class="text-center">
+                                              <!--<a href="print-sales-tax-billing.php?id=<?php// echo $row['id']; ?>" class="btn btn-primary p-2" title="Print" target="_blank"><i class="fa fa-print mr-0"></i></a>-->
+                                              
+                                              <?php
+                                         $pharmacy ="select company_print_type from pharmacy_profile where id='".$pharmacy_id."'";
+                                         $pharmacyR = mysqli_query($conn, $pharmacy);
+                                         $pharmacyL = mysqli_fetch_assoc($pharmacyR);
+                                   
+                                        if($pharmacyL['company_print_type'] == 'a4'){ ?>
+                                          
+                                          <a class="btn btn-primary p-2" href="print-sales-tax-billing-A4half.php?id=<?php echo $row['id']; ?>" title="Print" target="_blank"><i class="fa fa-print mr-0"></i></a>
+                                          <a class="btn btn-primary p-2" href="print-sales-tax-billing-A4.php?id=<?php echo $row['id']; ?>" title="Print" target="_blank"><i class="fa fa-print mr-0"></i></a>
+                                     <?php   } else{?>
+                                   
+                                     <a class="btn btn-primary p-2" href="print-sales-tax-billing-A4half.php?id=<?php echo $row['id']; ?>" title="Print" target="_blank"><i class="fa fa-print mr-0"></i></a>
+                                     <a class="btn btn-primary p-2" href="print-sales-tax-billing-A4.php?id=<?php echo $row['id']; ?>" title="Print" target="_blank"><i class="fa fa-print mr-0"></i></a>
+                                     <?php } ?>
+                                     
                                             <a class="btn btn-behance p-2" href="sales-tax-billing.php?id=<?php echo $row['id']; ?>" title="edit"><i class="fa fa-pencil mr-0"></i></a>
+                                            
+                                            <!--<a href="print-sales-tax-billing-A4.php?id=<?php// echo $row['id']; ?>&action=sendpdf" class="btn btn-warning p-2" title="Email"><i class="fa fa-envelope mr-0"></i></a>-->
                                           </td>
                                       </tr>
                                     <?php
@@ -165,6 +194,11 @@
   <script src="js/modal-demo.js"></script>
   <!-- Custom js for this page-->
   <script src="js/data-table.js"></script> 
+  
+   
+  <!-- toast notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
   
   <script>
      $('.datatable').DataTable();

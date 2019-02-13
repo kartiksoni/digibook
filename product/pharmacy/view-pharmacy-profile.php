@@ -1,4 +1,10 @@
 <?php include('include/usertypecheck.php'); ?>
+<?php 
+if($_SESSION['auth']['user_type'] != "owner"){
+    header('Location:index.php');
+    exit;
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +13,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>DigiBooks | View Pharmacy Profile</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -47,17 +53,34 @@
       <div class="main-panel">
       
         <div class="content-wrapper">
-          <?php include('include/flash.php'); ?>
           <div class="row">
             
-     
+            <?php
+            $financialQry = "SELECT * FROM `pharmacy_profile` WHERE created_by='".$_SESSION['auth']['id']."' ORDER BY id DESC";
+            $financial = mysqli_query($conn,$financialQry);
+            $count = mysqli_num_rows($financial);
+            $ihis_flag = $_SESSION['auth']['is_ihis'];
+            
+            ?>
             
             <!-- Product Master Form -->
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
+                <?php 
+                if(($ihis_flag == 1 && $count < 2) ||$ihis_flag == 0){
+                ?>
+                  <div class="text-right mb-2">
+                    <a href="pharmacy-profile.php" class="btn btn-success pull-right">
+                      <i class="mdi mdi-plus-circle-outline"></i>Add New Pharmacy</a>
+                  </div>
+                 <?php 
+                }
+                 ?>
                   <h4 class="card-title">View Pharmacy Profile</h4>
+                  
                   <hr class="alert-dark">
+                  
                   <br>
                   <div class="col mt-3">
                        <div class="row">
@@ -78,8 +101,6 @@
                                   <!-- Row Starts -->   
                                   <?php 
                                   $i = 1;
-                                  $financialQry = "SELECT * FROM `pharmacy_profile` ORDER BY id DESC";
-                                  $financial = mysqli_query($conn,$financialQry);
                                   while($row = mysqli_fetch_assoc($financial)){
                                   ?>
                                   <tr>
@@ -91,7 +112,7 @@
                                       <td><?php echo $row['email']; ?></td>
                                       <td>
                                         <a class="btn  btn-behance p-2" href="pharmacy-profile.php?id=<?php echo $row['id']; ?>" title="edit"><i class="fa fa-pencil mr-0"></i></a>
-                                        <a class="btn  btn-success p-2" href="user.php?pharmacy_id=<?php echo $row['id']; ?>" title="edit"><i class="fa fa-user-plus mr-0"></i></a>
+                                       <!-- <a class="btn  btn-success p-2" href="user.php?pharmacy_id=<?php echo $row['id']; ?>" title="Create User"><i class="fa fa-user-plus mr-0"></i></a>-->
                                       </td>
                                   </tr><!-- End Row --> 
                                   <?php 
@@ -103,6 +124,9 @@
                             </div>
                           </div>
                     </div>
+                    <hr>
+                   <br>
+                   <a href="configuration.php" class="btn btn-light">Back</a>
                 </div>
               </div>
             </div>
@@ -160,6 +184,10 @@
   
   <!-- Custom js for this page-->
   <script src="js/modal-demo.js"></script>
+  
+  <!--    Toast Notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
   
  <script>
     $('#datepicker-popup1').datepicker({

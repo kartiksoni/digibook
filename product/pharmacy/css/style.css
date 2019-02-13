@@ -20119,6 +20119,27 @@ ul {
       margin-bottom: 0;
       font-family: "opensans-regular", sans-serif;
       font-weight: 500; }
+	 .email-wrapper .mail-sidebar .menu-bar .online-status .chat-online i {
+		color:#33CC66;
+		font-size:10px;
+		position: relative;
+		top: -1px;
+		margin-right: 4px;
+	}
+    .profile-list .chat-online i{
+        color:#33CC66;
+        font-size:10px;
+        position: relative;
+        top: -1px;
+        margin-right: 4px;
+    }
+    .profile-list .chat-offline i{
+        color:#999999;
+        font-size:10px;
+        position: relative;
+        top: -1px;
+        margin-right: 4px;
+    }
     .email-wrapper .mail-sidebar .menu-bar .online-status .status {
       height: 10px;
       width: 10px;
@@ -20142,7 +20163,7 @@ ul {
     padding: 10px 0; }
   .email-wrapper .mail-sidebar .menu-bar .profile-list-item {
     border-bottom: 1px solid #f3f3f3;
-    padding: 6px 0;
+    padding: 6px 10px;
     display: block; }
     .email-wrapper .mail-sidebar .menu-bar .profile-list-item:last-child {
       border-bottom: 0; }
@@ -22631,4 +22652,7 @@ div.tagsinput {
 }
 .bg-grey{
 	background:#f5f5f5 !important;
+}
+.no-padding{
+	padding:0 !important;
 }

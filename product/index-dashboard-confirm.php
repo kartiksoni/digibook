@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
 <?php 
 $name = $_GET['type'];
 ?>
@@ -27,6 +25,10 @@ if($_POST){
         if($_SESSION['auth']['type'] == "PHARMACY"){
           echo'<script>window.location="pharmacy/index.php";</script>';
         }
+        
+        if($_SESSION['auth']['type'] == "PHARMACY_WHOLESALE"){
+          echo'<script>window.location="wholesale/index.php";</script>';
+        }
 
         if($_SESSION['auth']['type'] == "IPD"){
           echo'<script>window.location="ipd/index.php";</script>';
@@ -46,7 +48,8 @@ if($_POST){
   }
 }
 ?>
-
+<!DOCTYPE html>
+<html lang="en">
 <!-- Mirrored from www.urbanui.com/pearl-admin/pages/samples/register-2.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 04 Jul 2018 08:41:24 GMT -->
 <head>
   <!-- Required meta tags -->
@@ -100,7 +103,7 @@ if($_POST){
                               <div class="p-3 m-1">
                                 <div class="text-center pricing-card-head">
                                   <img src="images/dashboard-icon/pharmacy.png" alt="" class="img-md mb-2">
-                                  <h4 class="mt-2">Pharmacy</h4>
+                                  <h4 class="mt-2">Pharmacy Retails</h4>
                                   
                                 </div>
                               </div>
@@ -109,7 +112,7 @@ if($_POST){
                       <div class="col-md-8 col-12  grid-margin stretch-card ">
                             <div class="p-3 m-1 text-left">
                               
-                                <h4 class="mt-2 mb-3"><strong>Pharmacy</strong></h4>
+                                <h4 class="mt-2 mb-3"><strong>Pharmacy Retails</strong></h4>
                                 <p class="text-muted">What you will get in this type</p>
                                 <p><i class="fa fa-check"></i> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                                 <p><i class="fa fa-check"></i> Integer ornare sem ac velit congue pellentesque.</p>
@@ -214,16 +217,16 @@ if($_POST){
                               <div class="p-3 m-1">
                                 <div class="text-center pricing-card-head">
                                   <img src="images/dashboard-icon/general.png" alt="" class="img-md mb-2">
-                                  <h4 class="mt-2">General</h4>
+                                  <h4 class="mt-2">General Version</h4>
                                   
                                 </div>
                               </div>
                         </div>   
                     </div>
-                    <div class="col-md-8 col-12  grid-margin stretch-card ">
+                      <div class="col-md-8 col-12  grid-margin stretch-card ">
                             <div class="p-3 m-1 text-left">
                               
-                                <h4 class="mt-2 mb-3"><strong>General</strong></h4>
+                                <h4 class="mt-2 mb-3"><strong>General Version</strong></h4>
                                 <p class="text-muted">What you will get in this type</p>
                                 <p><i class="fa fa-check"></i> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                                 <p><i class="fa fa-check"></i> Integer ornare sem ac velit congue pellentesque.</p>
@@ -242,6 +245,186 @@ if($_POST){
                                 </p>
                             </div>
                     </div>
+                    <?php } ?>
+                    
+                    <?php if($name == "pharmacy_wholesale"){ ?>
+                      <div class="col-md-4 col-12 mt-5">
+                        <div class="dashboard-box-confirm">
+                              <div class="p-3 m-1">
+                                <div class="text-center pricing-card-head">
+                                  <img src="images/dashboard-icon/pharmacy.png" alt="" class="img-md mb-2">
+                                  <h4 class="mt-2">Pharmacy Wholesale</h4>
+                                  
+                                </div>
+                              </div>
+                        </div>   
+                    </div>
+                      <div class="col-md-8 col-12  grid-margin stretch-card ">
+                            <div class="p-3 m-1 text-left">
+                              
+                                <h4 class="mt-2 mb-3"><strong>Pharmacy Wholesale</strong></h4>
+                                <p class="text-muted">What you will get in this type</p>
+                                <p><i class="fa fa-check"></i> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                <p><i class="fa fa-check"></i> Integer ornare sem ac velit congue pellentesque.</p>
+                                <p><i class="fa fa-check"></i> Mauris at ipsum non nulla sagittis scelerisque.</p>
+                                <p><i class="fa fa-check"></i> Vestibulum egestas eros eu semper luctus.</p>
+                                <p><i class="fa fa-check"></i> Nullam imperdiet purus vitae dictum fermentum.</p>
+                                
+                                
+                                <p class="mt-4 text-danger">
+                                  <div class="form-check form-check-flat">
+                                      <label class="form-check-label">
+                                        <input type="checkbox" name="checkme" class="form-check-input">
+                                        I confirm that Once I select the version; i can not change the version in future.
+                                      </label>
+                                  </div>
+                                </p>
+                            </div>
+                    </div>
+                    <?php } ?>
+                    
+                    <?php if($name == "readymade_garments"){ ?>
+                      <div class="col-md-4 col-12 mt-5">
+                        <div class="dashboard-box-confirm">
+                              <div class="p-3 m-1">
+                                <div class="text-center pricing-card-head">
+                                  <img src="images/dashboard-icon/ipd.png" alt="" class="img-md mb-2">
+                                  <h4 class="mt-2">Readymade Garments</h4>
+                                  
+                                </div>
+                              </div>
+                        </div>   
+                    </div>
+                      <div class="col-md-8 col-12  grid-margin stretch-card ">
+                            <div class="p-3 m-1 text-left">
+                              
+                                <h4 class="mt-2 mb-3"><strong>Readymade Garments</strong></h4>
+                                <p class="text-muted">What you will get in this type</p>
+                                <p><i class="fa fa-check"></i> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                <p><i class="fa fa-check"></i> Integer ornare sem ac velit congue pellentesque.</p>
+                                <p><i class="fa fa-check"></i> Mauris at ipsum non nulla sagittis scelerisque.</p>
+                                <p><i class="fa fa-check"></i> Vestibulum egestas eros eu semper luctus.</p>
+                                <p><i class="fa fa-check"></i> Nullam imperdiet purus vitae dictum fermentum.</p>
+                                
+                                
+                                <p class="mt-4 text-danger">
+                                  <div class="form-check form-check-flat">
+                                      <label class="form-check-label">
+                                        <input type="checkbox" name="checkme" class="form-check-input">
+                                        I confirm that Once I select the version; i can not change the version in future.
+                                      </label>
+                                  </div>
+                                </p>
+                            </div>
+                      </div>
+                    <?php } ?>
+                    
+                    <?php if($name == "it_company"){ ?>
+                      <div class="col-md-4 col-12 mt-5">
+                        <div class="dashboard-box-confirm">
+                              <div class="p-3 m-1">
+                                <div class="text-center pricing-card-head">
+                                  <img src="images/dashboard-icon/finance.png" alt="" class="img-md mb-2">
+                                  <h4 class="mt-2">IT Company</h4>
+                                  
+                                </div>
+                              </div>
+                        </div>   
+                    </div>
+                      <div class="col-md-8 col-12  grid-margin stretch-card ">
+                            <div class="p-3 m-1 text-left">
+                              
+                                <h4 class="mt-2 mb-3"><strong>IT Company</strong></h4>
+                                <p class="text-muted">What you will get in this type</p>
+                                <p><i class="fa fa-check"></i> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                <p><i class="fa fa-check"></i> Integer ornare sem ac velit congue pellentesque.</p>
+                                <p><i class="fa fa-check"></i> Mauris at ipsum non nulla sagittis scelerisque.</p>
+                                <p><i class="fa fa-check"></i> Vestibulum egestas eros eu semper luctus.</p>
+                                <p><i class="fa fa-check"></i> Nullam imperdiet purus vitae dictum fermentum.</p>
+                                
+                                
+                                <p class="mt-4 text-danger">
+                                  <div class="form-check form-check-flat">
+                                      <label class="form-check-label">
+                                        <input type="checkbox" name="checkme" class="form-check-input">
+                                        I confirm that Once I select the version; i can not change the version in future.
+                                      </label>
+                                  </div>
+                                </p>
+                            </div>
+                      </div>
+                    <?php } ?>
+                    
+                    <?php if($name == "account"){ ?>
+                      <div class="col-md-4 col-12 mt-5">
+                        <div class="dashboard-box-confirm">
+                              <div class="p-3 m-1">
+                                <div class="text-center pricing-card-head">
+                                  <img src="images/dashboard-icon/general.png" alt="" class="img-md mb-2">
+                                  <h4 class="mt-2">Account And Transaction Company</h4>
+                                  
+                                </div>
+                              </div>
+                        </div>   
+                    </div>
+                      <div class="col-md-8 col-12  grid-margin stretch-card ">
+                            <div class="p-3 m-1 text-left">
+                              
+                                <h4 class="mt-2 mb-3"><strong>Account And Transaction Company</strong></h4>
+                                <p class="text-muted">What you will get in this type</p>
+                                <p><i class="fa fa-check"></i> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                <p><i class="fa fa-check"></i> Integer ornare sem ac velit congue pellentesque.</p>
+                                <p><i class="fa fa-check"></i> Mauris at ipsum non nulla sagittis scelerisque.</p>
+                                <p><i class="fa fa-check"></i> Vestibulum egestas eros eu semper luctus.</p>
+                                <p><i class="fa fa-check"></i> Nullam imperdiet purus vitae dictum fermentum.</p>
+                                
+                                
+                                <p class="mt-4 text-danger">
+                                  <div class="form-check form-check-flat">
+                                      <label class="form-check-label">
+                                        <input type="checkbox" name="checkme" class="form-check-input">
+                                        I confirm that Once I select the version; i can not change the version in future.
+                                      </label>
+                                  </div>
+                                </p>
+                            </div>
+                      </div>
+                    <?php } ?>
+                    
+                    <?php if($name == "electronics"){ ?>
+                      <div class="col-md-4 col-12 mt-5">
+                        <div class="dashboard-box-confirm">
+                              <div class="p-3 m-1">
+                                <div class="text-center pricing-card-head">
+                                  <img src="images/dashboard-icon/finance.png" alt="" class="img-md mb-2">
+                                  <h4 class="mt-2">Electronics</h4>
+                                  
+                                </div>
+                              </div>
+                        </div>   
+                    </div>
+                      <div class="col-md-8 col-12  grid-margin stretch-card ">
+                            <div class="p-3 m-1 text-left">
+                              
+                                <h4 class="mt-2 mb-3"><strong>Electronics</strong></h4>
+                                <p class="text-muted">What you will get in this type</p>
+                                <p><i class="fa fa-check"></i> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                <p><i class="fa fa-check"></i> Integer ornare sem ac velit congue pellentesque.</p>
+                                <p><i class="fa fa-check"></i> Mauris at ipsum non nulla sagittis scelerisque.</p>
+                                <p><i class="fa fa-check"></i> Vestibulum egestas eros eu semper luctus.</p>
+                                <p><i class="fa fa-check"></i> Nullam imperdiet purus vitae dictum fermentum.</p>
+                                
+                                
+                                <p class="mt-4 text-danger">
+                                  <div class="form-check form-check-flat">
+                                      <label class="form-check-label">
+                                        <input type="checkbox" name="checkme" class="form-check-input">
+                                        I confirm that Once I select the version; i can not change the version in future.
+                                      </label>
+                                  </div>
+                                </p>
+                            </div>
+                      </div>
                     <?php } ?>
                       
                       

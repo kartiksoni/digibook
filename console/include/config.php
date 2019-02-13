@@ -10,7 +10,7 @@
 	define('SERVER', 'localhost');
 	define('USER', 'root');
 	define('PASSWORD', '');
-	define('DB', 'digibook_website');
+	define('DB', 'yamunxym_digibooks_website');
 
 	$conn = mysqli_connect(SERVER, USER, PASSWORD, DB);// CONNECT DATABASE
 
@@ -26,8 +26,7 @@
 	} else { /*printf("Current character set: %s\n", mysqli_character_set_name($conn));exit;*/}
 
 	error_reporting(0);
-	ob_start();
 	session_start();
-
+    ob_start();
 
 ?>

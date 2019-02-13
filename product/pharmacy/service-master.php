@@ -107,7 +107,6 @@ if(isset($_POST['edit'])){
       <div class="main-panel">
       
         <div class="content-wrapper">
-          <?php include('include/flash.php'); ?>
           <span id="errormsg"></span>
           <div class="row">
             
@@ -182,7 +181,7 @@ if(isset($_POST['edit'])){
                       </div>
                     
                     <br>
-                    <a href="service-master.php" class="btn btn-light">Cancel</a>
+                    <a href="configuration.php" class="btn btn-light">Cancel</a>
                     <?php 
                       if(isset($_GET['id'])){
                         ?>
@@ -345,6 +344,10 @@ if(isset($_POST['edit'])){
   <!-- change status js -->
   <script src="js/custom/statusupdate.js"></script>
   
+   
+ <!-- toast notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
   
   <!-- End custom js for this page-->
   

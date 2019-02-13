@@ -1,5 +1,5 @@
 <div class="modal fade" id="addcompany-model" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md" role="document">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="ModalLabel">Add New Company</h5>
@@ -11,14 +11,9 @@
           <div class="modal-body">
             <span id="addcompany-errormsg"></span>
             <div class="form-group row">
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-12">
                 <label for="name">Company Name <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Company Name" required>   
-              </div>
-              
-              <div class="col-12 col-md-6">
-                <label for="code">Company Code <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" name="code" placeholder="Company Code" required>   
               </div>
             </div>
           </div>

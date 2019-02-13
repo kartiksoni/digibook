@@ -1,63 +1,41 @@
+<?php $title = "List"; ?>
 <?php include('include/usertypecheck.php'); 
-error_reporting(0);
-if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
-{  
-  $id = $_REQUEST['id'];
+include('include/permission.php'); 
+  $pharmacy_id = (isset($_SESSION['auth']['pharmacy_id'])) ? $_SESSION['auth']['pharmacy_id'] : '';
+  $financial_id = (isset($_SESSION['auth']['financial'])) ? $_SESSION['auth']['financial'] : '';
 
-  $sql_email = "SELECT orders.id, orders.order_no as orderno, orders.created as orderdate, product_master.product_name as productname,               product_master.generic_name as genericname, product_master.mfg_company as manufacturername, orders.purchase_price as                 purchaseprice, orders.gst as gst, orders.unit as unit, orders.qty as quantity, ledger_master.name as vendorname,                     ledger_master.mobile as mobile, ledger_master.email as email from((orders INNER JOIN product_master ON                               orders.product_id = product_master.id) INNER JOIN ledger_master ON orders.vendor_id = ledger_master.id) WHERE                        orders.status = '1' AND orders.id='".$id."'";
+  if(isset($_REQUEST['id']) && $_REQUEST['id'] != ''){  
+    $id = $_REQUEST['id'];
+    
+    $query = "SELECT ord.purchase_price, ord.gst, ord.unit, ord.qty, pm.product_name, lg.name, lg.email FROM orders ord INNER JOIN product_master pm ON ord.product_id = pm.id INNER JOIN ledger_master lg ON ord.vendor_id = lg.id WHERE ord.id = '".$id."'";
+    $res = mysqli_query($conn, $query);
+    if($res && mysqli_num_rows($res) > 0){
+      $row = mysqli_fetch_assoc($res);
+      if(isset($row['email']) && $row['email'] != ''){
+        $html = "<center><h3>Digibook Order Summary</h3><table border='1' cellpadding='10' cellspacing='0'><thead><th>Sr. No</th><th>Product Name</th><th>Purchase Price</th><th>GST(%)</th><th>Unit</th><th>Qty</th></thead><tbody>";
+        $html .= "<tr>";
+        $html .= "<td>1</td>";
+        $html .= "<td>".$row['product_name']."</td>";
+        $html .= "<td>".$row['purchase_price']."</td>";
+        $html .= "<td>".$row['gst']."</td>";
+        $html .= "<td>".$row['unit']."</td>";
+        $html .= "<td>".$row['qty']."</td>";
+        $html .="</tbody></table></center>";
 
-  $sqlqryrun_email = mysqli_query($conn, $sql_email);
-  $sqldata = mysqli_fetch_assoc($sqlqryrun_email);
-  $email = $sqldata['email'];
-
-  require_once "PHPMailer/PHPMailer/PHPMailerAutoload.php";
-  $message = " Hello ".ucwords($sqldata['vendorname'])."<br>";
-  $message .= ucwords("Your Order Summary")."<br>";
-  $message .= ucwords("All Summary Description");
-  
-    $mail = new PHPMailer;
-    //Tell PHPMailer to use SMTP
-    $mail->isSMTP();
-    //Enable SMTP debugging
-    $mail->SMTPDebug = 2;
-    //Set the hostname of the mail server
-    $mail->Host = 'smtp.gmail.com';
-    // use
-    // $mail->Host = gethostbyname('smtp.gmail.com');
-    // if your network does not support SMTP over IPv6
-    //Set the SMTP port number - 587 for authenticated TLS, a.k.a. RFC4409 SMTP submission
-    $mail->SMTPSecure = 'ssl';
-    //Set the encryption system to use - ssl (deprecated) or tls
-    $mail->Port = 465;
-    //Whether to use SMTP authentication
-    $mail->SMTPAuth = true;
-    //Username to use for SMTP authentication - use full email address for gmail
-    $mail->Username = "viragrakholiya95@gmail.com";
-    //Password to use for SMTP authentication
-    $mail->Password = "virag123";
-    //Set who the message is to be sent from
-    $mail->setFrom('viragrakholiya95@gmail.com', 'Digiwallet');
-    //Set an alternative reply-to address
-    //$mail->addReplyTo('replyto@example.com', 'First Last');
-    //Set who the message is to be sent to
-    $mail->addAddress($email, 'Digibook');
-    //Set the subject line
-    $mail->Subject = 'Digibook Order Summary';
-    //Read an HTML message body from an external file, convert referenced images to embedded,
-    //convert HTML into a basic plain-text alternative body
-    $mail->msgHTML($message, __DIR__);
-    //Replace the plain text body with one created manually
-    $mail->AltBody = 'This is a plain-text message body';
-    //Attach an image file
-    //$mail->addAttachment('images/phpmailer_mini.png');
-    //send the message, check for errors
-    if (!$mail->send()) {
-       //echo "Mailer Error: " . $mail->ErrorInfo;
-    } else {
-        //echo "Message sent!";
+        $sent = smtpmail($row['email'], '', '', 'Digibook Order', $html, '', '');
+        if($sent){
+           $_SESSION['msg']['success'] = 'Mail send successfully.';
+        }else{
+          $_SESSION['msg']['fail'] = 'Mail Send Fail! Please Try Again.';
+        }
+      }else{
+        $_SESSION['msg']['fail'] = 'Mail Send Fail! Email Not Found.';  
+      }
+    }else{
+      $_SESSION['msg']['fail'] = 'Mail Send Fail! Please Try Again.';
     }
-  
-}
+    header('Location: order-list-tab.php');exit;
+  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -66,7 +44,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>Digibooks | Order List</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -86,6 +64,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
   <link rel="stylesheet" href="css/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="images/favicon.png" />
+  <link rel="stylesheet" href="css/parsley.css">
 </head>
 <body>
   <div class="container-scroller">
@@ -115,15 +94,28 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
             
                 <div class="card">
                 <div class="card-body">
-                   	
+                    
                     <!-- Main Catagory -->
                     <div class="row">
                     <div class="col-12">
                         <div class="enventory">
+                            <?php 
+                            if(isset($user_sub_module) && in_array("Order", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+                            ?>
                             <a href="order.php" class="btn btn-dark btn-fw active">Order</a>
+                            <?php } 
+                            if(isset($user_sub_module) && in_array("List", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+                            ?>
                             <a href="order-list-tab.php" class="btn btn-dark btn-fw">List</a>
+                            <?php } 
+                            if(isset($user_sub_module) && in_array("Missed Sales Order", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+                            ?>
                             <a href="missed-sales-order.php" class="btn btn-dark btn-fw">Missed Sales Order</a>
-                            <a href="#" class="btn btn-dark btn-fw">Settings</a>
+                            <?php } 
+                            //if(isset($user_sub_module) && in_array("Settings", $user_sub_module)){ 
+                            ?>
+                            <!--<a href="#" class="btn btn-dark btn-fw">Settings</a>-->
+                            <?php //} ?>
                         </div>  
                     </div> 
                     </div>
@@ -149,7 +141,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                             <select class="js-example-basic-single" name="vender_id" id="vender_id" style="width:100%"> 
                             <option value="">Please select</option>
                             <?php 
-                            $sql = "SELECT id, name FROM ledger_master WHERE status=1 AND group_id=14 order by name";
+                            $sql = "SELECT id, name FROM ledger_master WHERE status=1 AND group_id=14 AND pharmacy_id = '".$pharmacy_id."' order by name";
                             $re_sql = mysqli_query($conn, $sql);
                             while($vender_data = mysqli_fetch_assoc($re_sql)){
                             ?>
@@ -166,7 +158,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                     <div class="row no-gutters">
                         <div  class="col-md-10">
                             <label class="col-12 row">Mobile</label>
-                            <input type="text" class="form-control auto" id="mobile" data-name = "mobile" placeholder="Mobile" name="mobile" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['mobile']; }?>">
+                            <input type="text" class="form-control auto onlynumber" id="mobile" data-name = "mobile" placeholder="Mobile" name="mobile" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['mobile']; }?>" data-parsley-length="[10, 10]" data-parsley-length-message = "Mobile No should be 10 charatcers long.">
                             <small class="empty-message text-danger"></small>
                        </div>     
                     </div>    
@@ -188,7 +180,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                     <div class="row no-gutters">
                         <div  class="col-md-10">
                             <label class="col-12 row">Email ID</label>
-                            <input type="text" class="form-control auto"  placeholder="Email ID" data-name = "email" name="email" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['email']; }?>">
+                            <input type="email" class="form-control auto" parsley-type="email" placeholder="Email ID" data-name = "email" name="email" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['email']; }?>">
                             <small class="empty-message text-danger"></small>
                        </div>     
                     </div>    
@@ -201,7 +193,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                     
                     <div class="col-12 col-md-3">
                     <div class="row no-gutters">
-                    	<div  class="col-md-12">
+                      <div  class="col-md-12">
                         <label class="col-12 row">From Date</label>
                        <div  class="input-group date datepicker">
                         <input type="text" class="form-control" name="fromdate" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['fromdate']; }?>">
@@ -209,14 +201,14 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                           <span class="mdi mdi-calendar input-group-text"></span>
                         </span>
                       </div>
-                    	</div>
+                      </div>
                     </div>    
                     </div>
                     
                     
                       <div class="col-12 col-md-3">
                     <div class="row no-gutters">
-                    	<div  class="col-md-12">
+                      <div  class="col-md-12">
                         <label class="col-12 row">To Date</label>
                        <div class="input-group date datepicker">
                         <input type="text" class="form-control" name="todate" value="<?php if(isset($_REQUEST['search'])){echo $_REQUEST['todate']; }?>">
@@ -224,12 +216,12 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                           <span class="mdi mdi-calendar input-group-text"></span>
                         </span>
                       </div>
-                    	</div>
+                      </div>
                     </div>    
                     </div>
                     
                     <div class="col-12 col-md-3">
-	                    <button type="submit" name="search" class="btn btn-success mt-30" style="margin-top:30px;">Search</button>
+                      <button type="submit" name="search" class="btn btn-success mt-30" style="margin-top:30px;">Search</button>
                     </div>
               
                     </div>   
@@ -244,10 +236,10 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
              <!-- Table ------------------------------------------------------------------------------------------------------>
             
             <div class="col-md-12 grid-margin stretch-card">
-              	<div class="card">
+                <div class="card">
                 <div class="card-body">
                 
-                	<!-- TABLE Filters btn -->
+                  <!-- TABLE Filters btn -->
                     
                     
                     <!-- TABLE STARTS -->
@@ -255,7 +247,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
 
                         $data = [];
                         /// by vender ///
-                        $sqlqry = "SELECT orders.id, orders.order_no as orderno, orders.created as orderdate, product_master.product_name as productname, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.email as email from((orders INNER JOIN product_master ON orders.product_id = product_master.id) INNER JOIN ledger_master ON orders.vendor_id = ledger_master.id) WHERE orders.status = '1'";
+                        $sqlqry = "SELECT orders.id, orders.order_no as orderno, orders.created as orderdate, product_master.product_name as productname, ledger_master.name as vendorname, ledger_master.mobile as mobile, ledger_master.id as lgr_id, ledger_master.email as email from((orders INNER JOIN product_master ON orders.product_id = product_master.id) INNER JOIN ledger_master ON orders.vendor_id = ledger_master.id) WHERE orders.status = '1' AND orders.pharmacy_id = '".$pharmacy_id."' AND orders.financial_id = '".$financial_id."' ";
                         
                         if(isset($_REQUEST['vender_id']) && $_REQUEST['vender_id'] != ''){
                           $sqlqry .= "AND (ledger_master.id = '".$_REQUEST['vender_id']."')";
@@ -289,9 +281,9 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                         $sqlqryrun = mysqli_query($conn, $sqlqry);
                     ?>
                     <div class="col mt-3">
-                    	 <div class="row">
+                       <div class="row">
                             <div class="col-12">
-                              <table id="order-listing1" class="table">
+                              <table class="table datatable">
                                 <thead>
                                   <tr>
                                       <th>Order No</th>
@@ -323,7 +315,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                                             </a>
                                           </td>
                                           <td>
-                                            <a href="#" class="btn btn-primary p-2" title="Print">
+                                            <a href="order-list-print.php?id=<?php echo $sqldata['lgr_id']; ?>" class="btn btn-primary p-2" title="Print">
                                               <i class="fa fa-print mr-0"></i>
                                             </a>
                                             <a href="#" class="btn btn-primary p-2" title="CSV">
@@ -338,7 +330,6 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
                             </div>
                           </div>
                     </div>
-                    <hr>
                 </div>
                 </div>
                 </div>  
@@ -390,10 +381,16 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
   <script src="js/form-repeater.js"></script>
   <script src="js/custom/order_list_tab.js"></script>
   <script src="js/jquery-ui.js"></script>
+  <script src="js/custom/onlynumber.js"></script>
 
   
   <!-- Custom js for this page Modal Box-->
   <script src="js/modal-demo.js"></script>
+  
+  
+  <!--    Toast Notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
   
   
   <!-- Datepicker Initialise-->
@@ -406,15 +403,17 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != '')
     });
  </script>
  
+ <!-- script for custom validation -->
+   <script src="js/parsley.min.js"></script>
+   <script type="text/javascript">
+  $('form').parsley();
+   </script>
+ 
   <!-- Custom js for this page Datatables-->
   <script src="js/data-table.js"></script> 
   
   <script>
-  	 $('#order-listing2').DataTable();
-  </script>
-  
-  <script>
-  	 $('#order-listing1').DataTable();
+     $('.datatable').DataTable();
   </script>
   
   

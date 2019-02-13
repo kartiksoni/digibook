@@ -1,19 +1,18 @@
 $( document ).ready(function() {
-
-  var table = $('.datatable').DataTable( {
+    var cur_statecode = $('#cur_statecode').val();
+    
+    var table = $('.datatable').DataTable( {
         "ajax": "ajax.php?action=getOrder&type=2",
         "columns": [
             { "data": "no" },
+            { "data": "order_date" },
             { "data": "vendor_name" },
-            { "data": "product_name" },
-            { "data": "purchase_price" },
-            { "data": "gst" },
-            { "data": "unit" },
-            { "data": "qty" },
+            { "data": "total_order" },
             { "data" : "id",
                 "render": function (data)
                 {
-                    return '<button data-id='+data+' class="btn btn-primary p-2 delete-permnent"><i class="icon-trash mr-0"></i></button>';
+                    // return '<button data-id='+data.vendor_id+' data-group='+data.group+' class="btn btn-success p-2 edit-permnent"><i class="icon-pencil mr-0"></i></button> <a href="order-print.php?id='+data.vendor_id+'&group='+data.group+'" class="btn btn-primary p-2" target="_blank"><i class="fa fa-print mr-0"></i></a> <a href="order-by-product.php?id='+data.vendor_id+'&group='+data.group+'" class="btn btn-warning p-2" title="Email"><i class="fa fa-envelope mr-0"></i></a> <a href="javascript:void(0);" data-id="'+data.vendor_id+'" data-group="'+data.group+'" class="btn btn-danger btn-reminder p-2" title="Reminder"><i class="fa fa-bell-o mr-0"></i></a> <input type="text" class="form-control input-reminder onlynumber" placeholder="day" value="'+data.reminder_day+'" data-parsley-type="number" style="width: 40%;display:none;"> <small class="reminder-error"></small>';
+                    return '<button data-id='+data.vendor_id+' data-group='+data.group+' class="btn btn-success p-2 edit-permnent"><i class="icon-pencil mr-0"></i></button> <a href="order-print.php?id='+data.vendor_id+'&group='+data.group+'" class="btn btn-primary p-2" target="_blank"><i class="fa fa-print mr-0"></i></a> <a href="order-by-product.php?id='+data.vendor_id+'&group='+data.group+'" class="btn btn-warning p-2" title="Email"><i class="fa fa-envelope mr-0"></i></a>';
                 }
 
             }
@@ -21,9 +20,106 @@ $( document ).ready(function() {
         ],
         //"order": [[1, 'asc']]
     });
+    
+    $('body').on('click', '.btn-reminder', function () {
+        $(this).closest('tr').find('.input-reminder').toggle();
+    });
+
+    
+    $('body').on('change', '#product_id', function (e) {
+      var product_id = $(this).val();
+      var product_name = $("#product_id option:selected").attr('data-name');
+      $('#search').val(product_name);
+      if(product_id != ''){
+        $.ajax({
+            type: "POST",
+            url: 'ajax.php',
+            data: {'product_id':product_id,'action':'getProductById'},
+            dataType: "json",
+            success: function (data) {
+              if(data.status == true){
+                $('#generic_name').val(data.result.generic_name);
+                $('#mfg_co').val(data.result.mfg_company);
+
+                $('#sgst').val(data.result.sgst);
+                $('#cgst').val(data.result.cgst);
+                $('#igst').val(data.result.igst);
+                $('#purchase_price').val(data.result.mrp);
+                $('#unit').val(data.result.unit);
+
+                getVendorByProduct(product_id);
+                setGST();
+                $('#btn-addtmp').prop('disabled', false);
+            
+              }else{
+               blankfield();
+              }
+            },
+            error: function () {
+              blankfield();
+            }
+        });
+      }else{
+        blankfield();
+      }
+
+    });
+
+    function blankfield(){
+      $('#email').val(null);
+      $('#mobile').val(null);
+      $('#generic_name').val(null);
+      $('#mfg_co').val(null);
+      $('#gst').val(null);
+      $('#sgst').val(null);
+      $('#cgst').val(null);
+      $('#igst').val(null);
+      $('#purchase_price').val(null);
+      $('#unit').val(null);
+      $('#vendor_id').children('option:not(:first)').remove();
+      $('#btn-addtmp').prop('disabled', true);
+    }
+
+  
+    $('body').on('keyup', '.input-reminder', function (e) {
+        var $this = $(this);
+        if (e.which == 13){
+            var vendor_id = $($this).closest('tr').find('.btn-reminder').attr('data-id');
+            var groups = $($this).closest('tr').find('.btn-reminder').attr('data-group');
+            var day = $($this).val();
+            var type = 2; //1 for order by vendor
+    
+            if(day !== ''){
+                $.ajax({
+                    type: "POST",
+                    url: 'ajax.php',
+                    data: {'vendor_id':vendor_id, 'groups':groups, 'day':day, 'type':type, 'action':'addOrderReminder'},
+                    dataType: "json",
+                    success: function (data) {
+                      if(data.status == true){
+                        $($this).closest('tr').find('.input-reminder').toggle();
+                        $($this).closest('tr').find('.reminder-error').removeClass('text-danger').addClass('text-success');
+                        $($this).closest('tr').find('.reminder-error').html('Reminder Added success.');
+                      }else{
+                        $($this).closest('tr').find('.reminder-error').removeClass('text-success').addClass('text-danger');
+                        $($this).closest('tr').find('.reminder-error').html('Reminder Added Fail!');
+                      }
+                    },
+                    error: function () {
+                      $($this).closest('tr').find('.reminder-error').removeClass('text-success').addClass('text-danger');
+                      $($this).closest('tr').find('.reminder-error').html('Reminder Added Fail!');
+                    }
+                });
+            }else{
+                $($this).closest('tr').find('.reminder-error').removeClass('text-success').addClass('text-danger');
+                $($this).closest('tr').find('.reminder-error').html('Reminder day is required!');
+                return false;
+            }
+         }
+    });
 
 
-    $( "#search" ).autocomplete({
+    /*$( "#search" ).autocomplete({
       source: function (query, result) {
           $.ajax({
               url: "ajax.php",
@@ -73,7 +169,7 @@ $( document ).ready(function() {
             $('#btn-addtmp').prop('disabled', false);
             return false;
         }
-    });
+    });*/
 
     function getVendorByProduct(product_id) {
       var productid = (typeof product_id !== 'undefined') ? product_id : '';
@@ -165,7 +261,7 @@ $( document ).ready(function() {
 
     var statecode = $('#statecode').val();
     if(statecode !== ''){
-      if(statecode == 24){
+      if(statecode == cur_statecode){
         gst = parseFloat(cgst)+parseFloat(sgst);
       }else{
         gst = parseFloat(igst);
@@ -177,8 +273,8 @@ $( document ).ready(function() {
    $("#add-product").on("submit", function(event){
         event.preventDefault();
         var data = $(this).serialize();
-        var htmlsuccess = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
-        var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+        // var htmlsuccess = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+        // var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
         var dataarr = JSON.parse('{"' + decodeURI(data).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
         $.ajax({
             type: "POST",
@@ -191,37 +287,46 @@ $( document ).ready(function() {
             },
             success: function (data) {
               if(data.status == true){
-                htmlsuccess = htmlsuccess.replace("##MSG##", data.message);
-                $('#errormsg').html(htmlsuccess);
+                 showSuccessToast(data.message);
+                // htmlsuccess = htmlsuccess.replace("##MSG##", data.message);
+                // $('#errormsg').html(htmlsuccess);
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 $('#purchase-addproductmodel').modal('toggle');
                 $('#add-product')[0].reset();
+                
+                $('#byproduct_temp_form').find('#product_id').append($('<option>', { 
+                      value: data.result,
+                      text : dataarr.product_name 
+                }));
+                $('#byproduct_temp_form').find('#product_id').val(data.result).select2();
+                
+                //$('#product_id').val(data.result);
+                //$('#search').val(dataarr.product_name);
+                $('#byproduct_temp_form').find('#generic_name').val(dataarr.generic_name);
+                $('#byproduct_temp_form').find('#mfg_co').val(dataarr.mfg_company);
 
-                $('#product_id').val(data.result);
-                $('#search').val(dataarr.product_name);
-                $('#generic_name').val(dataarr.generic_name);
-                $('#mfg_co').val(dataarr.mfg_company);
-
-                $('#sgst').val(dataarr.sgst);
-                $('#cgst').val(dataarr.cgst);
-                $('#igst').val(dataarr.igst);
-                $('#purchase_price').val(dataarr.give_mrp);
-                $('#unit').val(dataarr.unit);
+                $('#byproduct_temp_form').find('#sgst').val(dataarr.sgst);
+                $('#byproduct_temp_form').find('#cgst').val(dataarr.cgst);
+                $('#byproduct_temp_form').find('#igst').val(dataarr.igst);
+                $('#byproduct_temp_form').find('#purchase_price').val(dataarr.give_mrp);
+                $('#byproduct_temp_form').find('#unit').val(dataarr.unit);
 
                 $('#btn-addtmp').prop('disabled', false);
                 setGST();
                 getVendorByProduct('');
               }else{
-                htmlerror =  htmlerror.replace("##MSG##", data.message);
-                $('#addproduct-errormsg').html(htmlerror);
+                showDangerToast(data.message);
+                //htmlerror =  htmlerror.replace("##MSG##", data.message);
+                //$('#addproduct-errormsg').html(htmlerror);
                 $("html, body").animate({ scrollTop: 0 }, "slow");
               }
               $('#btn-addproduct').html('Save');
               $('#btn-addproduct').prop('disabled', false);
             },
             error: function () {
-              htmlerror =  htmlerror.replace("##MSG##", 'Somthing Want Wrong!');
-              $('#addvendor-errormsg').html(htmlerror);
+                showDangerToast('Somthing Want Wrong!');
+              // htmlerror =  htmlerror.replace("##MSG##", 'Somthing Want Wrong!');
+              // $('#addvendor-errormsg').html(htmlerror);
               $("html, body").animate({ scrollTop: 0 }, "slow");
 
               $('#btn-addproduct').html('Save');
@@ -231,13 +336,25 @@ $( document ).ready(function() {
 
     });
 
-
+    // FOR PRODUCT POPUP OPENING STOCK RS OPENING QTY * INWART RATE = OPENING STOCK RS
+    $('body').on('keyup', '#opening_qty, #inward_rate', function () {
+        var openingqty = $('#add-product').find('#opening_qty').val();
+        openingqty = (typeof openingqty !== 'undefined' && !isNaN(openingqty) && openingqty !== '') ? openingqty : 0;
+        
+        var inwartrate = $('#add-product').find('#inward_rate').val();
+        inwartrate = (typeof inwartrate !== 'undefined' && !isNaN(inwartrate) && inwartrate !== '') ? inwartrate : 0;
+        
+        var opening_stock_rs = (openingqty*inwartrate);
+        $('#add-product').find('#opening_stock_rs').val(opening_stock_rs);
+    });
+    
   $("#byproduct_temp_form").on("submit", function(event){
     event.preventDefault();
-        var data = $(this).serialize();
-        var dataarr = JSON.parse('{"' + decodeURI(data).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
-        var randomnumber = Math.floor((Math.random()*1000) + 1);
-        console.log(dataarr);
+    var data = $(this).serialize();
+    var dataarr = JSON.parse('{"' + decodeURI(data).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+    var randomnumber = Math.floor((Math.random()*1000) + 1);
+    
+        
       var html = $('#tr-html').html();
       html = html.replace('<table>','');
       html = html.replace('</table>','');
@@ -268,6 +385,7 @@ $( document ).ready(function() {
       html = html.replace(/##QTY##/g, (typeof dataarr.qty !== 'undefined') ? dataarr.qty : '');
       html = html.replace(/##PURCHASEPRICE##/g, (typeof dataarr.purchase_price !== 'undefined') ? dataarr.purchase_price : '');
       html = html.replace(/##STATECODE##/g, (typeof dataarr.statecode !== 'undefined') ? dataarr.statecode : '');
+      html = html.replace(/##EDITID##/g, (typeof dataarr.id !== 'undefined') ? dataarr.id : '');
 
 
       if($('#tbody-tmp tr').length == 0){
@@ -275,19 +393,20 @@ $( document ).ready(function() {
       }
 
       if(typeof dataarr.editid != 'undefined' && dataarr.editid != ''){
-          $('#'+dataarr.editid).html(html);
-          $('#'+dataarr.editid).css("background-color", "#FFFFFF");
-        }else{
-          $('#tbody-tmp').append(html);
-        }
+        $('#'+dataarr.editid).html(html);
+        $('#'+dataarr.editid).css("background-color", "#FFFFFF");
+      }else{
+        $('#tbody-tmp').append(html);
+      }
       
       //$('#tbody-tmp').append(html);
       $('#byproduct_temp_form')[0].reset();
       $("#vendor_id").val('').trigger('change');
       $('#vendor_id').children('option:not(:first)').remove().trigger('change');
-      $('#product_id').val(null);
+      $('#product_id').val('').trigger('change');
       $('#vendor_name').val(null);
       $('#editid').val(null);
+      $('#id').val(null);
 
       $('#sgst').val(null);
       $('#cgst').val(null);
@@ -295,18 +414,117 @@ $( document ).ready(function() {
       $('#statecode').val(null);
 
       $('#btn-addtmp').prop('disabled', true);
-
   });
+
+  function updateorder(data){
+    // var htmlsuccess = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+    // var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+    
+    $.ajax({
+        type: "POST",
+        url: 'ajax.php',
+        data: {'action':'updateOrder', 'data': data},
+        dataType: "json",
+        beforeSend: function() {
+          $('#btn-addtmp').html('Wait.. <i class="fa fa-spin fa-refresh"></i>');
+          $('#btn-addtmp').prop('disabled', true);
+        },
+        success: function (data) {
+          if(data.status == true){
+                 showSuccessToast(data.message);
+            // htmlsuccess = htmlsuccess.replace("##MSG##", data.message);
+            // $('#errormsg').html(htmlsuccess);
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            $('#btn-addtmp').html('Add');
+            //$('#btn-addtop').prop('disabled', false);
+
+            // reset form
+            $("#vendor_id").val('').trigger('change');
+            $("#byproduct_temp_form").find('input[type=hidden]').val(null);
+            $('#byproduct_temp_form')[0].reset();
+            $('.delete-permnent').show();
+            table.ajax.reload();
+          }else{
+                showDangerToast(data.message);
+            // htmlerror =  htmlerror.replace("##MSG##", data.message);
+            // $('#errormsg').html(htmlerror);
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            $('#btn-addtmp').html('Update');
+            $('#btn-addtmp').prop('disabled', false);
+          }
+        },
+        error: function () {
+              showDangerToast('Somthing Want Wrong! Try again.');
+          // htmlerror =  htmlerror.replace("##MSG##", 'Somthing Want Wrong!');
+          // $('#errormsg').html(htmlerror);
+          $("html, body").animate({ scrollTop: 0 }, "slow");
+
+          $('#btn-addtmp').html('Update');
+          $('#btn-addtmp').prop('disabled', false);
+        }
+      });
+    return false;
+  }
   
   $('body').on('click', '.delete-temp', function () {
-    $(this).closest('tr').remove();
-    var rowCount = $('#tbody-tmp tr').length;
-      if(rowCount == 0){
-        $('#tmpdata-div').hide();
-      }
+    /*--------------------------------------------------------*/
+    var $this = $(this);
+    // var htmlsuccess = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+    // var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+    if (confirm('Are sure want delete this order?')) {
+        var editid = $($this).closest('tr').find('.editid').val();
+
+        if(editid != ''){
+            $.ajax({
+              url: "ajax.php",
+              data: {'id': editid, 'action': 'deleteOrder'},            
+              dataType: "json",
+              type: "POST",
+              success: function (data) {
+                if(data.status == true){
+                  $($this).closest ('tr').remove ();
+                  var rowCount = $('#tbody-tmp tr').length;
+                  if(rowCount == 0){
+                    $('#tmpdata-div').hide();
+                  }
+                 showSuccessToast(data.message);
+                  // htmlsuccess = htmlsuccess.replace("##MSG##", data.message);
+                  // $('#errormsg').html(htmlsuccess);
+                  $("html, body").animate({ scrollTop: 0 }, "slow");
+                  table.ajax.reload();
+                  return false;
+                }else{
+                showDangerToast(data.message);
+                    // htmlerror =  htmlerror.replace("##MSG##", data.message);
+                    // $('#errormsg').html(htmlerror);
+                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                    return false;
+                }
+              },
+              error: function () {
+              showDangerToast('Somthing Want Wrong! Try again.');
+               // htmlerror =  htmlerror.replace("##MSG##", 'Somthing Want Wrong!');
+               // $('#errormsg').html(htmlerror);
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                return false;
+              }
+          });
+        }else{
+          $($this).closest ('tr').remove ();
+          var rowCount = $('#tbody-tmp tr').length;
+          if(rowCount == 0){
+            $('#tmpdata-div').hide();
+          }
+        }
+    }else{
+      return false;
+    }
+    /*--------------------------------------------------------*/
   });
 
   $('body').on('click', '.edit-temp', function () {
+    $('#vendor_loader').show();
+
     var dataid = $(this).closest ('tr').attr('id');
     var product_name = $(this).closest ('tr').find('.product_name').val();
     var product_id = $(this).closest ('tr').find('.product_id').val();
@@ -325,16 +543,15 @@ $( document ).ready(function() {
     var unit = $(this).closest ('tr').find('.unit').val();
     var qty = $(this).closest ('tr').find('.qty').val();
     var statecode = $(this).closest ('tr').find('.statecode').val();
-    console.log('gst'+gst)
-
-    
+    var editid = $(this).closest ('tr').find('.editid').val();//edit id
 
     
 
     // set value to form
     $('#byproduct_temp_form').find('#editid').val(dataid);
     $('#byproduct_temp_form').find('#search').val(product_name);
-    $('#byproduct_temp_form').find('#product_id').val(product_id);
+    // $('#byproduct_temp_form').find('#product_id').val(product_id);
+    $('#byproduct_temp_form').find('#product_id').val(product_id).select2();
     $('#byproduct_temp_form').find('#vendor_name').val(vendor_name);
     $('#byproduct_temp_form').find('#email').val(email);
     $('#byproduct_temp_form').find('#mobile').val(mobile);
@@ -349,6 +566,7 @@ $( document ).ready(function() {
     $('#byproduct_temp_form').find('#unit').val(unit);
     $('#byproduct_temp_form').find('#qty').val(qty);
     $('#byproduct_temp_form').find('#statecode').val(statecode);
+    $('#byproduct_temp_form').find('#id').val(editid);
 
 
     if($.isNumeric(vendor_id)){
@@ -366,6 +584,7 @@ $( document ).ready(function() {
       }
       setTimeout( function(){
           $('#byproduct_temp_form').find('#vendor_id').val(vendor_id).trigger('change');
+          $('#vendor_loader').hide();
       },1000);
       
       var deletebtn = $(this).closest('tr').find('.delete-temp');
@@ -381,8 +600,8 @@ $( document ).ready(function() {
   $("#add-byproduct-form").on("submit", function(event){
     event.preventDefault();
       var data = $(this).serialize();
-      var htmlsuccess = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
-      var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+      // var htmlsuccess = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+      // var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
 
       $.ajax({
             type: "POST",
@@ -395,25 +614,29 @@ $( document ).ready(function() {
             },
             success: function (data) {
               if(data.status == true){
-                htmlsuccess = htmlsuccess.replace("##MSG##", data.message);
-                $('#errormsg').html(htmlsuccess);
+                 showSuccessToast(data.message);
+                // htmlsuccess = htmlsuccess.replace("##MSG##", data.message);
+                // $('#errormsg').html(htmlsuccess);
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 $('.btn-savebyproduct').html('Save');
                 $('.btn-savebyproduct').prop('disabled', false);
                 $('#tbody-tmp').empty();
+                $('#add-byproduct-form').find('#day').val(null);
                 $('#tmpdata-div').hide();
                 table.ajax.reload();
               }else{
-                htmlerror =  htmlerror.replace("##MSG##", data.message);
-                $('#errormsg').html(htmlerror);
+                showDangerToast(data.message);
+                // htmlerror =  htmlerror.replace("##MSG##", data.message);
+                // $('#errormsg').html(htmlerror);
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 $('.btn-savebyproduct').html('Save');
                 $('.btn-savebyproduct').prop('disabled', false);
               }
             },
             error: function () {
-              htmlerror =  htmlerror.replace("##MSG##", 'Somthing Want Wrong!');
-              $('#errormsg').html(htmlerror);
+              showDangerToast('Somthing Want Wrong! Try again.');
+              // htmlerror =  htmlerror.replace("##MSG##", 'Somthing Want Wrong!');
+              // $('#errormsg').html(htmlerror);
               $("html, body").animate({ scrollTop: 0 }, "slow");
 
               $('.btn-savebyproduct').html('Save');
@@ -425,8 +648,8 @@ $( document ).ready(function() {
 
   $('body').on('click', '.delete-permnent', function () {
       var id = $(this).attr('data-id');
-      var htmlsuccess = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
-      var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+      // var htmlsuccess = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
+      // var htmlerror = '<div class="row"><div class="col-md-12"><div class="alert alert-icon alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><i class="mdi mdi-check-all"></i>##MSG##</div></div></div>';
       var conf = confirm('Are you sure want to delete this record?');
       if(conf && id !== ''){
         $.ajax({
@@ -436,19 +659,22 @@ $( document ).ready(function() {
             type: "POST",
             success: function (data) {
               if(data.status == true){
-                htmlsuccess = htmlsuccess.replace("##MSG##", data.message);
-                $('#errormsg').html(htmlsuccess);
+                 showSuccessToast(data.message);
+                // htmlsuccess = htmlsuccess.replace("##MSG##", data.message);
+                // $('#errormsg').html(htmlsuccess);
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 table.ajax.reload();
               }else{
-                  htmlerror =  htmlerror.replace("##MSG##", data.message);
-                  $('#errormsg').html(htmlerror);
+                showDangerToast(data.message);
+                  // htmlerror =  htmlerror.replace("##MSG##", data.message);
+                  // $('#errormsg').html(htmlerror);
                   $("html, body").animate({ scrollTop: 0 }, "slow");
               }
             },
             error: function () {
-              htmlerror =  htmlerror.replace("##MSG##", 'Somthing Want Wrong!');
-              $('#errormsg').html(htmlerror);
+              showDangerToast('Somthing Want Wrong! Try again.');
+              // htmlerror =  htmlerror.replace("##MSG##", 'Somthing Want Wrong!');
+              // $('#errormsg').html(htmlerror);
               $("html, body").animate({ scrollTop: 0 }, "slow");
             }
         });
@@ -456,6 +682,78 @@ $( document ).ready(function() {
         return false;
       }
         
+  });
+
+  $('body').on('click', '.edit-permnent', function () {
+    var vendor_id = $(this).attr('data-id');
+    var group = $(this).attr('data-group');
+    var $this = $(this);
+
+    if(vendor_id !== '' && group !== ''){
+      $.ajax({
+          url: "ajax.php",
+          data: {'vendor_id': vendor_id, 'group':group, 'action': 'getDataEditByproduct'},            
+          dataType: "json",
+          type: "POST",
+          success: function (data) {
+            if(data.status == true){
+              $('#tmpdata-div').show();
+              $('#tbody-tmp').empty();
+              /*---------------------------------------------------------------------------------------------------------------*/
+              var html = $('#tr-html').html();
+              html = html.replace('<table>','');
+              html = html.replace('</table>','');
+              html = html.replace('<tbody>','');
+              html = html.replace('</tbody>','');
+
+              $.each(data.result.data, function (key, val) {
+                var tmphtml = html;
+                var randomnumber = Math.floor((Math.random()*1000) + 1);
+                tmphtml = tmphtml.replace(/##DATAID##/g, randomnumber);
+                tmphtml = tmphtml.replace(/##EDITID##/g, (typeof val.id !== 'undefined') ? val.id : '');
+                tmphtml = tmphtml.replace(/##PRODUCTNAME##/g, (typeof val.product_name !== 'undefined') ? val.product_name : '');
+                tmphtml = tmphtml.replace(/##PRODUCTID##/g, (typeof val.product_id !== 'undefined') ? val.product_id : '');
+                tmphtml = tmphtml.replace(/##VENDORNAME##/g, (typeof val.vendor_name !== 'undefined') ? val.vendor_name : '');
+                tmphtml = tmphtml.replace(/##VENDORID##/g, (typeof val.vendor_id !== 'undefined') ? val.vendor_id : '');
+                tmphtml = tmphtml.replace(/##STATECODE##/g, (typeof val.state_code !== 'undefined') ? val.state_code : '');
+                tmphtml = tmphtml.replace(/##EMAIL##/g, (typeof val.email !== 'undefined') ? val.email : '');
+                tmphtml = tmphtml.replace(/##MOBILE##/g, (typeof val.mobile !== 'undefined') ? val.mobile : '');
+                tmphtml = tmphtml.replace(/##GENERIC##/g, (typeof val.generic_name !== 'undefined') ? val.generic_name : '');
+                tmphtml = tmphtml.replace(/##MFG##/g, (typeof val.mfg_company !== 'undefined') ? val.mfg_company : '');
+
+                tmphtml = tmphtml.replace(/##GST##/g, (typeof val.gst !== 'undefined') ? val.gst : '');
+
+                  if($('#currentstate').val() == val.state_code){
+                    tmphtml = tmphtml.replace(/##SGST##/g, (typeof val.gst !== 'undefined') ? val.gst/2 : '');
+                    tmphtml = tmphtml.replace(/##CGST##/g, (typeof val.gst !== 'undefined') ? val.gst/2 : '');
+                    tmphtml = tmphtml.replace(/##IGST##/g, 0);
+                  }else{
+                    tmphtml = tmphtml.replace(/##SGST##/g, 0);
+                    tmphtml = tmphtml.replace(/##CGST##/g, 0);
+                    tmphtml = tmphtml.replace(/##IGST##/g, (typeof val.gst !== 'undefined') ? val.gst/2 : '');
+                  }
+                  
+
+                tmphtml = tmphtml.replace(/##UNIT##/g, (typeof val.unit !== 'undefined') ? val.unit : '');
+                tmphtml = tmphtml.replace(/##QTY##/g, (typeof val.qty !== 'undefined') ? val.qty : '');
+                tmphtml = tmphtml.replace(/##PURCHASEPRICE##/g, (typeof val.purchase_price !== 'undefined') ? val.purchase_price : '');
+                $('#tbody-tmp').append(tmphtml);
+              });
+                $('#add-byproduct-form').find('#day').val((typeof data.result.reminder_day !== 'undefined') ? data.result.reminder_day : '');
+              /*---------------------------------------------------------------------------------------------------------------*/
+              $("html, body").animate({ scrollTop: 0 }, "slow");
+              $($this).closest('tr').find('.delete-permnent').hide();
+            }else{
+                return false;
+            }
+          },
+          error: function () {
+            return false;
+          }
+      });
+    }else{
+      return false;
+    }
   });
 
 

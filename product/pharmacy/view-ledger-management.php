@@ -1,5 +1,23 @@
 <?php include('include/usertypecheck.php'); ?>
 
+<?php 
+
+    if(isset($_GET['delete']) && $_GET['delete'] != ''){
+        $delete = deleteLedger($_GET['delete']);
+        if(!empty($delete)){
+            if(isset($delete['status']) && $delete['status'] == 0){
+                $_SESSION['msg']['fail'] = (isset($delete['message']) && $delete['message'] != '') ? $delete['message'] : 'Record Delete Fail! Try Again.';
+            }else{
+                $_SESSION['msg']['success'] = (isset($delete['message']) && $delete['message'] != '') ? $delete['message'] : 'Record Delete Succcfully.';
+            }
+        }else{
+            $_SESSION['msg']['fail'] = "Record Delete Fail! Try Again.";
+        }
+        header('Location: view-ledger-management.php');exit;
+    }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,7 +25,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>DigiBooks | View Ledger</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -49,7 +67,6 @@
       <div class="main-panel">
       
         <div class="content-wrapper">
-          <?php include('include/flash.php'); ?>
           <span id="errormsg"></span>
           <div class="row">
             
@@ -59,6 +76,7 @@
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
+                  <a href="ledger-management.php" class="btn btn-success p-2 pull-right" title="Add Ledger"><i class="mdi mdi-plus-circle-outline"></i>Add Ledger</a>
                   <h4 class="card-title">View Ledger Management</h4>
                   <hr class="alert-dark">
                   <br>
@@ -70,8 +88,7 @@
                                   <thead>
                                     <tr>
                                         <th>Sr No</th>
-                                        <th>Name</th>
-                                        <th>Company Name</th>
+                                        <th>Account Name</th>
                                         <th>Group</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -79,24 +96,46 @@
                                   </thead>
                                   <tbody>
                                     <?php
-                                      $qry = "SELECT lgr.id, lgr.account_type, lgr.group_id, lgr.name,lgr.companyname,lgr.status,lgr.created,grp.name as groupname FROM  `ledger_master` lgr LEFT JOIN `group` grp ON lgr.group_id = grp.id order by lgr.id DESC";
+                                      $pharmacy_id = (isset($_SESSION['auth']['pharmacy_id'])) ? $_SESSION['auth']['pharmacy_id'] : '';
+                                      $qry = "SELECT lgr.id, lgr.account_type, lgr.persional_title, lgr.group_id,lgr.acc_flag, lgr.name,lgr.companyname,lgr.status,lgr.created,grp.name as groupname FROM  `ledger_master` lgr LEFT JOIN `group` grp ON lgr.group_id = grp.id WHERE lgr.pharmacy_id = '".$pharmacy_id."' AND lgr.pharmacy_id != 0 AND lgr.pharmacy_id IS NOT NULL AND lgr.is_cash = 0 order by lgr.id DESC";
                                       $res = mysqli_query($conn, $qry);
                                       if($res){
                                         $i = 1;
                                         while ($row = mysqli_fetch_array($res)) {
+                                        $persion = $row['persional_title'];
+                                          if(isset($persion) && $persion != ''){
+                                            $name = $row['name'];
+                                            $fullname = $persion .'. '. $name;
+                                          }else{
+                                            $name = $row['name'];
+                                            $fullname =$name;
+                                          }
                                     ?>
                                       <tr>
                                           <td><?php echo $i; ?></td>
-                                          <td><?php echo (isset($row['name']) && $row['name'] != '') ? ucwords(strtolower($row['name'])) : ''; ?></td>
-                                          <td><?php echo (isset($row['companyname']) && $row['companyname'] != '') ? ucwords(strtolower($row['companyname'])) : ''; ?></td>
+                                          <td><?php echo (isset($fullname) && $fullname != '') ? ucwords(strtolower($fullname)) : ''; ?></td>
                                           <td><?php echo (isset($row['groupname']) && $row['groupname'] != '') ? ucwords(strtolower($row['groupname'])) : ''; ?></td>
                                           <td>
+                                               <?php
+                                                $accFlag = (isset($row['acc_flag']) && $row['acc_flag'] != '') ? $row['acc_flag'] : 0;
+                                                if($accFlag < 1){ 
+                                            ?>
                                             <button type="button" class="btn btn-sm btn-toggle changestatus <?php echo (isset($row['status']) && $row['status'] == 1) ? 'active' : ''; ?>" data-table="ledger_master" data-id="<?php echo $row['id']; ?>" data-toggle="button" aria-pressed="<?php echo (isset($row['status']) && $row['status'] == 1) ? true : false; ?>" autocomplete="off">
                                               <div class="handle"></div>
                                             </button>
+                                            
+                                            <?php } ?>
                                           </td>
                                           <td>
                                             <a class="btn  btn-behance p-2" href="ledger-management.php?type=<?php echo $row['account_type']; ?>&subtype=<?php echo $row['group_id']; ?>&id=<?php echo $row['id']; ?>" title="edit"><i class="fa fa-pencil mr-0"></i></a>
+                                          
+                                           <?php
+                                                $accFlag = (isset($row['acc_flag']) && $row['acc_flag'] != '') ? $row['acc_flag'] : 0;
+                                                if($accFlag < 1){ 
+                                            ?>
+                                           <a href="javascript:void(0);" class="btn btn-danger p-2 delete" title="Delete" data-id="<?php echo $row['id']; ?>" data-action="deleteLedger"><i class="fa fa-trash-o mr-0"></i></a>
+                                            <!--<a class="btn  btn-danger p-2" href="view-ledger-management.php?delete=<?php echo $row['id']; ?>" title="Delete" onclick="return confirm('Are you sure want to delete?')"><i class="fa fa-trash-o mr-0"></i></a>-->
+                                         <?php } ?>
                                           </td>
                                       </tr>
                                     <?php
@@ -110,6 +149,9 @@
                             </div>
                           </div>
                     </div>
+                    <hr>
+                   <br>
+                   <a href="configuration.php" class="btn btn-light">Back</a>
                 </div>
               </div>
             </div>
@@ -168,7 +210,11 @@
   <!-- Custom js for this page-->
   <script src="js/modal-demo.js"></script>
   <!-- Custom js for this page-->
-  <script src="js/data-table.js"></script> 
+  <script src="js/data-table.js"></script>
+  
+  <!--    Toast Notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
   
   <script>
      $('.datatable').DataTable();
@@ -177,6 +223,7 @@
   
   <!-- change status js -->
   <script src="js/custom/statusupdate.js"></script>
+  <script src="js/custom/delete.js"></script>
 </body>
 
 

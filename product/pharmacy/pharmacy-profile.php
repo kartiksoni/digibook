@@ -1,4 +1,10 @@
 <?php include('include/usertypecheck.php');?>
+<?php 
+if($_SESSION['auth']['user_type'] != "owner"){
+    header('Location:index.php');
+    exit;
+}
+?>
 
 <?php 
 if(isset($_GET['id'])){
@@ -7,6 +13,9 @@ if(isset($_GET['id'])){
   $result = mysqli_query($conn,$query);
   $data = mysqli_fetch_array($result);
   
+  $year = "SELECT * FROM `financial` WHERE id='".$data['financialyear_id']."'";
+  $yearresult = mysqli_query($conn,$year);
+  $yeardetail = mysqli_fetch_array($yearresult);
 
   $sub_data = array();
   $query1 = "SELECT * FROM `pharmacy_profile_details`WHERE pharmacy_id ='".$id."'";
@@ -15,39 +24,83 @@ if(isset($_GET['id'])){
       $sub_data[] = $row;
   }
   
+  /*$bank_data = array();
+  $query2 = "SELECT * FROM pharmacy_bank_details WHERE pharmacy_id = '".$id."'";
+  $qryrun = mysqli_query($conn, $query2);
+  while($bankrow = mysqli_fetch_assoc($qryrun)){
+    $bank_data[] = $bankrow;
+  } */
+  
 }
 
 
 if(isset($_POST['submit'])){
-  /*echo"<pre>";
-  print_r($_FILES);exit;*/
+  $owner_id = (isset($_SESSION['auth']['owner_id']) && $_SESSION['auth']['owner_id'] != '') ? $_SESSION['auth']['owner_id'] : NULL;
+  $admin_id = (isset($_SESSION['auth']['admin_id']) && $_SESSION['auth']['admin_id'] != '') ? $_SESSION['auth']['admin_id'] : NULL;
+  $pharmacy_id = (isset($_SESSION['auth']['pharmacy_id']) && $_SESSION['auth']['pharmacy_id'] != '') ? $_SESSION['auth']['pharmacy_id'] : NULL;
+  $financial_id = (isset($_SESSION['auth']['financial']) && $_SESSION['auth']['financial'] != '') ? $_SESSION['auth']['financial'] : '';
+  $uplode_url = "logo_images/";
   $user_id = $_SESSION['auth']['id'];
-  $firm_id = $_POST['firm_id'];
-  $pharmacy_name = $_POST['pharmacy_name'];
-  $contact_person_name = $_POST['contact_person_name'];
-  $address1 = $_POST['address1'];
-  $address2 = $_POST['address2'];
-  $address3 = $_POST['address3'];
-  $countryId = $_POST['countryId'];
-  $stateId = $_POST['stateId'];
-  $district_name = $_POST['district_name'];
-  $city_name = $_POST['city_name'];
-  $pin_code = $_POST['pin_code'];
-  $telephone_no = $_POST['telephone_no'];
-  $mobile_no = $_POST['mobile_no'];
-  $email = $_POST['email'];
-  $pan_no = $_POST['pan_no'];
-  $gst_no = $_POST['gst_no'];
-  $dl_no1 = $_POST['dl_no1'];
-  $dl_no2 = $_POST['dl_no2'];
-  $drug_lic = date("Y-m-d",strtotime(str_replace("/","-",$_POST['drug_lic'])));
-  $shop_act_license = $_POST['shop_act_license'];
-  $exp_date = date("Y-m-d",strtotime(str_replace("/","-",$_POST['exp_date'])));
+  $company_name = $_POST['company_name'];
+  $company_contact_person = $_POST['contact_person_name1'];
+  $firm_id1 = $_POST['firm_id1'];
+  $gst_no1 = $_POST['gst_no1'];
+  $pan_no1 = $_POST['pan_no1'];
+  $adhar_no1 = $_POST['adhar_no1'];
+  $company_dl_no1 = $_POST['company_dl_no1'];
+  $company_dl_no2 = $_POST['company_dl_no2'];
+  $drug_exp_date = (isset($_POST['drug_lic1']) && $_POST['drug_lic1'] != '') ? date('Y-m-d',strtotime(str_replace('/','-',$_POST['drug_lic1']))) : '';
+  $drug_lic_renewal_date1 = $_POST['drug_lic_renewal_date1'];
+  $shop_act_license1 = $_POST['shop_act_license1'];
+  $shop_act_exp_date = (isset($_POST['exp_date1']) && $_POST['exp_date1'] != '') ? date("Y-m-d", strtotime(str_replace("/", "-", $_POST['exp_date1']))) : '';
+  $shop_act_renewal_date1 = $_POST['shop_act_renewal_date1'];
+  //$cin_no = $_POST['cin_no1'];
+  $company_address = $_POST['company_address1'];
+  $company_address1 = $_POST['company_address2'];
+  $company_address2 = $_POST['company_address3'];
+  $company_country = $_POST['countryId1'];
+  $company_state = $_POST['stateId1'];
+  $company_district = $_POST['district_name1'];
+  $company_city = $_POST['city_name1'];
+  $company_pin = $_POST['pin_code1'];
+  $company_email = $_POST['email1'];
+  $company_telephone = $_POST['telephone_no1'];
+  $company_mobile = $_POST['mobile_no1'];
+  $company_print_type = $_POST['print_type'];
+  $company_letter = $_POST['letter_pad'];
+  $company_close = $_POST['close_type'];
+  $company_financial = $_POST['financial_name'];
+  $company_start_date = date("Y-m-d", strtotime(str_replace('/', '-', $_POST['start_date'])));
+  $company_end_date = date("Y-m-d", strtotime(str_replace("/", "-", $_POST['end_date'])));
+  $target_Path = $uplode_url.basename( $_FILES["company_logo"]['name'] );
+  $filename = basename( $_FILES["company_logo"]['name']);
+  move_uploaded_file($_FILES['company_logo']['tmp_name'], $target_Path);
+  
+  $ihisQ = "SELECT * FROM `pharmacy_profile` WHERE created_by='".$user_id."' ORDER BY id DESC LIMIT 1";
+  $ihisR = mysqli_query($conn,$ihisQ);
+  $ihis_row = mysqli_fetch_array($ihisR);
+  if(isset($ihis_row['ihis_hsp_id']) && $ihis_row['ihis_hsp_id'] != 0 && $ihis_row['ihis_hsp_id'] != NULL){
+      if($ihis_row['pharmacy_type'] == 0){
+          $pharmacy_type = 1;
+      }
+  }
+  $ihis_hsp_id = $ihis_row['ihis_hsp_id'];
 
-  $insQry = "INSERT INTO `pharmacy_profile`(`firm_name`, `pharmacy_name`, `contact_person_name`, `address1`, `address2`, `address3`, `countryId`, `stateId`, `district_name`, `city_name`, `pin_code`, `telephone_no`, `mobile_no`, `email`, `pan_no`, `gst_no`, `dl_no1`, `dl_no2`, `drug_lic`, `shop_act_license`, `exp_date`, `created_at`, `created_by`) VALUES ('".$firm_id."','".$pharmacy_name."','".$contact_person_name."','".$address1."','".$address2."','".$address3."','".$countryId."','".$stateId."','".$district_name."','".$city_name."','".$pin_code."','".$telephone_no."','".$mobile_no."','".$email."','".$pan_no."','".$gst_no."','".$dl_no1."','".$dl_no2."','".$drug_lic."','".$shop_act_license."','".$exp_date."','".date('Y-m-d H:i:s')."','".$user_id."')";
+  //$insQry = "INSERT INTO `pharmacy_profile`(`firm_name`, `pharmacy_name`, `contact_person_name`, `address1`, `address2`, `address3`, `countryId`, `stateId`, `district_name`, `city_name`, `pin_code`, `telephone_no`, `mobile_no`, `email`, `pan_no`, `gst_no`, `dl_no1`, `dl_no2`, `drug_lic`,`drug_lic_renewal_date`, `shop_act_license`,`shop_act_renewal_date`, `exp_date`, `logo_url`, `comapany_adhar_no`, `company_drug_lic_exp_date`, `company_drug_lic_renewal_date`, `company_shop_act_license`, `company_shop_act_exp_date`, `company_shop_act_renewal_date`, `company_cin_no`, `company_print_type`, `company_letter_pad`, `company_close_type`, `created_at`, `created_by`) VALUES ('".$firm_id1."', '".$company_name."', '".$company_contact_person."','".$company_address."','".$company_address1."','".$company_address2."','".$company_country."','".$company_state."','".$company_district."','".$company_city."','".$company_pin."','".$company_telephone."','".$company_mobile."','".$company_email."','".$pan_no1."','".$gst_no1."','".$company_dl_no1."','".$company_dl_no2."','".$drug_exp_date."','".$drug_lic_renewal_date."','".$shop_act_license."','".$shop_act_renewal_date."','".$exp_date."', '".$company_name."', '".$company_contact_person."', '".$fi.date('Y-m-d H:i:s')."','".$user_id."')";
+  $insQry = "INSERT INTO `pharmacy_profile`(`firm_name`, `pharmacy_name`, `contact_person_name`, `address1`, `address2`, `address3`, `countryId`, `stateId`, `district_name`, `city_name`, `pin_code`, `telephone_no`, `mobile_no`, `email`, `pan_no`, `gst_no`, `adhar_no`, `dl_no1`, `dl_no2`, `drug_lic`, `drug_lic_renewal_date`, `shop_act_license`, `exp_date`, `shop_act_renewal_date`, `logo_url`, `company_print_type`, `company_letter_pad`, `company_close_type`,`ihis_hsp_id`,`pharmacy_type`, `created_at`, `created_by`) VALUES ('".$firm_id1."', '".$company_name."', '".$company_contact_person."', '".$company_address."', '".$company_address1."', '".$company_address2."', '".$company_country."', '".$company_state."', '".$company_district."', '".$company_city."', '".$company_pin."', '".$company_telephone."', '".$company_mobile."', '".$company_email."', '".$pan_no1."', '".$gst_no1."', '".$adhar_no1."', '".$company_dl_no1."', '".$company_dl_no2."', '".$drug_exp_date."', '".$drug_lic_renewal_date1."', '".$shop_act_license1."', '".$shop_act_exp_date."', '".$shop_act_renewal_date1."', '".$filename."', '".$company_print_type."', '".$company_letter."', '".$company_close."','".$ihis_hsp_id."' ,'".$pharmacy_type."','".date('Y-m-d H:i:s')."', '".$user_id."')";
   $queryInsert = mysqli_query($conn,$insQry);
   $last_id = mysqli_insert_id($conn);
-  if($queryInsert){
+  
+  $instrpyd = "INSERT INTO `financial` (`owner_id`,`admin_id`,`pharmacy_id`,`financial_id`,`user_id`, `f_name`, `start_date`, `end_date`, `status`, `created_at`, `created_by`) VALUES ('".$owner_id."', '".$admin_id."', '".$last_id."','".$financial_id."', '".$user_id."', '".$company_financial."', '".$company_start_date."', '".$company_end_date."', '1', '".date('Y-m-d H:i:s')."', '".$user_id."')";
+ 
+  $instrpydR = mysqli_query($conn,$instrpyd);
+  $yearlast_id = mysqli_insert_id($conn);
+   
+  $updt = "UPDATE `pharmacy_profile` SET financialyear_id = '".$yearlast_id."' where id = '".$last_id."'"; 
+
+  $updtR = mysqli_query($conn,$updt);
+ 
+  /*if($queryInsert){
 
     $count = count($_POST['pharmacist_name']);
 
@@ -128,32 +181,83 @@ if(isset($_POST['submit'])){
           move_uploaded_file($photo_tmp_name,"$uplode_dir/$newfilename");
          
           $insQry = "INSERT INTO `pharmacy_profile_details`(`pharmacy_id`, `pharmacist_name`, `pharmacist_reg_no`, `pharmacist_reg_date`, `p_address1`, `p_address2`, `p_address3`, `city`, `contact_no`, `img`, `aadhar_card_no`, `p_exp_date`, `created_at`, `created_by`) VALUES ('".$last_id."','".$pharmacist_name."','".$pharmacist_reg_no."','".$pharmacist_reg_date."','".$p_address1."','".$p_address2."','".$p_address3."','".$city."','".$contact_no."','".$newfilename."','".$aadhar_card_no."','".$p_exp_date."','".date('Y-m-d H:i:s')."','".$user_id."')";
-          
-          $queryInsert = mysqli_query($conn,$insQry);
          
+           
+          $queryInsert = mysqli_query($conn,$insQry);
+      } */
+      
+      if($queryInsert){
+        $_SESSION['msg']['success'] = "Pharmacy Profile Added Successfully.";
+        header('location:view-pharmacy-profile.php');exit;
+      }else{
+        $_SESSION['msg']['fail'] = "Product Added Failed.";
+        header('location:pharmacy-profile.php');exit;
       }
-            if($queryInsert){
+    //}
+    
+    //Add Bank Query Start
+    /*$count1 = count($_POST['bank']);
+    if(!empty($_POST['bank'][0])){
+        
+        for($x = 0; $x < $count1; $x++){
+
+        $bankname = "";
+        if(isset($_POST['bank'][$x])){
+          $bankname = $_POST['bank'][$x];
+        }
+
+        $ifsc = "";
+        if(isset($_POST['ifsc'][$x])){
+          $ifsc = $_POST['ifsc'][$x];
+        }
+
+        $accountnumber = "";
+        if(isset($_POST['account'][$x])){
+          $accountnumber = $_POST['account'][$x];
+        }
+
+        $bankaddress = "";
+        if(isset($_POST['bank_address'][$x])){
+          $bankaddress = $_POST['bank_address'][$x];
+        }
+
+        $opening = "";
+        if(isset($_POST['opening'][$x])){
+          $opening = $_POST['opening'][$x];
+        }
+
+        $type = "";
+        if(isset($_POST['type'][$x])){
+          $type = $_POST['type'][$x];
+        }
+
+        $insQry = "INSERT INTO `pharmacy_bank_details`(`pharmacy_id`, `bank_name`, `ifsc_code`, `account_number`, `bank_address`, `opening_balance`, `opening_balance_type`, `created`, `createdby`) VALUES ('".$last_id."', '".$bankname."', '".$ifsc."','".$accountnumber."', '".$bankaddress."', '".$opening."', '".$type."', '".date('Y-m-d H:i:s')."', '".$user_id."')";
+
+        $queryInsert = mysqli_query($conn, $insQry);
+      } */
+
+            /*if($queryInsert){
                 $_SESSION['msg']['success'] = "Pharmacy Profile Added Successfully.";
                 header('location:pharmacy-profile.php');exit;
             }else{
                 $_SESSION['msg']['fail'] = "Product Added Failed.";
                 header('location:pharmacy-profile.php');exit;
             }
-    }
+    } */
 
-  }else{
+  /*}else{
 
     $_SESSION['msg']['fail'] = "Product Added Failed.";
     header('location:pharmacy-profile.php');exit;
 
-  }
+  }*/
 }
 
 if(isset($_POST['update'])){
 
   $last_id = $_GET['id'];
   $user_id = $_SESSION['auth']['id'];
-  $firm_id = $_POST['firm_id'];
+  /*$firm_id = $_POST['firm_id'];
   $pharmacy_name = $_POST['pharmacy_name'];
   $contact_person_name = $_POST['contact_person_name'];
   $address1 = $_POST['address1'];
@@ -167,17 +271,66 @@ if(isset($_POST['update'])){
   $telephone_no = $_POST['telephone_no'];
   $mobile_no = $_POST['mobile_no'];
   $email = $_POST['email'];
+//   $tin_no = $_POST['tin_no'];
   $pan_no = $_POST['pan_no'];
   $gst_no = $_POST['gst_no'];
   $dl_no1 = $_POST['dl_no1'];
   $dl_no2 = $_POST['dl_no2'];
   $drug_lic = date("Y-m-d",strtotime(str_replace("/","-",$_POST['drug_lic'])));
+  $drug_lic_renewal_date = $_POST['drug_lic_renewal_date'];
+  $renewal_date = $_POST['renewal_date'];
   $shop_act_license = $_POST['shop_act_license'];
   $exp_date = date("Y-m-d",strtotime(str_replace("/","-",$_POST['exp_date'])));
-
-  $updqry = "UPDATE `pharmacy_profile` SET `firm_name`='".$firm_id."',`pharmacy_name`='".$pharmacy_name."',`contact_person_name`='".$contact_person_name."',`address1`='".$address1."',`address2`='".$address2."',`address3`='".$address3."',`countryId`='".$countryId."',`stateId`='".$stateId."',`district_name`='".$district_name."',`city_name`='".$city_name."',`pin_code`='".$pin_code."',`telephone_no`='".$telephone_no."',`mobile_no`='".$mobile_no."',`email`='".$email."',`pan_no`='".$pan_no."',`gst_no`='".$gst_no."',`dl_no1`='".$dl_no1."',`dl_no2`='".$dl_no2."',`drug_lic`='".$drug_lic."',`shop_act_license`='".$shop_act_license."',`exp_date`='".$exp_date."',`updated_at`='".date('Y-m-d H:i:s')."',`updated_by`='".$user_id."' WHERE id = '".$last_id."'";
+  $shop_act_renewal_date = $_POST['shop_act_renewal_date'];*/
+  $company_name = $_POST['company_name'];
+  $company_contact_person = $_POST['contact_person_name1'];
+  $firm_id1 = $_POST['firm_id1'];
+  $gst_no1 = $_POST['gst_no1'];
+  $pan_no1 = $_POST['pan_no1'];
+  $adhar_no1 = $_POST['adhar_no1'];
+  $company_dl_no1 = $_POST['company_dl_no1'];
+  $company_dl_no2 = $_POST['company_dl_no2'];
+  $drug_exp_date = (isset($_POST['drug_lic1']) && $_POST['drug_lic1'] != '') ? date('Y-m-d',strtotime(str_replace('/','-',$_POST['drug_lic1']))) : '';
+  $drug_lic_renewal_date1 = $_POST['drug_lic_renewal_date1'];
+  $shop_act_license1 = $_POST['shop_act_license1'];
+  $shop_act_exp_date = (isset($_POST['exp_date1']) && $_POST['exp_date1'] != '') ? date("Y-m-d", strtotime(str_replace("/", "-", $_POST['exp_date1']))) : '';
+  $shop_act_renewal_date1 = $_POST['shop_act_renewal_date1'];
+  //$cin_no = $_POST['cin_no1'];
+  $company_address = $_POST['company_address1'];
+  $company_address1 = $_POST['company_address2'];
+  $company_address2 = $_POST['company_address3'];
+  $company_country = $_POST['countryId1'];
+  $company_state = $_POST['stateId1'];
+  $company_district = $_POST['district_name1'];
+  $company_city = $_POST['city_name1'];
+  $company_pin = $_POST['pin_code1'];
+  $company_email = $_POST['email1'];
+  $company_telephone = $_POST['telephone_no1'];
+  $company_mobile = $_POST['mobile_no1'];
+  $company_print_type = $_POST['print_type'];
+  $company_letter = $_POST['letter_pad'];
+  $company_close = $_POST['close_type'];
+  /*$company_financial = $_POST['financial_name'];
+  $company_start_date = date("Y-m-d", strtotime(str_replace('/', '-', $_POST['start_date'])));
+  $company_end_date = date("Y-m-d", strtotime(str_replace("/", "-", $_POST['end_date'])));*/
+  
+  if (isset($_FILES["company_logo"]["name"]) && $_FILES["company_logo"]["name"] != '') {
+  $uplode_url = "logo_images/";
+  $target_Path = $uplode_url.basename( $_FILES["company_logo"]['name'] );
+  $filename = basename( $_FILES["company_logo"]['name']);
+  move_uploaded_file($_FILES['company_logo']['tmp_name'], $target_Path);
+  }else{
+     $filename = $data['logo_url']; 
+  }
+  
+  $updqry = "UPDATE `pharmacy_profile` SET `firm_name`= '".$firm_id1."',`pharmacy_name`= '".$company_name."', `contact_person_name`= '".$company_contact_person."',`address1`= '".$company_address."',`address2`= '".$company_address1."',`address3`= '".$company_address2."',`countryId`= '".$company_country."',`stateId`= '".$company_state."',`district_name`= '".$company_district."',`city_name`= '".$company_city."',`pin_code`= '".$company_pin."', `telephone_no`= '".$company_telephone."',`mobile_no`= '".$company_mobile."',`email`= '".$company_email."',`pan_no`= '".$pan_no1."',`gst_no`= '".$gst_no1."',`adhar_no`= '".$adhar_no1."',`dl_no1`= '".$company_dl_no1."',`dl_no2`= '".$company_dl_no2."',`drug_lic`= '".$drug_exp_date."',`drug_lic_renewal_date`= '".$drug_lic_renewal_date1."',`shop_act_license`= '".$shop_act_license1."',`exp_date`= '".$shop_act_exp_date."',`shop_act_renewal_date`= '".$shop_act_renewal_date1."', `logo_url`= '".$filename."', `company_print_type`= '".$company_print_type."',`company_letter_pad`= '".$company_letter."',`financialyear_id`= '".$yeardetail['id']."', `company_close_type`= '".$company_close."', `updated_at`= '".date('Y-m-d H:i:s')."', `updated_by`= '".$user_id."' WHERE id = '".$last_id."'";    
+  //$updqry = "UPDATE `pharmacy_profile` SET `firm_name`='".$firm_id."',`pharmacy_name`='".$pharmacy_name."',`contact_person_name`='".$contact_person_name."',`address1`='".$address1."',`address2`='".$address2."',`address3`='".$address3."',`countryId`='".$countryId."',`stateId`='".$stateId."',`district_name`='".$district_name."',`city_name`='".$city_name."',`pin_code`='".$pin_code."',`telephone_no`='".$telephone_no."',`mobile_no`='".$mobile_no."',`email`='".$email."',`pan_no`='".$pan_no."',`gst_no`='".$gst_no."',`dl_no1`='".$dl_no1."',`dl_no2`='".$dl_no2."',`drug_lic`='".$drug_lic."',`drug_lic_renewal_date` = '".$drug_lic_renewal_date."',`shop_act_license`='".$shop_act_license."',`exp_date`='".$exp_date."',`shop_act_renewal_date`='".$shop_act_renewal_date."', `company_name` = '".$company_name."', `company_contact_person_name` = '".$company_contact_person."', `logo_url` = '".$filename."', `company_firm_name` = '".$firm_id1."', `company_gstno` = '".$gst_no1."', `company_pan_no` = '".$pan_no1."', `comapany_adhar_no` = '".$adhar_no1."', `company_dl_no1` = '".$company_dl_no1."', `company_dl_no2` = '".$company_dl_no2."', `company_drug_lic_exp_date` = '".$drug_exp_date."', `company_drug_lic_renewal_date` = '".$drug_lic_renewal_date1."', `company_shop_act_license` = '".$shop_act_license1."', `company_shop_act_exp_date` = '".$shop_act_exp_date."', `company_shop_act_renewal_date` = '".$shop_act_renewal_date1."', `company_cin_no` = '".$cin_no."', `company_address` = '".$company_address."', `company_address1` = '".$company_address1."', `company_address2` = '".$company_address2."', `company_countryid` = '".$company_country."', `company_stateid` = '".$company_state."', `company_district` = '".$company_district."', `company_cityid` = '".$company_city."', `company_pincode` = '".$company_pin."', `company_email` = '".$company_email."', `company_telephone_no` = '".$company_telephone."', `company_mobile_no` = '".$company_mobile."', `company_print_type` = '".$company_print_type."', `company_letter_pad` = '".$company_letter."', `company_close_type` = '".$company_close."', `financialyear_id` = '".$yeardetail['id']."', `updated_at`='".date('Y-m-d H:i:s')."',`updated_by`='".$user_id."' WHERE id = '".$last_id."'";
   $queryUpdate = mysqli_query($conn,$updqry);
-  if($queryUpdate){
+  
+  //$updateQry = "UPDATE `financial` SET `user_id`='".$user_id."',`f_name`='".$company_financial."',`start_date`='".$company_start_date."',`end_date`='".$company_end_date."',`status`='1',`updated_at`='".date('Y-m-d H:i:s')."',`updated_by`='".$user_id."' WHERE id='".$yeardetail['id']."'";
+  //$updateInsert = mysqli_query($conn,$updateQry);
+  
+  /*if($queryUpdate){
 
     $sqlQry = "DELETE FROM pharmacy_profile_details WHERE pharmacy_id='".$last_id."'";
     mysqli_query($conn,$sqlQry);
@@ -260,18 +413,73 @@ if(isset($_POST['update'])){
           if(empty($photo_name)){
             $photo_name = $update_img;
           }else{
-            unlink("$uplode_dir/$update_img");
             $file_basename = substr($photo_name, 0, strripos($photo_name, '.')); // get file extention
+         
             $file_ext = substr($photo_name, strripos($photo_name, '.')); // get file name
             $newfilename = $file_basename.rand() . $file_ext;
             move_uploaded_file($photo_tmp_name,"$uplode_dir/$newfilename");
           }
          
-          $insQry = "INSERT INTO `pharmacy_profile_details`(`pharmacy_id`, `pharmacist_name`, `pharmacist_reg_no`, `pharmacist_reg_date`, `p_address1`, `p_address2`, `p_address3`, `city`, `contact_no`, `img`, `aadhar_card_no`, `p_exp_date`, `created_at`, `created_by`) VALUES ('".$last_id."','".$pharmacist_name."','".$pharmacist_reg_no."','".$pharmacist_reg_date."','".$p_address1."','".$p_address2."','".$p_address3."','".$city."','".$contact_no."','".$newfilename."','".$aadhar_card_no."','".$p_exp_date."','".date('Y-m-d H:i:s')."','".$user_id."')";
+     $insQry = "INSERT INTO `pharmacy_profile_details`(`pharmacy_id`, `pharmacist_name`, `pharmacist_reg_no`, `pharmacist_reg_date`, `p_address1`, `p_address2`, `p_address3`, `city`, `contact_no`, `img`, `aadhar_card_no`, `p_exp_date`, `created_at`, `created_by`) VALUES ('".$last_id."','".$pharmacist_name."','".$pharmacist_reg_no."','".$pharmacist_reg_date."','".$p_address1."','".$p_address2."','".$p_address3."','".$city."','".$contact_no."','".$newfilename."','".$aadhar_card_no."','".$p_exp_date."','".date('Y-m-d H:i:s')."','".$user_id."')";
           
-          $queryInsert = mysqli_query($conn,$insQry);
+      $queryInsert = mysqli_query($conn,$insQry);
          
+      } */
+      
+      if($queryUpdate){
+                $_SESSION['msg']['success'] = "Pharmacy Profile Updated Successfully.";
+                header('location:view-pharmacy-profile.php');exit;
+            }else{
+                $_SESSION['msg']['fail'] = "Product Updated Failed.";
+                header('location:pharmacy-profile.php');exit;
+            }
+      
+    //}
+    
+    //Update Bank Query Start
+          /*$delqry = "DELETE FROM `pharmacy_bank_details` WHERE pharmacy_id ='".$last_id."'";
+          mysqli_query($conn,$delqry);
+          
+          $count1 = count($_POST['bank']);
+        if(!empty($_POST['bank'][0])){
+        
+        for($x = 0; $x < $count1; $x++){
+
+        $bankname = "";
+        if(isset($_POST['bank'][$x])){
+          $bankname = $_POST['bank'][$x];
+        }
+
+        $ifsc = "";
+        if(isset($_POST['ifsc'][$x])){
+          $ifsc = $_POST['ifsc'][$x];
+        }
+
+        $accountnumber = "";
+        if(isset($_POST['account'][$x])){
+          $accountnumber = $_POST['account'][$x];
+        }
+
+        $bankaddress = "";
+        if(isset($_POST['bank_address'][$x])){
+          $bankaddress = $_POST['bank_address'][$x];
+        }
+
+        $opening = "";
+        if(isset($_POST['opening'][$x])){
+          $opening = $_POST['opening'][$x];
+        }
+
+        $type = "";
+        if(isset($_POST['type'][$x])){
+          $type = $_POST['type'][$x];
+        }
+
+        $insQry = "INSERT INTO `pharmacy_bank_details`(`pharmacy_id`, `bank_name`, `ifsc_code`, `account_number`, `bank_address`, `opening_balance`, `opening_balance_type`, `created`, `createdby`) VALUES ('".$last_id."', '".$bankname."', '".$ifsc."','".$accountnumber."', '".$bankaddress."', '".$opening."', '".$type."', '".date('Y-m-d H:i:s')."', '".$user_id."')";
+
+        $queryInsert = mysqli_query($conn, $insQry);
       }
+
             if($queryInsert){
                 $_SESSION['msg']['success'] = "Pharmacy Profile Updated Successfully.";
                 header('location:view-pharmacy-profile.php');exit;
@@ -279,12 +487,12 @@ if(isset($_POST['update'])){
                 $_SESSION['msg']['fail'] = "Product Updated Failed.";
                 header('location:view-pharmacy-profile.php');exit;
             }
-    }
+    } */
 
-  }else{
+  /*}else{
     $_SESSION['msg']['fail'] = "Pharmacy Profile Updated Failed.";
     header('location:view-pharmacy-profile.php');exit;
-  }
+  } */
 }
 ?>
 
@@ -295,7 +503,7 @@ if(isset($_POST['update'])){
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>DigiBooks | <?php echo (isset($_GET['id']) && $_GET['id'] != '') ? 'Edit' : 'Add'; ?> Pharmacy</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -314,6 +522,11 @@ if(isset($_POST['update'])){
   <link rel="stylesheet" href="css/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="images/favicon.png" />
+  <style>
+      .dropify-wrapper{
+          height: 90px;
+      }
+  </style>
 </head>
 <body>
   <div class="container-scroller">
@@ -338,7 +551,6 @@ if(isset($_POST['update'])){
       <div class="main-panel">
       
         <div class="content-wrapper">
-          <?php include('include/flash.php'); ?>
           <div class="row">
             
            
@@ -349,28 +561,28 @@ if(isset($_POST['update'])){
                   <h4 class="card-title">Pharmacy Profile</h4>
                   <hr class="alert-dark">
                   <br>
-                  <form class="" method="POST" enctype="multipart/form-data">
-                  <h5 class="card-title">Pharmacy Details</h5>
+                  <form class="" method="POST" enctype="multipart/form-data" autocomplete="off">
+                  <!--<h5 class="card-title">Pharmacy Details</h5>
                   <hr>
                   
                     <div class="form-group row">
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">Select Firm<span class="text-danger">*</span></label>
                     <select name="firm_id" class="js-example-basic-single" required style="width:100%"> 
-                    <option <?php if(isset($data['firm_name']) && $data['firm_name'] == "Regular"){echo "selected";} ?> value="Regular">Regular</option>
-                    <option <?php if(isset($data['firm_name']) && $data['firm_name'] == "Unregistered"){echo "selected";} ?> value="Unregistered">Unregistered</option>
-                    <option <?php if(isset($data['firm_name']) && $data['firm_name'] == "Composition"){echo "selected";} ?> value="Composition">Composition</option>
+                    <option <?php //if(isset($data['firm_name']) && $data['firm_name'] == "Regular"){echo "selected";} ?> value="Regular">Regular</option>
+                    <option <?php //if(isset($data['firm_name']) && $data['firm_name'] == "Unregistered"){echo "selected";} ?> value="Unregistered">Unregistered</option>
+                    <option <?php //if(isset($data['firm_name']) && $data['firm_name'] == "Composition"){echo "selected";} ?> value="Composition">Composition</option>
                     </select>
                     </div>
                     
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">Pharmacy Name<span class="text-danger">*</span></label>
-                    <input name="pharmacy_name" value="<?php echo (isset($data['pharmacy_name'])) ? $data['pharmacy_name'] : ''; ?>" type="text" required class="form-control" id="exampleInputName1" placeholder="Pharmacy Name">
+                    <input name="pharmacy_name" value="<?php //echo (isset($data['pharmacy_name'])) ? $data['pharmacy_name'] : ''; ?>" type="text" required class="form-control" id="exampleInputName1" placeholder="Pharmacy Name">
                     </div>
                     
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">Contact Person Name <span class="text-danger">*</span></label>
-                    <input type="text" required name="contact_person_name" value="<?php echo (isset($data['contact_person_name'])) ? $data['contact_person_name'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Contact Person Name">
+                    <input type="text" required name="contact_person_name" value="<?php //echo (isset($data['contact_person_name'])) ? $data['contact_person_name'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Contact Person Name">
                     </div>
                     
                     
@@ -381,54 +593,61 @@ if(isset($_POST['update'])){
                     <div class="form-group row">
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">Address</label>
-                    <input type="text" name="address1" value="<?php echo (isset($data['address1'])) ? $data['address1'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Address line1">
+                    <input type="text" name="address1" value="<?php //echo (isset($data['address1'])) ? $data['address1'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Address line1">
                     </div>
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">&nbsp;</label>
-                    <input type="text" name="address2" value="<?php echo (isset($data['address2'])) ? $data['address2'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Address line2">
+                    <input type="text" name="address2" value="<?php //echo (isset($data['address2'])) ? $data['address2'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Address line2">
                     </div>
                     
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">&nbsp;</label>
-                    <input type="text" name="address3" value="<?php echo (isset($data['address3'])) ? $data['address3'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Address line3">
+                    <input type="text" name="address3" value="<?php //echo (isset($data['address3'])) ? $data['address3'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Address line3">
                     </div>
                     
                     </div>
                     
-                    <div class="form-group row">
+                    <div class="form-group row">!-->
                     
-                    <div class="col-12 col-md-4">
+                    <!--<div class="col-12 col-md-4">
                     <label for="exampleInputName1">Country<span class="text-danger">*</span></label>
-                    <select style="width:100%" class="js-example-basic-single" required name="countryId" id="countryId" onChange="ownergetState(this.value);" required>
+                    <select style="width:100%" class="js-example-basic-single" required name="countryId" id="countryId" onChange="ownergetState(this.value);" required data-parsley-errors-container="#error-container">
                               <option value="">Select Country</option>
+                              <?php
+                                /*if(!isset($_REQUEST['id'])){
+                                    $data['countryId'] = '101';
+                                    $data['stateId'] = '12';
+                                }
+                              ?>
                                 <?php 
                                     $st_qry = "SELECT * FROM own_countries" ;
                                     $states = mysqli_query($conn,$st_qry);
-                                    while($row = mysqli_fetch_assoc($states)){
+                                    while($row = mysqli_fetch_assoc($states)){ */
                                     ?>
-                                <option <?php if(isset($data['countryId']) && $data['countryId'] == $row['id']){echo "selected";} ?> value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
-                                <?php } ?>
+                                <option <?php //if(isset($data['countryId']) && $data['countryId'] == $row['id']){echo "selected";} ?> value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+                                <?php //} ?>
                             </select>
-                    
+                            <span id="error-container"></span>          
                     </div>
                     
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">State<span class="text-danger">*</span></label>
-                    <select style="width: 100%" required class="form-control js-example-basic-single" name="stateId" id="allstatevalue" required>
+                    <select style="width: 100%" required class="form-control js-example-basic-single" name="stateId" id="allstatevalue" required data-parsley-errors-container="#error-state">
                               <option value="">Select State</option>
                               <?php 
-                                    $st_qry = "SELECT * FROM own_states WHERE country_id = ".$data['countryId']; 
+                                    /*$st_qry = "SELECT * FROM own_states WHERE country_id = ".$data['countryId']; 
                                     $states = mysqli_query($conn,$st_qry);
                                     while($row = mysqli_fetch_assoc($states)){
                                     ?>
                              <option <?php if(isset($data['stateId']) && $data['stateId'] == $row['id']){echo "selected";} ?> value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
-                              <?php } ?>
+                              <?php } */?>
                             </select>
+                            <span id="error-state"></sapn>
                     </div>
                     
                     <div class="col-12 col-md-4">
                     <label for="exampleInputName1">District<span class="text-danger">*</span></label>
-                    <input type="text" name="district_name" required class="form-control" id="exampleInputName1" value="<?php echo (isset($data['district_name'])) ? $data['district_name'] : ''; ?>" placeholder="District">
+                    <input type="text" name="district_name" required class="form-control onlyalphabet" id="exampleInputName1" value="<?php echo (isset($data['district_name'])) ? $data['district_name'] : ''; ?>" placeholder="District">
                     </div>
                     
                     </div>
@@ -440,13 +659,17 @@ if(isset($_POST['update'])){
                     </div>
                     
                     <div class="col-12 col-md-4">
-                    <label for="exampleInputName1">Pincode<span class="text-danger">*</span></label>
-                    <input data-parsley-type="number" type="text" name="pin_code" required class="form-control" id="exampleInputName1" value="<?php echo (isset($data['pin_code'])) ? $data['pin_code'] : ''; ?>" placeholder="Pincode">
+                        <label for="exampleInputName1">Pincode<span class="text-danger">*</span></label>
+                        <input data-parsley-type="number" type="text" name="pin_code" required class="form-control onlynumber" id="exampleInputName1" value="<?php echo (isset($data['pin_code'])) ? $data['pin_code'] : ''; ?>" placeholder="Pincode">
                     </div>
+                    <!--<div class="col-12 col-md-4">-->
+                    <!--    <label for="tin_no">TIN No</label>-->
+                    <!--    <input data-parsley-type="number" type="text" name="tin_no" class="form-control onlynumber"  value="<?php/* echo (isset($data['tin_no'])) ? $data['tin_no'] : ''; */?>" placeholder="TIN No">-->
+                    <!--</div>-->
                     
-                    </div>
+                    <!--</div>!-->
                     
-                  <br>  
+                  <!--<br>  
                   <h5 class="card-title">Contact Details</h5>
                   <hr>
                   
@@ -454,17 +677,17 @@ if(isset($_POST['update'])){
                     
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Telephone No</label>
-                        <input type="text" name="telephone_no" class="form-control" id="exampleInputName1" value="<?php echo (isset($data['telephone_no'])) ? $data['telephone_no'] : ''; ?>" placeholder="Telephone No">
+                        <input type="text" name="telephone_no" class="form-control" id="exampleInputName1" value="<?php echo (isset($data['telephone_no'])) ? $data['telephone_no'] : ''; ?>" placeholder="Telephone No" data-parsley-pattern="^((\+91\s?\d{4}|\(?\d{5}\)?)\s?\d{6})|((\+91\s?|0)7\d{3}\s?\d{6})$" data-parsley-pattern-message="Enter valid Telephone No.">
                         </div>
                         
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Mobile No<span class="text-danger">*</span></label>
-                        <input data-parsley-type="number" type="text" name="mobile_no" required class="form-control" id="exampleInputName1" value="<?php echo (isset($data['mobile_no'])) ? $data['mobile_no'] : ''; ?>" placeholder="Mobile No">
+                        <input data-parsley-type="number" type="text" name="mobile_no" required class="form-control onlynumber" id="exampleInputName1" value="<?php echo (isset($data['mobile_no'])) ? $data['mobile_no'] : ''; ?>" placeholder="Mobile No" data-parsley-length="[10, 10]" data-parsley-length-message = "Mobile No should be 10 charatcers long.">
                         </div>
                         
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Email<span class="text-danger">*</span></label>
-                        <input class="form-control" name="email" value="<?php echo (isset($data['email'])) ? $data['email'] :''; ?>" required data-inputmask="'alias': 'email'" />
+                        <input class="form-control" name="email" value="<?php //echo (isset($data['email'])) ? $data['email'] :''; ?>" required data-inputmask="'alias': 'email'" />
                         </div>
                     
                     </div>
@@ -479,19 +702,19 @@ if(isset($_POST['update'])){
                     
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">PAN No<span class="text-danger">*</span></label>
-                        <input type="text" name="pan_no" required class="form-control" id="exampleInputName1" value="<?php echo (isset($data['pan_no'])) ? $data['pan_no'] : ''; ?>" placeholder="PAN No">
+                        <input type="text" name="pan_no" required class="form-control" id="exampleInputName1" value="<?php echo (isset($data['pan_no'])) ? $data['pan_no'] : ''; ?>" placeholder="PAN No" data-parsley-pattern="[A-Za-z]{5}\d{4}[A-Za-z]{1}" data-parsley-pattern-message="Enter valid PAN No.">
                         </div>
                         
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">GST No<span class="text-danger">*</span></label>
-                        <input type="text" name="gst_no" required class="form-control" id="exampleInputName1" value="<?php echo (isset($data['gst_no'])) ? $data['gst_no'] : ''; ?>" placeholder="GST No">
+                        <input type="text" name="gst_no" required class="form-control" id="exampleInputName1" value="<?php echo (isset($data['gst_no'])) ? $data['gst_no'] : ''; ?>" placeholder="GST No" data-parsley-pattern="^([0]{1}[1-9]{1}|[1-2]{1}[0-9]{1}|[3]{1}[0-7]{1})([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$" data-parsley-pattern-message="Enter valid GST No." maxlength="15">
                         </div>
                         
                         <div class="col-12 col-md-4">
 
 
                         <label for="exampleInputName1">DL No</label>
-                        <input type="text" name="dl_no1" value="<?php echo (isset($data['dl_no1'])) ? $data['dl_no1'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="DL No">
+                        <input type="text" name="dl_no1" value="<?php //echo (isset($data['dl_no1'])) ? $data['dl_no1'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="DL No">
                         </div>
                     
                     </div>
@@ -500,25 +723,33 @@ if(isset($_POST['update'])){
                     
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">DL No</label>
-                        <input type="text" name="dl_no2" class="form-control" value="<?php echo (isset($data['dl_no2'])) ? $data['dl_no2'] : ''; ?>" id="exampleInputName1" placeholder="DL No">
+                        <input type="text" name="dl_no2" class="form-control" value="<?php //echo (isset($data['dl_no2'])) ? $data['dl_no2'] : ''; ?>" id="exampleInputName1" placeholder="DL No">
                         </div>
                         
                          <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Drug Lic. Ex. Date<span class="text-danger">*</span></label>
                         <div id="" class="input-group date datepicker datepicker-popup">
                           <input type="text" value="<?php 
-                          if(isset($_GET['id'])){
+                          /*if(isset($_GET['id'])){
                           echo date("d/m/Y",strtotime(str_replace("-","/",$data['drug_lic']))); 
-                          }
+                          } */
                           ?>" name="drug_lic" class="form-control" placeholder="Drug Lic. Ex. Date">
                           <span class="input-group-addon input-group-append border-left">
                             <span class="mdi mdi-calendar input-group-text"></span>
                           </span>
                         </div>
                         <!-- <input type="text" name="drug_lic" required class="form-control" id="exampleInputName1" placeholder="Drug Lic. Ex. Date"> -->
-                        </div>
+                        <!--</div>!-->
                         
-                       
+                       <!--<div class="col-12 col-md-4">
+                         <label for="renewal">Drug Lic. Renewal Date<span class="text-danger">*</span></label>
+                          <select style="width: 100%" required class="form-control js-example-basic-single" name="drug_lic_renewal_date" id="renewal_date" required data-parsley-errors-container="#error-licrenewal">
+                              <option value="">Select Renewal Date</option>
+                              <option <?php //if(isset($data['drug_lic_renewal_date']) && $data['drug_lic_renewal_date'] == '15days'){echo "selected";}?> value="15days">15 days</option>
+                              <option <?php //if(isset($data['drug_lic_renewal_date']) && $data['drug_lic_renewal_date'] == '1month'){echo "selected";}?> value="1month">1 month</option>
+                            </select>
+                            <span id="error-licrenewal"></sapn>
+                        </div>
                     
                     </div>
                     
@@ -526,22 +757,32 @@ if(isset($_POST['update'])){
                     
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Shop Act License</label>
-                        <input type="text" value="<?php echo (isset($data['shop_act_license'])) ?$data['shop_act_license'] : ''; ?>" name="shop_act_license" class="form-control" id="exampleInputName1" placeholder="Shop Act License">
+                        <input type="text" value="<?php //echo (isset($data['shop_act_license'])) ?$data['shop_act_license'] : ''; ?>" name="shop_act_license" class="form-control" id="exampleInputName1" placeholder="Shop Act License">
                         </div>
                         
                         <div class="col-12 col-md-4">
-                        <label for="exampleInputName1">Exp. Date</label>
+                        <label for="exampleInputName1">Shop act - Exp. Date</label>
                         <div id="" class="input-group date datepicker datepicker-popup">
                           <input type="text" value="<?php 
-                          if(isset($_GET['id'])){
+                          /*if(isset($_GET['id'])){
                           echo date("d/m/Y",strtotime(str_replace("-","/",$data['exp_date']))); 
-                          }
+                          } */
                           ?>" name="exp_date" class="form-control" placeholder="Exp. Date">
                           <span class="input-group-addon input-group-append border-left">
                             <span class="mdi mdi-calendar input-group-text"></span>
                           </span>
                         </div>
                         <!-- <input type="text" name="exp_date" class="form-control" id="exampleInputName1" placeholder="Exp. Date"> -->
+                        <!--</div>!-->
+                        
+                        <!---<div class="col-12 col-md-4">
+                         <label for="renewal">Shop act - renewal Date<span class="text-danger">*</span></label>
+                          <select style="width: 100%" required class="form-control js-example-basic-single" name="shop_act_renewal_date" id="shop_act_renewal_date" required data-parsley-errors-container="#error-act">
+                              <option value="">Select Renewal Date</option>
+                              <option <?php //if(isset($data['shop_act_renewal_date']) && $data['shop_act_renewal_date'] == '15days'){echo "selected";}?> value="15days">15 days</option>
+                              <option <?php //if(isset($data['shop_act_renewal_date']) && $data['shop_act_renewal_date'] == '1month'){echo "selected";}?> value="1month">1 month</option>
+                            </select>
+                            <span id="error-act"></sapn>
                         </div>
                     
                     </div>
@@ -552,32 +793,31 @@ if(isset($_POST['update'])){
                     
                   <h5 class="card-title">Pharmacist Details </h5>
                   
-                  <?php 
-                  if(isset($_GET['id'])){
+                
+                 <?php  /*if(isset($_GET['id'])){
                     $count = count($sub_data);
-                    $j=0;
-                    ?>
+                    $j=0; */ ?>
+                   
                     <div class="pharmacist-detail-section">
-                    <?php
-                    foreach ($sub_data as $row) {
-                    ?>
+                   
+                    <?php //foreach ($sub_data as $row) { ?>
+                   
                     <div class="content-add-more">
                       
-                        <?php 
-                        if($j >= 1){
-                          ?>
+                       
+                   <?php     //if($j >= 1){?>
+                       
                           <div class="row">
                             <div class="col-md-12">
                               <a class="btn btn-danger btn-sm pull-right btn-remove-product" style="color:#fff;"><i class="fa fa-plus"></i> Remove</a>
                             </div>
                           </div>
-                          <?php
-                        }
-                        ?>
+                         
+                       <?php //}  ?>
                         <hr>
                       
                         <div class="form-group row">
-                            <input type="hidden" value="<?php echo $row['id']; ?>" name="id[]">
+                            <input type="hidden" value="<?php //echo $row['id']; ?>" name="id[]">
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Pharmacist Name<span class="text-danger">*</span></label>
                             <input type="text" required name="pharmacist_name[]" class="form-control" id="exampleInputName1" value="<?php echo (isset($row['pharmacist_name'])) ? $row['pharmacist_name'] : ''; ?>" placeholder="Pharmacist Name">
@@ -591,15 +831,15 @@ if(isset($_POST['update'])){
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Pharmacist Reg. No Exp. Date<span class="text-danger">*</span></label>
                             <div id="" class="input-group date datepicker datepicker-popup">
-                              <input type="text" value="<?php echo(isset($row['pharmacist_reg_date']) && $row['pharmacist_reg_date'] != '') ? date("d/m/Y",strtotime(str_replace("-","/",$row['pharmacist_reg_date']))) : ''; ?>" name="pharmacist_reg_date[]" class="form-control" placeholder="Pharmacist Reg. No Exp. Date">
+                              <input type="text" value="<?php //echo(isset($row['pharmacist_reg_date']) && $row['pharmacist_reg_date'] != '') ? date("d/m/Y",strtotime(str_replace("-","/",$row['pharmacist_reg_date']))) : ''; ?>" name="pharmacist_reg_date[]" class="form-control" placeholder="Pharmacist Reg. No Exp. Date">
                               <span class="input-group-addon input-group-append border-left">
                                 <span class="mdi mdi-calendar input-group-text"></span>
                               </span>
                             </div>
-                            <!-- <input type="text" required name="pharmacist_reg_date[]" class="form-control" id="exampleInputName1" placeholder="Pharmacist Reg. No Exp. Date"> -->
-                            </div>
-                        </div>
-                        <div class="form-group row">
+                             <!--<input type="text" required name="pharmacist_reg_date[]" class="form-control" id="exampleInputName1" placeholder="Pharmacist Reg. No Exp. Date"> -->
+                            <!--</div>
+                        </div>!-->
+                        <!--<div class="form-group row">
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Address</label>
                             <input type="text" name="p_address1[]" class="form-control" id="exampleInputName1" value="<?php echo (isset($row['p_address1'])) ? $row['p_address1'] : ''; ?>" placeholder="Address line1">
@@ -623,48 +863,124 @@ if(isset($_POST['update'])){
                             
                              <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Contact No</label>
-                            <input type="text" name="contact_no[]" class="form-control" id="exampleInputName1" value="<?php echo (isset($row['contact_no'])) ? $row['contact_no'] : ''; ?>" placeholder="Contact No">
+                            <input type="text" name="contact_no[]" class="form-control onlynumber" id="exampleInputName1" value="<?php echo (isset($row['contact_no'])) ? $row['contact_no'] : ''; ?>" placeholder="Contact No">
                             </div>
                             
                              <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Photo</label>
-                            <input type="file" value="<?php echo (isset($row['img'])) ? $row['img'] : ''; ?>" name="img[]" class="file-upload-default">
+                            <input type="file" value="<?php //echo (isset($row['img'])) ? $row['img'] : ''; ?>" name="img[]" class="file-upload-default">
                             <div class="input-group col-xs-12">
-                            <input type="text" value="<?php echo(isset($row['img'])) ? $row['img'] : ''; ?>" class="form-control file-upload-info" disabled placeholder="Upload Image">
+                            <input type="text" value="<?php //echo(isset($row['img'])) ? $row['img'] : ''; ?>" class="form-control file-upload-info" disabled placeholder="Upload Image">
                             <span class="input-group-append">
                               <button class="file-upload-browse btn btn-info" type="button">Upload</button>
                             </span>
                         </div>
                         </div>
-                        <input type="hidden" name="update_img[]" value="<?php echo(isset($row['img'])) ? $row['img'] : ''; ?>">
+                        <input type="hidden" name="update_img[]" value="<?php //echo(isset($row['img'])) ? $row['img'] : ''; ?>">
                         </div>
                         <div class="form-group row">
                         
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Aadhar Card No<span class="text-danger">*</span></label>
-                            <input type="text" required name="aadhar_card_no[]" class="form-control" id="exampleInputName1" value="<?php echo (isset($row['aadhar_card_no'])) ? $row['aadhar_card_no'] : ''; ?>" placeholder="Aadhar Card No">
+                            <input type="text" required name="aadhar_card_no[]" class="form-control onlynumber" id="exampleInputName1" value="<?php echo (isset($row['aadhar_card_no'])) ? $row['aadhar_card_no'] : ''; ?>" placeholder="Aadhar Card No" data-parsley-length="[12, 12]" data-parsley-length-message = "Enter valid adhar card no.">
                             </div>
                             
                             <div class="col-12 col-md-4">
                             <label for="exampleInputName1">Exp. Date</label>
                             <div id="" class="input-group date datepicker datepicker-popup">
-                              <input type="text" value="<?php echo (isset($row['p_exp_date']) && $row['p_exp_date'] != '') ? date("d/m/Y",strtotime(str_replace("-","/",$row['p_exp_date']))) : ''; ?>" name="p_exp_date[]" class="form-control" placeholder="Exp.Date">
+                              <input type="text" value="<?php //echo (isset($row['p_exp_date']) && $row['p_exp_date'] != '') ? date("d/m/Y",strtotime(str_replace("-","/",$row['p_exp_date']))) : ''; ?>" name="p_exp_date[]" class="form-control" placeholder="Exp.Date">
                               <span class="input-group-addon input-group-append border-left">
                                 <span class="mdi mdi-calendar input-group-text"></span>
                               </span>
                             </div>
-                            <!-- <input type="text" name="p_exp_date[]" class="form-control" id="exampleInputName1" placeholder="Exp.Date"> -->
-                            </div>
+                             <!--<input type="text" name="p_exp_date[]" class="form-control" id="exampleInputName1" placeholder="Exp.Date"> -->
+                            <!--</div>
                         </div> 
                       
-                    </div>
-                    <?php $j++; } ?>
-                    </div>
-                    <?php
-                  }else{
+                    </div>!-->
+                    <?php //$j++; } ?>
+                    <!--</div>!-->
+                    
+                    <!--<div class="row">
+                 <div class="col pt-1">
+                 	<a class="btn btn-primary btn-sm btn-addmore-product" style="color:#fff;"><i class="fa fa-plus"></i> Add more</a>
+                 </div>   
+                 </div>!-->
+
+                  <!--<div>&nbsp;</div>!-->      
+                  <!---<h5 class="card-title">Bank Details</h5>!--->
+                  
+                  <?php 
+                    // if(isset($_GET['id'])){
+                      //$number = count($bank_data);
+                      //$y = 0;
                   ?>
 
-                    <div class="pharmacist-detail-section">
+                    <!--<div class="bank-details-section">!-->
+                    <?php
+                      //foreach($bank_data as $bankrow){
+                      
+                    ?>
+
+                  <!--<div class="content-add-more">!-->
+
+                  <?php 
+                    //if($y >= 1){
+                  ?>
+                  <!---<div class="row">
+                    <div class="col-md-12">
+                      <a class="btn btn-danger btn-sm pull-right btn-remove-product" style="color:#fff;"><i class="fa fa-plus"></i> Remove</a>
+                    </div>
+                  </div>!--->
+                  <?php 
+                    //}
+                  ?>  
+                  <!--<hr>!-->  
+                      <!--<div class="form-group row">
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Bank Name<span class="text-danger">*</span></label>
+                        <input type="text" name="bank[]" required class="form-control" id="exampleInputName1" placeholder="Bank Name" value="<?php echo (isset($bankrow['bank_name'])) ? $bankrow['bank_name'] : ''; ?>">
+                        </div>
+                        
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">IFSC Code<span class="text-danger">*</span></label>
+                        <input type="text" name="ifsc[]" required class="form-control" id="exampleInputName1" placeholder="IFSC" value="<?php echo (isset($bankrow['ifsc_code'])) ? $bankrow['ifsc_code'] : ''; ?>">
+                        </div>
+                        
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Account Number<span class="text-danger">*</span></label>
+                        <input type="text" name="account[]" required class="form-control onlynumber" id="exampleInputName1" placeholder="Account Number" value="<?php echo (isset($bankrow['account_number'])) ? $bankrow['account_number'] : ''; ?>">
+                        </div>
+                      </div>
+
+                      <div class="form-group row">  
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Bank Address</label>
+                        <input type="text" name="bank_address[]" class="form-control" id="exampleInputName1" placeholder="Account Number" value="<?php echo (isset($bankrow['bank_address'])) ? $bankrow['bank_address'] : ''; ?>">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Opening Balance</label>
+                        <input type="text" name="opening[]" class="form-control" id="exampleInputName1" placeholder="Account Number" value="<?php echo (isset($bankrow['opening_balance'])) ? $bankrow['opening_balance'] : ''; ?>">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                          <label for="exampleInputName1">Opening Balance Type</label>
+                          <select class="form-control" name="type[]" style="width:100%"> 
+                            <option value="CR" <?php //echo (isset($bankrow['opening_balance_type']) && $bankrow['opening_balance_type'] == "CR") ? 'selected': '';?>>CR </option>
+                            <option value="DB" <?php //echo (isset($bankrow['opening_balance_type']) && $bankrow['opening_balance_type'] == "DB") ? 'selected': '';?>>DB </option>
+                        </select>
+                        </div>
+                      </div>  
+                  </div>!-->
+                  <?php //$y++; } ?>
+                    <!--</div>!-->
+
+                    <?php
+                  //}else{
+                  ?>
+
+                    <!--<div class="pharmacist-detail-section">
                       <hr>
                     
                       <div class="form-group row">
@@ -687,10 +1003,10 @@ if(isset($_POST['update'])){
                               <span class="mdi mdi-calendar input-group-text"></span>
                             </span>
                           </div>
-                          <!-- <input type="text" required name="pharmacist_reg_date[]" class="form-control" id="exampleInputName1" placeholder="Pharmacist Reg. No Exp. Date"> -->
-                          </div>
-                      </div>
-                      <div class="form-group row">
+                           <!--<input type="text" required name="pharmacist_reg_date[]" class="form-control" id="exampleInputName1" placeholder="Pharmacist Reg. No Exp. Date"> -->
+                          <!--</div>
+                      </div>!-->
+                      <!--<div class="form-group row">
                           <div class="col-12 col-md-4">
                           <label for="exampleInputName1">Address</label>
                           <input type="text" name="p_address1[]" class="form-control" id="exampleInputName1" placeholder="Address line1">
@@ -714,7 +1030,7 @@ if(isset($_POST['update'])){
                           
                            <div class="col-12 col-md-4">
                           <label for="exampleInputName1">Contact No</label>
-                          <input type="text" name="contact_no[]" class="form-control" id="exampleInputName1" placeholder="Contact No">
+                          <input type="text" name="contact_no[]" class="form-control onlynumber" id="exampleInputName1" placeholder="Contact No">
                           </div>
                           
                            <div class="col-12 col-md-4">
@@ -733,7 +1049,7 @@ if(isset($_POST['update'])){
                       
                           <div class="col-12 col-md-4">
                           <label for="exampleInputName1">Aadhar Card No<span class="text-danger">*</span></label>
-                          <input type="text" required name="aadhar_card_no[]" class="form-control" id="exampleInputName1" placeholder="Aadhar Card No">
+                          <input type="text" required name="aadhar_card_no[]" class="form-control onlynumber" id="exampleInputName1" placeholder="Aadhar Card No" data-parsley-length="[12, 12]" data-parsley-length-message = "Enter valid adhar card no.">
                           </div>
                           
                           <div class="col-12 col-md-4">
@@ -744,23 +1060,445 @@ if(isset($_POST['update'])){
                               <span class="mdi mdi-calendar input-group-text"></span>
                             </span>
                           </div>
-                          <!-- <input type="text" name="p_exp_date[]" class="form-control" id="exampleInputName1" placeholder="Exp.Date"> -->
-                          </div>
+                           <!--<input type="text" name="p_exp_date[]" class="form-control" id="exampleInputName1" placeholder="Exp.Date"> -->
+                          <!--</div>
                       </div> 
                     </div>
-                  <?php } ?>
                     
-                 
-                 <div class="row">
+                    <div class="row">
                  <div class="col pt-1">
                  	<a class="btn btn-primary btn-sm btn-addmore-product" style="color:#fff;"><i class="fa fa-plus"></i> Add more</a>
                  </div>   
-                 </div>
-                      
-                    
-                    
+                 </div>  
                   
+                  <!---<div>&nbsp;</div>
+                 <h5 class="card-title">Bank Details</h5>  
+                 
+                 
+                    <div class="bank-details-section">
+                    <hr>  
+
+                    <div class="form-group row">
                     
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Bank Name<span class="text-danger">*</span></label>
+                        <input type="text" name="bank[]" required class="form-control" id="exampleInputName1" placeholder="Bank Name">
+                        </div>
+                        
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">IFSC Code<span class="text-danger">*</span></label>
+                        <input type="text" name="ifsc[]" required class="form-control" id="exampleInputName1" placeholder="IFSC">
+                        </div>
+                        
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Account Number<span class="text-danger">*</span></label>
+                        <input type="text" name="account[]" required class="form-control onlynumber" id="exampleInputName1" placeholder="Account Number">
+                        </div>
+                    </div>
+
+                    <div class="forem-group row">    
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Bank Address</label>
+                        <input type="text" name="bank_address[]" class="form-control" id="exampleInputName1" placeholder="Bank Address">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Opening Balance</label>
+                        <input type="text" name="opening[]" class="form-control onlynumber" id="exampleInputName1" placeholder="Opening Balance">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                          <label for="exampleInputName1">Opening Balance Type</label>
+                          <select class="form-control" name="type[]" style="width:100%"> 
+                            <option value="CR">CR</option>
+                            <option value="DB">DB</option>
+                        </select>
+                        </div>
+                    </div>
+                  </div>!--->
+                  <?php //} ?>
+                  <!--<div>&nbsp;</div>!-->  
+                 
+                 <!---<div class="row">
+                 <div class="col pt-1">
+                 	<a class="btn btn-primary btn-sm btn-addmore-bank" style="color:#fff;"><i class="fa fa-plus"></i> Add more</a>
+                 </div>   
+                 </div>!--->
+                 
+                 <div>&nbsp;</div>
+                 <h5 class="card-title">Company Details</h5>
+                  <hr>
+                 <div class="form-group row">
+                    
+                    <div class="col-12 col-md-4">
+                    <label for="exampleInputName1">Pharmacy Name<span class="text-danger">*</span></label>
+                    <input name="company_name" value="<?php echo (isset($data['pharmacy_name'])) ? $data['pharmacy_name'] : ''; ?>" type="text" required class="form-control" id="companyname" placeholder="Pharmacy Name">
+                     <ul class="parsley-errors-list filled" id="nameget" style="display: none;">
+                          <li class="parsley-required">Comapny name is already exist.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-12 col-md-4">
+                    <label for="exampleInputName1">Contact Person Name</label>
+                    <input type="text" name="contact_person_name1" value="<?php echo (isset($data['contact_person_name'])) ? $data['contact_person_name'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Contact Person Name">
+                    </div>
+                    
+                    <!--<?php  if(isset($data['logo_url'])){
+                        $url_img = "http://digibooks.cloud/product/pharmacy/logo_images/".$data['logo_url']; 
+
+                        } ?>
+                        <div class="col-md-4">
+                            <label for="article_image">Logo <span class="text-danger">*</span></label>
+                            <input type="file" name="company_logo" id="company_logo" class="dropify"
+                                data-allowed-file-extensions="jpg png jpeg"  data-default-file="<?php echo (isset($url_img)) ? $url_img : ''; ?>"  data-show-remove="false" <?php echo (isset($url_img)) ? '': 'required'; ?>>
+                        </div>!--->
+                    
+                    
+                        <div class="col-12 col-md-4">
+                            <label for="exampleInputName1">Select Firm<span class="text-danger">*</span></label>
+                            <select name="firm_id1" class="js-example-basic-single firm_name" required style="width:100%"> 
+                            <option <?php if(isset($data['firm_name']) && $data['firm_name'] == "Regular"){echo "selected";} ?> value="Regular">GST registered- Regular</option>
+                            <option <?php if(isset($data['firm_name']) && $data['firm_name'] == "Unregistered"){echo "selected";} ?> value="Unregistered">GST unregistered</option>
+                            <option <?php if(isset($data['firm_name']) && $data['firm_name'] == "Composition"){echo "selected";} ?> value="Composition">GST registered- Composition</option>
+                            <option <?php if(isset($data['firm_name']) && $data['firm_name'] == "Consumer"){echo "selected";} ?> value="Consumer">Consumer</option>
+                            <option <?php if(isset($data['firm_name']) && $data['firm_name'] == "Overseas"){echo "selected";} ?> value="Overseas">Overseas</option>
+                            <option <?php if(isset($data['firm_name']) && $data['firm_name'] == "SEZ"){echo "selected";} ?> value="SEZ">SEZ</option>
+                            <option <?php if(isset($data['firm_name']) && $data['firm_name'] == "Deemed"){echo "selected";} ?> value="Deemed">Deemed exports- EOU's, STP's EHTP's etc</option>
+                            </select>
+                        </div>
+                    
+                    </div>
+                    
+                     <div class="form-group row">
+                        
+                     <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">GST No.<span class="text-danger">*</span></label>
+                        <input type="text" name="gst_no1" required class="form-control gst_no" id="gst_no" value="<?php echo (isset($data['gst_no'])) ? $data['gst_no'] : ''; ?>" placeholder="GST No" data-parsley-pattern="^([0]{1}[1-9]{1}|[1-2]{1}[0-9]{1}|[3]{1}[0-7]{1})([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$" data-parsley-pattern-message="Enter valid GST No." maxlength="15">
+                        </div>
+                        
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">PAN No.</label>
+                        <input type="text" name="pan_no1" class="form-control" id="pan_no" value="<?php echo (isset($data['pan_no'])) ? $data['pan_no'] : ''; ?>" placeholder="PAN No"  readonly>
+                        </div>
+                        
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Adhar No.</label>
+                        <input type="text" name="adhar_no1" class="form-control onlynumber" id="adhar_no" value="<?php echo (isset($data['adhar_no'])) ? $data['adhar_no'] : ''; ?>" placeholder="Adhar No" data-parsley-length="[16, 16]" maxlength="16" data-parsley-pattern="^\d{4}\d{4}\d{4}$" data-parsley-pattern-message="Enter valid Adhar No." >
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        
+                       <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">DL.No.1</label>
+                        <input type="text" name="company_dl_no1" value="<?php echo (isset($data['dl_no1'])) ? $data['dl_no1'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="DL No">
+                        </div>
+                        
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">DL.No.2</label>
+                        <input type="text" name="company_dl_no2" class="form-control" value="<?php echo (isset($data['dl_no2'])) ? $data['dl_no2'] : ''; ?>" id="exampleInputName1" placeholder="DL No">
+                        </div>
+                        
+                         
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Drug Lic. Ex. Date</label>
+                        <div id="" class="input-group date datepicker datepicker-popup">
+                          <input type="text" value="<?php 
+                          echo (isset($data['drug_lic']) && $data['drug_lic'] != '' && $data['drug_lic'] != '0000-00-00') ? date('d/m/Y',strtotime($data['drug_lic'])) : ''; ?>" name="drug_lic1" class="form-control" placeholder="Drug Lic. Ex. Date">
+                          <span class="input-group-addon input-group-append border-left">
+                            <span class="mdi mdi-calendar input-group-text"></span>
+                          </span>
+                        </div>
+                        <!-- <input type="text" name="drug_lic" required class="form-control" id="exampleInputName1" placeholder="Drug Lic. Ex. Date"> -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        
+                        <div class="col-12 col-md-4">
+                             <label for="renewal">Drug Lic. Renewal Date</label>
+                              <select style="width: 100%" class="form-control js-example-basic-single" name="drug_lic_renewal_date1" id="renewal_date" data-parsley-errors-container="#error-licrenewal">
+                                  <option value="">Select Renewal Date</option>
+                                  <option <?php if(isset($data['drug_lic_renewal_date']) && $data['drug_lic_renewal_date'] == '1month'){echo "selected";}?> value="1month">1 month before</option>
+                                  <option <?php if(isset($data['drug_lic_renewal_date']) && $data['drug_lic_renewal_date'] == '2month'){echo "selected";}?> value="2month">2 month before</option>
+                                </select>
+                                <span id="error-licrenewal"></sapn>
+                        </div>
+                        
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Shop Act License</label>
+                        <input type="text" value="<?php echo (isset($data['shop_act_license'])) ?$data['shop_act_license'] : ''; ?>" name="shop_act_license1" class="form-control" id="exampleInputName1" placeholder="Shop Act License">
+                        </div>
+                        
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Shop act - Exp. Date</label>
+                        <div id="" class="input-group date datepicker datepicker-popup">
+                          <input type="text" value="<?php 
+                          echo (isset($data['exp_date']) && $data['exp_date'] != '' && $data['exp_date'] != '0000-00-00') ? date('d/m/Y',strtotime($data['exp_date'])) : '';
+                          ?>" name="exp_date1" class="form-control" placeholder="Exp. Date">
+                          <span class="input-group-addon input-group-append border-left">
+                            <span class="mdi mdi-calendar input-group-text"></span>
+                          </span>
+                        </div>
+                        <!-- <input type="text" name="exp_date" class="form-control" id="exampleInputName1" placeholder="Exp. Date"> -->
+                        </div>
+                    </div>
+                    
+                    
+                     <div class="form-group row">
+                        
+                          <div class="col-12 col-md-4">
+                         <label for="renewal">Shop act - renewal Date</label>
+                          <select style="width: 100%" class="form-control js-example-basic-single" name="shop_act_renewal_date1" id="shop_act_renewal_date" data-parsley-errors-container="#error-act">
+                              <option value="">Select Renewal Date</option>
+                              <option <?php if(isset($data['shop_act_renewal_date']) && $data['shop_act_renewal_date'] == '1month'){echo "selected";}?> value="1month">1 month before</option>
+                              <option <?php if(isset($data['shop_act_renewal_date']) && $data['shop_act_renewal_date'] == '2month'){echo "selected";}?> value="2month">2 month before</option>
+                            </select>
+                            <span id="error-act"></sapn>
+                        </div>
+                        
+                        <!--<div class="col-12 col-md-4">
+                        <label for="exampleInputName1">CIN No.</label>
+                        <input type="text" value="<?php //echo (isset($data['company_cin_no'])) ?$data['company_cin_no'] : ''; ?>" name="cin_no1" class="form-control" id="exampleInputName1" placeholder="CIN No.">
+                        </div>!-->
+                        
+                        
+                        <?php  if(isset($data['logo_url'])){
+                        $url_img = "http://digibooks.cloud/product/pharmacy/logo_images/".$data['logo_url']; 
+
+                        } ?>
+                        <div class="col-md-4">
+                            <label for="article_image">Logo <span class="text-danger">*</span></label>
+                            <input type="file" name="company_logo" id="company_logo" class="dropify"
+                                data-allowed-file-extensions="jpg png jpeg"  data-default-file="<?php echo (isset($url_img)) ? $url_img : ''; ?>"  data-show-remove="false" <?php echo (isset($url_img)) ? '': 'required'; ?>>
+                        </div>
+                        
+                        
+                     </div>
+                    
+                    
+                    
+                    
+                    
+                  <br>  
+                  <h5 class="card-title">Contact Details</h5>
+                  <hr>
+                   <div class="form-group row">
+                    <div class="col-12 col-md-4">
+                    <label for="exampleInputName1">Address</label>
+                    <input type="text" name="company_address1" value="<?php echo (isset($data['address1'])) ? $data['address1'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Address line1">
+                    </div>
+                    <div class="col-12 col-md-4">
+                    <label for="exampleInputName1">&nbsp;</label>
+                    <input type="text" name="company_address2" value="<?php echo (isset($data['address2'])) ? $data['address2'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Address line2">
+                    </div>
+                    
+                    <div class="col-12 col-md-4">
+                    <label for="exampleInputName1">&nbsp;</label>
+                    <input type="text" name="company_address3" value="<?php echo (isset($data['address3'])) ? $data['address3'] : ''; ?>" class="form-control" id="exampleInputName1" placeholder="Address line3">
+                    </div>
+                    
+                    </div>
+                    
+                    <div class="form-group row">
+                    
+                    <div class="col-12 col-md-4">
+                    <label for="exampleInputName1">Country<span class="text-danger">*</span></label>
+                    <select style="width:100%" class="js-example-basic-single" required name="countryId1" id="countryId" onChange="ownergetState(this.value);" required data-parsley-errors-container="#error-container">
+                              <option value="">Select Country</option>
+                              <?php
+                                if(!isset($_REQUEST['id'])){
+                                    $data['countryId'] = '101';
+                                    $data['stateId'] = '12';
+                                }
+                              ?>
+                                <?php 
+                                    $st_qry = "SELECT * FROM own_countries" ;
+                                    $states = mysqli_query($conn,$st_qry);
+                                    while($row = mysqli_fetch_assoc($states)){
+                                    ?>
+                                <option <?php if(isset($data['countryId']) && $data['countryId'] == $row['id']){echo "selected";} ?> value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+                                <?php } ?>
+                            </select>
+                            <span id="error-container"></span>          
+                    </div>
+                    
+                    <div class="col-12 col-md-4">
+                    <label for="exampleInputName1">State<span class="text-danger">*</span></label>
+                    <select style="width: 100%" required class="form-control js-example-basic-single" name="stateId1" id="allstatevalue1" onChange="ownergetCity(this.value);" required data-parsley-errors-container="#error-state">
+                              <option value="">Select State</option>
+                              <?php 
+                                    $st_qry = "SELECT * FROM own_states WHERE country_id = ".$data['countryId']; 
+                                    $states = mysqli_query($conn,$st_qry);
+                                    while($row = mysqli_fetch_assoc($states)){
+                                    ?>
+                             <option <?php if(isset($data['stateId']) && $data['stateId'] == $row['id']){echo "selected";} ?> value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+                              <?php } ?>
+                            </select>
+                            <span id="error-state"></sapn>
+                    </div>
+                    
+                    <div class="col-12 col-md-4">
+                    <label for="exampleInputName1">District</label>
+                    <input type="text" name="district_name1" class="form-control onlyalphabet" id="district" value="<?php echo (isset($data['district_name'])) ? $data['district_name'] : ''; ?>" placeholder="District">
+                    </div>
+                    
+                    </div>
+                    
+                    <div class="form-group row">
+                    <div class="col-12 col-md-4">
+                    <label for="exampleInputName1">City<span class="text-danger">*</span></label>
+                    <select style="width: 100%" required class="form-control js-example-basic-single" name="city_name1" id="allcityvalue"  required data-parsley-errors-container="#error-city">
+                              <option value="">Select City</option>
+                              <?php 
+                                    $ct_qry = "SELECT * FROM own_cities WHERE state_id = ".$data['stateId']; 
+                                    $city = mysqli_query($conn,$ct_qry);
+                                    while($row = mysqli_fetch_assoc($city)){
+                                    ?>
+                             <option <?php if(isset($data['city_name']) && $data['city_name'] == $row['id']){echo "selected";} ?> value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+                              <?php } ?>
+                            </select>
+                            <span id="error-city"></sapn>
+                    <!--<input type="text" name="city_name" required class="form-control" id="allcityvalue" value="<?php echo (isset($data['city_name'])) ? $data['city_name'] : ''; ?>" placeholder="City">-->
+                    </div>
+                    
+                    <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Pincode<span class="text-danger">*</span></label>
+                        <input data-parsley-type="number" type="text" name="pin_code1" required class="form-control onlynumber" id="exampleInputName1" value="<?php echo (isset($data['pin_code'])) ? $data['pin_code'] : ''; ?>" placeholder="Pincode">
+                    </div>
+                    <!--<div class="col-12 col-md-4">-->
+                    <!--    <label for="tin_no">TIN No</label>-->
+                    <!--    <input data-parsley-type="number" type="text" name="tin_no" class="form-control onlynumber"  value="<?php/* echo (isset($data['tin_no'])) ? $data['tin_no'] : ''; */?>" placeholder="TIN No">-->
+                    <!--</div>-->
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Email</label>
+                        <input class="form-control" name="email1" value="<?php echo (isset($data['email'])) ? $data['email'] :''; ?>"  data-inputmask="'alias': 'email'" />
+                        </div>
+                    
+                    </div>
+                    
+                    <div class="form-group row">
+                    
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Telephone No</label>
+                        <input type="text" name="telephone_no1" class="form-control" id="exampleInputName1" value="<?php echo (isset($data['telephone_no'])) ? $data['telephone_no'] : ''; ?>" placeholder="Telephone No" data-parsley-pattern-message="Enter valid Telephone No.">
+                        </div>
+                        
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Mobile No<span class="text-danger">*</span></label>
+                        <input data-parsley-type="number" type="text" name="mobile_no1" required class="form-control onlynumber" id="exampleInputName1" value="<?php echo (isset($data['mobile_no'])) ? $data['mobile_no'] : ''; ?>" placeholder="Mobile No" data-parsley-length="[10, 10]" maxlength="10" data-parsley-length-message = "Mobile No should be 10 charatcers long.">
+                        </div>
+                        
+                       
+                    
+                    </div>
+                   
+                    
+                    
+                  <!--<br>  -->
+                  <!--<h5 class="card-title">Financial Details</h5>-->
+                  <!--<hr>-->
+                    
+                    <br>
+                    <?php if(!isset($_REQUEST['id'])) { ?>
+                    <h5 class="card-title">Finacial year Details</h5>
+                    <hr>
+                      <div class="form-group row">
+                                <div class="col-12 col-md-4">
+                                  <label for="financial_year">Financial year <span class="text-danger">*</span></label>
+                                  <input type="text" class="form-control" name="financial_name" id="financial_year" placeholder="Financial year" value="<?php echo (isset($yeardetail['f_name'])) ? $yeardetail['f_name'] : ''; ?>" required="">
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <label for="start_date">Start Date <span class="text-danger">*</span></label>
+                                    <div id="datepicker-popup1" class="input-group date datepicker datepicker-popup">
+                                        <?php 
+                                            if(isset($_GET['id']) && $_GET['id'] != ''){
+                                                $startdate_val = (isset($yeardetail['start_date']) && $yeardetail['start_date'] != '') ? date('d/m/Y',strtotime($yeardetail['start_date'])) : '';
+                                            }else{
+                                                $startdate_val = date('d/m/Y');
+                                            }
+                                        ?>
+                                        <input type="text" value="<?php echo (isset($startdate_val)) ? $startdate_val : ''; ?>" id="start_date" name="start_date" class="form-control onlynumber onlyalphabet" data-parsley-errors-container="#error-startdate" required>
+                                        <span class="input-group-addon input-group-append border-left">
+                                            <span class="mdi mdi-calendar input-group-text"></span>
+                                        </span>
+                                    </div>
+                                    <span id="error-startdate"></span>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <label for="end_date">End Date <span class="text-danger">*</span></label>
+                                    <div id="datepicker-popup2" class="input-group date datepicker datepicker-popup">
+                                        <?php
+                                            if(isset($_GET['id']) && $_GET['id'] != ''){
+                                                $enddate_val = (isset($yeardetail['end_date']) && $yeardetail['end_date'] != '') ? date('d/m/Y',strtotime($yeardetail['end_date'])) : '';
+                                            }else{
+                                                $enddate_val = date('d/m/Y');
+                                            }
+                                        ?>
+                                        <input type="text" value="<?php echo (isset($enddate_val)) ? $enddate_val : ''; ?>" id="end_date" data-parsley-errors-container="#error-enddate" required name="end_date" class="form-control onlynumber onlyalphabet">
+                                        <span class="input-group-addon input-group-append border-left">
+                                            <span class="mdi mdi-calendar input-group-text"></span>
+                                        </span>
+                                    </div>
+                                    <span id="error-enddate"></span>
+                                </div>
+                                
+                            </div>
+                            <?php } ?>
+                
+                    
+                    <br>  
+                    <h5 class="card-title">Settings</h5>
+                    <hr>
+                    
+                    <div class="form-group row">
+                        <!--<div class="col-12 col-md-4">
+                          <label for="exampleInputName1">Logo</label>
+                          <input type="file" value="" name="logo" class="file-upload-default">
+                          <div class="input-group col-xs-12">
+                              <input type="text" value="" class="form-control file-upload-info" disabled placeholder="Upload Image">
+                              <span class="input-group-append">
+                              <button class="file-upload-browse btn btn-info" type="button">Upload</button>
+                              </span>
+                          </div>
+                         </div>-->
+                        <div class="col-12 col-md-4">
+                         <label for="renewal">Print Type<span class="text-danger">*</span></label>
+                          <select style="width: 100%" class="form-control js-example-basic-single" name="print_type" id="print_type" required data-parsley-errors-container="#error-a4">
+                              <option value="">Select Print Type</option>
+                              <!--a4 -> A4 Size
+                              a42 -> A4 Size Half-->
+                              <option <?php if(isset($data['company_print_type']) && $data['company_print_type'] == 'a4'){echo "selected";}?> value="a4">A4 Size</option>
+                              <option <?php if(isset($data['company_print_type']) && $data['company_print_type'] == 'a42'){echo "selected";}?> value="a42">A4 Size Half</option>
+                            </select>
+                            <span id="error-a4"></sapn>
+                        </div>
+                        <div class="col-12 col-md-4">
+                         <label for="renewal">Print On Letter pad<span class="text-danger">*</span></label>
+                          <select style="width: 100%" class="form-control js-example-basic-single" name="letter_pad" id="letter_pad" required data-parsley-errors-container="#error-letter_pad">
+                              <option value="">Select Print Type</option>
+                              <!--a4 -> A4 Size
+                              a42 -> A4 Size Half-->
+                              <option <?php if(isset($data['company_letter_pad']) && $data['company_letter_pad'] == 'yes'){echo "selected";}?> value="yes">Yes</option>
+                              <option <?php if(isset($data['company_letter_pad']) && $data['company_letter_pad'] == 'no'){echo "selected";}?> value="no">No</option>
+                            </select>
+                            <span id="error-letter_pad"></sapn>
+                        </div>
+                        <div class="col-12 col-md-4">
+                             <label for="renewal">Closing stock Type<span class="text-danger">*</span></label>
+                              <select style="width: 100%" class="form-control js-example-basic-single" name="close_type" id="close_type" required data-parsley-errors-container="#error-close_type">
+                                  <option value="">Select Closing Stock</option>
+                                  <option <?php if(isset($data['company_close_type']) && $data['company_close_type'] == 'LIFO'){echo "selected";}?> value="LIFO">LIFO</option>
+                                  <option <?php if(isset($data['company_close_type']) && $data['company_close_type'] == 'FIFO'){echo "selected";}?> value="FIFO">FIFO</option>
+                                  <option <?php if(isset($data['company_close_type']) && $data['company_close_type'] == 'AVERAGE'){echo "selected";}?> value="AVERAGE">Average</option>
+                                  <!--<option <?php //if(isset($data['company_close_type']) && $data['company_close_type'] == 'ACTUAL'){echo "selected";}?> value="ACTUAL">Actual</option>-->
+                                </select>
+                                <span id="error-close_type"></sapn>
+                            </div>
+                    </div>
+                   
+                    
+                      
                     <br>
                     <a href="view-pharmacy-profile.php" class="btn btn-light pull-left">Back</a>
                     <?php 
@@ -841,7 +1579,7 @@ if(isset($_POST['update'])){
                         
                          <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Contact No</label>
-                        <input type="text" name="contact_no[]" class="form-control" id="exampleInputName1" placeholder="Contact No">
+                        <input type="text" name="contact_no[]" class="form-control onlynumber" id="exampleInputName1" placeholder="Contact No">
                         </div>
                         
                          <div class="col-12 col-md-4">
@@ -861,7 +1599,7 @@ if(isset($_POST['update'])){
                     
                         <div class="col-12 col-md-4">
                         <label for="exampleInputName1">Aadhar Card No<span class="text-danger">*</span></label>
-                        <input type="text" name="aadhar_card_no[]" required class="form-control" id="exampleInputName1" placeholder="Aadhar Card No">
+                        <input type="text" name="aadhar_card_no[]" required class="form-control onlynumber" id="exampleInputName1" placeholder="Aadhar Card No" data-parsley-length="[12, 12]" data-parsley-length-message = "Enter valid adhar card no.">
                         </div>
                         
                         <div class="col-12 col-md-4">
@@ -878,6 +1616,59 @@ if(isset($_POST['update'])){
                     </div> 
                     </div>
                  </div> 
+                 
+                 <!---<div id="bank_html" class="" style="display: none">
+                    <div class="content-add-bank">
+                    <hr>   
+                    <div class="row">
+                      <div class="col-md-12">
+                        <a class="btn btn-danger btn-sm pull-right btn-remove-bank" style="color:#fff;"><i class="fa fa-plus"></i> Remove</a>
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                    
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Bank Name<span class="text-danger">*</span></label>
+                        <input type="text" name="bank[]" required class="form-control" id="exampleInputName1" placeholder="Bank Name">
+                        </div>
+                        
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">IFSC Code<span class="text-danger">*</span></label>
+                        <input type="text" name="ifsc[]" required class="form-control" id="exampleInputName1" placeholder="IFSC">
+                        </div>
+                        
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Account Number<span class="text-danger">*</span></label>
+                        <input type="text" name="account[]" required class="form-control onlynumber" id="exampleInputName1" placeholder="Account Number">
+                        </div>
+                    </div>
+
+                    <div class="forem-group row">    
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Bank Address</label>
+                        <input type="text" name="bank_address[]" class="form-control" id="exampleInputName1" placeholder="Bank Address">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                        <label for="exampleInputName1">Opening Balance</label>
+                        <input type="text" name="opening[]" class="form-control onlynumber" id="exampleInputName1" placeholder="Opening Balance">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                          <label for="exampleInputName1">Opening Balance Type</label>
+                          <select class="form-control" name="type[]" style="width:100%"> 
+                            <option value="CR">CR</option>
+                            <option value="DB">DB</option>
+                          </select>
+                        </div>
+                    </div>
+
+                    
+                  </div>
+
+                  </div>!--->    
+                 
         <!-- content-wrapper ends -->
         
         <!-- partial:partials/_footer.php -->
@@ -937,7 +1728,40 @@ if(isset($_POST['update'])){
  </script>
  
   <!-- Custom js for this page-->
+  <script>
+    $(document).ready(function(){ 
+
+        $("#start_date").change( function () {
+
+            var str = $("#start_date").val();
+
+            if( /^\d{2}\/\d{2}\/\d{4}$/i.test( str ) ) {
+
+                var parts = str.split("/");
+
+                var day = parts[0] && parseInt( parts[0], 10 );
+                var month = parts[1] && parseInt( parts[1], 10 );
+                var year = parts[2] && parseInt( parts[2], 10 );
+
+            if( day <= 31 && day >= 1 && month <= 12 && month >= 1 ) {
+
+                var expiryDate = new Date( year + 1, month - 1, day - 1);
+                var enddate = moment(expiryDate).format('DD/MM/YYYY');
+                $("#end_date").val(enddate);
+            } 
+            }
+        });
+    });
+  </script>
   
+  <script>
+  $('body').on('change keyup past', '#gst_no ', function () {
+      var gstno = $(this).val();
+   var pan = gstno.substring(2,12);
+   $('#pan_no').val(pan);
+   
+  });
+ </script>
 
   <script type="text/javascript">
     function ownergetState(country){
@@ -957,7 +1781,7 @@ if(isset($_POST['update'])){
       success: function(data){
         if(data.error == 0)
         { 
-          $("#allstatevalue").html(data.html);  
+          $("#allstatevalue1").html(data.html);  
           $("#allcities").html('<option>No Cities Found<\/option>');  
         }
       },
@@ -965,7 +1789,75 @@ if(isset($_POST['update'])){
       });
     }
   }
+  
+  function ownergetCity(state){
+  var that = $(this);
+    var id =  state;
+    if(id!="")
+    {
+      var action = "ownergetCityDetails"; 
+       $.ajax({
+         type: "POST",
+         url: "ajax.php",
+         dataType: 'json',  
+         data: {action:action , id:id},
+         success: function(data){
+        if(data.error == 0)
+        { 
+          $("#allcityvalue").html(data.html);  
+     
+        }
+      },
+       error : function(data) {  that.parent().parent().siblings('.subCategories').html(""); }
+       });
+    }
+  }
   </script>
+  
+  <script type="text/javascript">
+    $("#submit").prop('disabled', true);
+      $("#companyname").keyup(function(){
+  var companyname = $(this).val();
+   var action = "getcomanyname"; 
+   $.ajax({
+    type:"POST",
+     url: "ajax.php",
+     data : {action:action ,companyname:companyname},
+     success: function(data){
+         console.log(data);
+    if(data == "existing"){
+      $("#nameget").show();
+     $("#submit").prop('disabled', true);
+    }else if(data == "notexisting"){
+      $("#nameget").hide();
+      $("#submit").prop('disabled', false);
+    }
+   }
+   });
+});
+  </script>
+  
+  <script>
+    $(".firm_name").change(function(){
+      var firm_name = $(this).val();
+      $(".gst_no").removeAttr('readonly');
+  
+      $(".gst_no").prop('required',true);
+      if(firm_name == "Unregistered"){
+          $(".gst_no").attr('readonly', true);
+          $(".gst_no").removeAttr('required');
+      }
+      if(firm_name == "Consumer"){
+          $(".gst_no").attr('readonly', true);
+          $(".gst_no").removeAttr('required');
+      }
+      if(firm_name == "Overseas"){
+          $(".gst_no").attr('readonly', true);
+          $(".gst_no").removeAttr('required');
+      }
+  });  
+  </script>
+  
   <script type="text/javascript">
     $('body').on('click', '.btn-addmore-product', function() {
         var totalproduct = $('.product-tr').length;//for product length
@@ -997,12 +1889,35 @@ if(isset($_POST['update'])){
         $(this).closest ('.content-add-more').remove ();
         
     });
+    
+    $('body').on('click', '.btn-addmore-bank', function() {
+        //var totalproduct = $('.product-tr').length;//for product length
+        var html = $('#bank_html').html();
+        
+        $('.bank-details-section').append(html);
+    });
+
+    $('body').on('click', '.btn-remove-bank', function(e) {
+        e.preventDefault();
+        $(this).closest ('.content-add-bank').remove ();
+        
+    });
   </script>
   <!-- script for custom validation -->
+<script src="js/custom/onlynumber.js"></script>
+<script src="js/custom/onlyalphabet.js"></script>
 <script src="js/parsley.min.js"></script>
 <script type="text/javascript">
-  $('form').parsley();
+  $('form').parsley({
+    excluded:':hidden'
+  });
 </script>
+
+
+ <!-- toast notification -->
+  <script src="js/toast.js"></script>
+  <?php include('include/flash.php'); ?>
+  
 </body>
 
 

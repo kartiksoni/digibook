@@ -1,4 +1,20 @@
-<?php include('include/usertypecheck.php');?>
+<?php include('include/usertypecheck.php');
+$owner_id = (isset($_SESSION['auth']['owner_id'])) ? $_SESSION['auth']['owner_id'] : '';
+  $admin_id = (isset($_SESSION['auth']['admin_id'])) ? $_SESSION['auth']['admin_id'] : '';
+$pharmacy_id = (isset($_SESSION['auth']['pharmacy_id'])) ? $_SESSION['auth']['pharmacy_id'] : '';
+ $financial_id = (isset($_SESSION['auth']['financial'])) ? $_SESSION['auth']['financial'] : '';
+?>
+
+<?php
+
+//  if(isset($_POST['submit'])){
+//   echo "<pre>";
+//   print_r($_POST);
+  
+// }
+  
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +22,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>DigiBooks</title>
+  <title>DigiBooks | Order By Transaction</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/iconfonts/puse-icons-feather/feather.css">
@@ -19,11 +35,19 @@
   
   <!-- plugin css for this page -->
   <link rel="stylesheet" href="vendors/iconfonts/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="vendors/iconfonts/simple-line-icon/css/simple-line-icons.css">
+ 
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="css/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="images/favicon.png" />
+  <link rel="stylesheet" href="css/parsley.css">
+
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <style type="text/css">
+     .ui-autocomplete { z-index:2147483647 !important; }
+  </style>
 </head>
 <body>
   <div class="container-scroller">
@@ -58,11 +82,24 @@
                   <div class="row">
                     <div class="col-12">
                         <div class="enventory">
-                            <a href="order.php" class="btn btn-dark btn-fw active">Order</a>
-                            <a href="order-list-tab.php" class="btn btn-dark btn-fw ">List</a>
-                            <a href="#" class="btn btn-dark btn-fw ">Missed Sales Order</a>
-                            <a href="#" class="btn btn-dark btn-fw ">Settings</a>
-                        </div>  
+                            <?php 
+                            if(isset($user_sub_module) && in_array("Order", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+                            ?>
+                              <a href="order.php" class="btn btn-dark btn-fw active">Order</a>
+                            <?php } 
+                            if(isset($user_sub_module) && in_array("List", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+                            ?>
+                              <a href="order-list-tab.php" class="btn btn-dark btn-fw ">List</a>
+                            <?php } 
+                            if(isset($user_sub_module) && in_array("Missed Sales Order", $user_sub_module) || $_SESSION['auth']['user_type'] == "owner"){ 
+                            ?>
+                              <a href="missed-sales-order.php" class="btn btn-dark btn-fw ">Missed Sales Order</a>
+                            <?php } 
+                            //if(isset($user_sub_module) && in_array("Settings", $user_sub_module)){ 
+                            ?>
+                              <!--<a href="#" class="btn btn-dark btn-fw ">Settings</a>-->
+                            <?php //} ?>
+                          </div>  
                     </div> 
                   </div>
 
@@ -82,7 +119,7 @@
 
                   <hr>
                   
-                  <form class="forms-sample">
+                  <form class="forms-sample" autocomplete="off" id="search" >
                     <div class="col-md-12">
                       <div class="form-group row">
                         <div class="col-12 col-md-8 col-sm-12">
@@ -91,15 +128,17 @@
                               <div class="col">
                                   <div class="form-radio">
                                     <label class="form-check-label">
-                                      <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="Active" checked>
+                                      <input type="radio" required class="form-check-input" name="type" id="company" value="1"
+                                       onclick="myFunctionCompany()">
                                       Company wise  
                                     </label>
                                   </div>
                               </div>
+
                               <div class="col">
                                   <div class="form-radio">
                                     <label class="form-check-label">
-                                      <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="Deactive">
+                                      <input type="radio" required class="form-check-input" name="type" id="allcompany" value="2" onclick="AllCompany()">
                                       All Company wise
                                     </label>
                                   </div>
@@ -107,7 +146,7 @@
                               <div class="col">
                                   <div class="form-radio">
                                     <label class="form-check-label">
-                                      <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="Active" checked>
+                                      <input type="radio" required class="form-check-input" name="type" id="selectedcompany" value="3" onclick="mySelectedCompany();">
                                       Selected Company wise
                                     </label>
                                   </div>
@@ -115,7 +154,7 @@
                               <div class="col">
                                   <div class="form-radio">
                                     <label class="form-check-label">
-                                      <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="Deactive">
+                                      <input type="radio" required class="form-check-input" name="type" id="allproduct" value="4" onclick="AllProduct();">
                                       All Products
                                     </label>
                                   </div>
@@ -123,31 +162,74 @@
                             </div>
                         </div>
                       </div>
+
+                       <div class="form-group row" >
+                        <div class="col-12 col-md-2" id= "trans_com">
+                          <label for="exampleInputName1">Select Company</label>
+                          <input type="text" required class="form-control" placeholder="Company" id = "company_list" name = "company_name" autocomplete="nope" data-parsley-errors-container="#error-cumpany_id" autocomplete="off">
+                           <small class="customererror text-danger"></small>
+                          <div id="error-cumpany_id"></div>
+                        </div>
+                        <input type="hidden" name="company_id" id= "company_id">
+                        <div class="col-12 col-md-2" id= "trans_all">
+                          <label for="exampleInputName1">Select Company wise</label>
+                          <select class="js-example-basic-single" style="width:100%" name="selectedcompany[]" id="companyall" multiple="multiple" required data-parsley-errors-container="#error-com">
+                            <option value="">Select All company</option>
+                            <?php
+                              $allCompany = [];
+                            $dmfgQ = "SELECT id , mfg_company FROM `product_master` WHERE pharmacy_id = '".$pharmacy_id."' GROUP BY mfg_company ORDER BY mfg_company";
+                              $mfgR = mysqli_query($conn, $dmfgQ);
+                              if($mfgR && mysqli_num_rows($mfgR) > 0){
+                                while ($mfgRow = mysqli_fetch_array($mfgR)) {
+                                  $dtr['id'] = (isset($mfgRow['id'])) ? $mfgRow['id'] : '';
+                                  $dtr['company'] = (isset($mfgRow['mfg_company'])) ? $mfgRow['mfg_company'] : '';
+                                  $allCompany[] = $dtr;
+                                }
+                              }
+                            ?>
+                            <?php 
+                              if(isset($allCompany) && !empty($allCompany)){
+                                foreach ($allCompany as $key => $value) {
+                            ?>
+                              <option value="<?php echo $value['company'] ?>" ><?php echo $value['company']; ?></option>
+                            <?php 
+                                }
+                              }
+                            ?>
+                          </select>
+                           <div id="error-com"></div>
+                        </div>
+                        
+                        
+                      </div>
+<?php $date = date('d/m/Y'); ?>
                       <div class="form-group row">
                         <div class="col-12 col-md-2">
                           <label for="exampleInputName1">From Date</label>
                           <div class="input-group date datepicker">
-                            <input type="text" class="form-control border" placeholder="dd/mm/yyyy">
+                            <input type="text" class="form-control border" placeholder="dd/mm/yyyy" name = "from" required data-parsley-errors-container="#error-from" value="<?php echo $date; ?>"> 
                             <span class="input-group-addon input-group-append border-left">
                               <span class="mdi mdi-calendar input-group-text"></span>
                             </span>
                           </div>
+                          <div id="error-from"></div>
                         </div>
                         <div class="col-12 col-md-2">
-                          <label for="exampleInputName1">To Date</label>
-                          <div class="input-group date datepicker">
-                            <input type="text" class="form-control border" placeholder="dd/mm/yyyy">
+                          <label for="exampleInputName2">To Date</label>
+                          <div class="input-group date datepicker1">
+                            <input type="text" class="form-control border" placeholder="dd/mm/yyyy" name = "to" required data-parsley-errors-container="#error-to" value="<?php echo $date; ?>">
                             <span class="input-group-addon input-group-append border-left">
                               <span class="mdi mdi-calendar input-group-text"></span>
                             </span>
                           </div>
+                          <div id="error-to"></div>
                         </div>
                         <div class="col-12 col-md-2">
-                            <label >Stock per. Of Sales</label>
-                            <input type="text" class="form-control onlynumber" placeholder="0.00">
+                            <label >Stock per. Of Sales<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control onlynumber" placeholder="0.00" name = "stock" required> 
                         </div>
                         <div class="col-12 col-md-2">
-                          <button type="submit" class="btn btn-success mt-30" style="margin-top:30px;">Search</button>
+                          <button type = "submit" class="btn btn-success mt-30" style="margin-top:30px;">Search</button>
                         </div>
                       </div>
                     </div>
@@ -167,109 +249,27 @@
                     <div class="col mt-3">
                       <div class="row">
                         <div class="col-12">
-                          <table class="table datatable">
+                          <table class="table datatable" id="location">
                             <thead>
                               <tr>
                                   <th>Product Name</th>
                                   <th>Manufacturer Name</th>
-                                  <th>Purchase Price</th>
-                                  <th>Last Purchase Price</th>
+                                  <th>Batch No</th>
                                   <th>GST</th>
                                   <th>Unit/Stip</th>
-                                  <th>No. of Strips</th>
+                                  <th>Ratio</th>
                                   <th>Order Qty</th>
                                   <th>Current Stock</th>
-                                  <th>Vendor</th>
+                                 
                                  
                               </tr>
                             </thead>
                             <tbody>
-                              <!-- Row Starts -->   
-                              <tr>
-                                  <td>501 SOAP 300gm</td>
-                                  <td>Chennai Pharma (HO)</td>
-                                  <td>2.00</td>
-                                  <td>56.00</td>
-                                  <td>12</td>
-                                  <td>12</td>
-                                  <td>5</td>
-                                  <td>5</td>
-                                  <td>189</td>
-                                  <td>
-                                    <select class="js-example-basic-single" style="width:100%"> 
-                                        <option value="Regular">H</option>
-                                        <option value="Unregistered">H1</option>
-                                    </select>
-                                  </td>
-                                 
-                              </tr><!-- End Row -->   
-                              
-                               <tr>
-                                  <td>501 SOAP 300gm</td>
-                                  <td>Chennai Pharma (HO)</td>
-                                  <td>2.00</td>
-                                  <td>56.00</td>
-                                  <td>12</td>
-                                  <td>12</td>
-                                  <td>5</td>
-                                  <td>5</td>
-                                  <td>189</td>
-                                  <td>
-                                    <select class="js-example-basic-single" style="width:100%"> 
-                                        <option value="Regular">H</option>
-                                        <option value="Unregistered">H1</option>
-                                    </select>
-                                  </td>
-                                 
-                              </tr>
-                              
-                               <tr>
-                                  <td>501 SOAP 300gm</td>
-                                  <td>Chennai Pharma (HO)</td>
-                                  <td>2.00</td>
-                                  <td>56.00</td>
-                                  <td>12</td>
-                                  <td>12</td>
-                                  <td>5</td>
-                                  <td>5</td>
-                                  <td>189</td>
-                                  <td>
-                                    <select class="js-example-basic-single" style="width:100%"> 
-                                        <option value="Regular">H</option>
-                                        <option value="Unregistered">H1</option>
-                                    </select>
-                                  </td>
-                                 
-                              </tr>
-                              
-                               <tr>
-                                  <td>501 SOAP 300gm</td>
-                                  <td>Chennai Pharma (HO)</td>
-                                  <td>2.00</td>
-                                  <td>56.00</td>
-                                  <td>12</td>
-                                  <td>12</td>
-                                  <td>5</td>
-                                  <td>5</td>
-                                  <td>189</td>
-                                  <td>
-                                    <select class="js-example-basic-single" style="width:100%"> 
-                                        <option value="Regular">H</option>
-                                        <option value="Unregistered">H1</option>
-                                    </select>
-                                  </td>
-                                 
-                              </tr>
-                              
-                             
                             </tbody>
                           </table>
                         </div>
                       </div>
                     </div>
-                    
-                    <hr>
-                
                 </div>
               </div>
             </div>
@@ -326,27 +326,42 @@
   
   <!-- Custom js for this page Modal Box-->
   <script src="js/modal-demo.js"></script>
-  
-  
+  <script src="js/jquery-ui.js"></script>
+   <script src="js/custom/order-by-transition.js"></script>
   <!-- Datepicker Initialise-->
  <script>
     $('.datepicker').datepicker({
       enableOnReadonly: true,
       todayHighlight: true,
-      autoclose: true
+      autoclose: true,
+      format: 'dd/mm/yyyy'
     });
  </script>
- 
+ <script>
+    $('.datepicker1').datepicker({
+      enableOnReadonly: true,
+      todayHighlight: true,
+      autoclose: true,
+      format: 'dd/mm/yyyy'
+    });
+ </script>
   <!-- Custom js for this page Datatables-->
   <script src="js/data-table.js"></script> 
-  
-  <script>
-     $('.datatable').DataTable();
-  </script>
+  <script src="js/parsley.min.js"></script>
+  <script type="text/javascript">
+  $('form').parsley();
+</script>
   <script src="js/custom/onlynumber.js"></script>
+
   
   <!-- End custom js for this page-->
 </body>
 
 
 </html>
+                                 <!-- <tr>
+                                    <select class="js-example-basic-single" style="width:100%"> 
+                                        <option value="Regular">H</option>
+                                        <option value="Unregistered">H1</option>
+                                    </select>
+                              </tr> -->

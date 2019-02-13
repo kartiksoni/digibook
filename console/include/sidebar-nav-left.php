@@ -25,15 +25,11 @@
 <a class="nav-link" href="index.php">
 <i class="icon-layout menu-icon"></i>
 <span class="menu-title">Dashboard</span>
-<span class="badge badge-primary badge-pill">1</span>
 </a>
 </li>
 
 <!--  section headings -->
 
-<!--<li class="nav-item nav-category">
-<span class="nav-link">Layouts</span>
-</li>-->
 <li class="nav-item">
     <a class="nav-link" href="configuration.php">
     <i class="icon-layers menu-icon"></i>
@@ -54,91 +50,18 @@
     </div>
 </li>
 
-<!-- <li class="nav-item">
-    <a class="nav-link" href="inventory.php">
-    <i class="icon-server menu-icon"></i>
-    <span class="menu-title">Inventory </span>
-    </a>
-</li> -->
-
-<!-- <li class="nav-item">
-    <a class="nav-link" href="purchase.php">
-    <i class="icon-bag menu-icon"></i>
-    <span class="menu-title">Purchase </span>
-    </a>
-</li> -->
-
-<!-- <li class="nav-item">
-<a class="nav-link" data-toggle="collapse" href="#delievery-challan" aria-expanded="false" aria-controls="delievery-challan">
-<i class="icon-layers menu-icon"></i>
-<span class="menu-title">Delievery Challan</span>
-<i class="menu-arrow"></i>
-</a>
-<div class="collapse" id="delievery-challan">
-    <ul class="nav flex-column sub-menu">
-        <li class="nav-item"> <a class="nav-link" href="#">Add challan</a></li>
-        <li class="nav-item"> <a class="nav-link" href="#">View challan</a></li>
-    </ul>
-</div>
-</li> -->
-
-
-<!-- <li class="nav-item">
-    <a class="nav-link" href="#">
-    <i class="icon-paper menu-icon"></i>
-    <span class="menu-title">Sell </span>
-    </a>
-</li> -->
-
-<!-- <li class="nav-item">
-    <a class="nav-link" href="#">
-    <i class="icon-repeat menu-icon"></i>
-    <span class="menu-title">Transfer </span>
-    </a>
-</li> -->
-
-
-<!-- <li class="nav-item">
-    <a class="nav-link" href="#">
-    <i class="icon-briefcase menu-icon"></i>
-    <span class="menu-title">Leads </span>
-    </a>
-</li> -->
-
-<!-- <li class="nav-item">
-    <a class="nav-link" href="order.php">
-    <i class="icon-monitor menu-icon"></i>
-    <span class="menu-title">Order Place </span>
-    </a>
-</li> -->
-
-<!-- <li class="nav-item">
-    <a class="nav-link" href="#">
-    <i class="icon-pie-graph menu-icon"></i>
-    <span class="menu-title">Reports </span>
-    </a>
-</li> -->
-
-<!-- <li class="nav-item">
-    <a class="nav-link" href="#">
-    <i class="icon-link menu-icon"></i>
-    <span class="menu-title">Branch </span>
-    </a>
-</li> -->
-
-<!-- <li class="nav-item">
-    <a class="nav-link" href="#">
-    <i class="icon-cog menu-icon"></i>
-    <span class="menu-title">Accounts </span>
-    </a>
-</li> -->
-
-<!-- <li class="nav-item">
-    <a class="nav-link" href="#">
+<!--<li class="nav-item">
+    <a class="nav-link" data-toggle="collapse" href="#page-module" aria-expanded="false" aria-controls="page-layouts">
     <i class="icon-head menu-icon"></i>
-    <span class="menu-title">Users </span>
+    <span class="menu-title">Module Management</span>
+    <i class="menu-arrow"></i>
     </a>
-</li> -->
+    <div class="collapse" id="page-module">
+        <ul class="nav flex-column sub-menu"><li class="nav-item"> <a class="nav-link" href="add-module.php">Add Module</a></li></ul>
+        <ul class="nav flex-column sub-menu"><li class="nav-item"> <a class="nav-link" href="#">Add Pages</a></li></ul>
+        <ul class="nav flex-column sub-menu"><li class="nav-item"> <a class="nav-link" href="#">View Pages</a></li></ul>
+    </div>
+</li>-->
 
 <li class="nav-item">
     <a class="nav-link" href="logout.php">
