@@ -338,5 +338,48 @@
         }
         echo json_encode($result);exit;
     }
+
+    // Chack gst no
+    // GAUTAM MAKWANA 13-02-18
+    if($_REQUEST['action'] == "checkgst"){
+        
+        $gst_no = (isset($_REQUEST['gst_no'])) ? $_REQUEST['gst_no'] : '';
+        $gst_no = '';
+        if($gst_no != ''){
+            exit;
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://commonapi.mastersindia.co/commonapis/searchgstin?gstin='.$gst_no);//24AAXCS5451M1ZL
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
+                'Content-Type: application/json',
+                'Authorization: Bearer 0016ab637e3aa39aa8c689255ddad375c334b621',
+                'client_id: mksfqcEASLogkQOpkj'                                                                  
+            ));
+            $data = curl_exec($ch);
+            curl_close($ch);
+            if($data){
+                $result = json_decode($data, true);
+                if(!empty($result)){
+                    if(isset($result['error']) && $result['error'] == false){
+                        $company = (isset($result['data']['lgnm']) && $result['data']['lgnm'] != '') ? $result['data']['lgnm'] : 'Unknown Company';
+                        $status = (isset($result['data']['sts']) && $result['data']['sts'] != '') ? $result['data']['sts'] : 'Deactive';
+                        $msg = '<b>Company Name : </b> '.$company.' <br/><b>Status : </b>'.$status;
+                        $result = array('status' => true, 'message' => $msg, 'result' => $result);    
+                    }else{
+                        $msg = (isset($result['data']) && $result['data'] != '') ? $result['data'] : 'Invalid GST No.';
+                        $result = array('status' => false, 'message' => $msg, 'result' => '');    
+                    }
+                }else{
+                    $result = array('status' => false, 'message' => 'Somthing Want Wrong! Try Again.', 'result' => '');    
+                }
+            }else{
+                $result = array('status' => false, 'message' => 'Somthing Want Wrong! Try Again.', 'result' => '');
+            }
+        }else{
+            $result = array('status' => false, 'message' => 'Please enter GST No!', 'result' => '');
+        }
+        echo json_encode($result);exit;
+    }
     
 ?>

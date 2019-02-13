@@ -342,6 +342,7 @@ $financial_id = (isset($_SESSION['auth']['financial'])) ? $_SESSION['auth']['fin
                       <div class="col-12 col-md-4 m-t-20 gstno-div <?php echo (isset($_GET['subtype']) && in_array($_GET['subtype'], [10,14]) || (isset($ledgerdata['customer_role']) && $ledgerdata['customer_role'] == 'Reseller')) ? 'display-block' : 'display-none'; ?>">
                         <label for="gstno">GST No</label>
                         <input type="text" class="form-control gstno" id="gst_no" name="gstno" placeholder="GST No" value="<?php echo (isset($ledgerdata['gstno'])) ? $ledgerdata['gstno'] : ''; ?>" data-parsley-pattern="^([0]{1}[1-9]{1}|[1-2]{1}[0-9]{1}|[3]{1}[0-7]{1})([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$" data-parsley-pattern-message="Enter valid GST No." maxlength="15">
+                        <span id="validate-span"></span>
                       <?php 
                         if(isset($_GET['subtype']) && in_array($_GET['subtype'], [10,14])){
                         ?>
@@ -739,6 +740,7 @@ $financial_id = (isset($_SESSION['auth']['financial'])) ? $_SESSION['auth']['fin
         <!-- partial -->
          <!-- add area Model -->
         <?php include "include/addarea-model.php"?>
+        <?php include "popup/gst-info-model.php"?>
       </div>
       <!-- main-panel ends -->
     </div>
